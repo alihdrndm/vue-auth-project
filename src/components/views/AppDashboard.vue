@@ -2,12 +2,12 @@
   <div id="dashboard">
     <h1>Dashboard</h1>
     <p><strong>You are here because you're authenticated</strong></p>
-    <div class="btn-cntnr">
+    <!-- <div class="btn-cntnr">
       <button @click="showUsers">Show Users</button>
-    </div>
+    </div> -->
     <br />
     <hr />
-    <p v-for="(user, index) in userList" :key="user.id">
+    <!-- <p v-for="(user, index) in userList" :key="user.id">
       User Name: {{ user.name }}
       <span>
         <router-link
@@ -16,46 +16,47 @@
           >Show Details</router-link
         >
       </span>
-    </p>
+    </p> -->
   </div>
 </template>
 
 <script>
-import globalAxios from "axios";
+// import globalAxios from "axios";
 export default {
-  data() {
-    return {
-      userList: []
-    };
-  },
+  // data() {
+  //   return {
+  //     userList: []
+  //   };
+  // },
   // computed: {
   //   email() {
   //     return !this.$store.getters.user ? false : this.$store.getters.user.email;
   //   }
   // },
-
-  methods: {
-    showUsers() {
-      globalAxios
-        .get("/user.json" + "?auth=" + this.$store.state.idToken)
-        .then(res => {
-          console.log(res);
-          const data = res.data;
-          for (let key in data) {
-            const user = data[key];
-            user.id = key;
-            this.userList.push(user);
-          }
-        })
-        .catch(error => console.log(error));
-      // this.$store.dispatch("fetchUser");
-    }
-
-    // doSomething() {
-    //   console.log("Did you do something?");
-    //   this.$router.go("/details");
-    // }
-  }
+  // created() {
+  //   this.showUsers();
+  // },
+  // methods: {
+  //   showUsers() {
+  //     globalAxios
+  //       .get("/user.json" + "?auth=" + this.$store.state.idToken)
+  //       .then(res => {
+  //         console.log(res);
+  //         const data = res.data;
+  //         for (let key in data) {
+  //           const user = data[key];
+  //           user.id = key;
+  //           this.userList.push(user);
+  //         }
+  //       })
+  //       .catch(error => console.log(error));
+  //     // this.$store.dispatch("fetchUser");
+  //   }
+  //   // doSomething() {
+  //   //   console.log("Did you do something?");
+  //   //   this.$router.go("/details");
+  //   // }
+  // }
 };
 </script>
 
