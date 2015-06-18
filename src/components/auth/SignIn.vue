@@ -26,6 +26,19 @@ export default {
       password: ""
     };
   },
+  computed: {
+    auth() {
+      return this.$store.getters.isAuthenticated;
+    }
+  },
+  watch: {
+    auth(newVal) {
+      console.log("newVal", newVal);
+      if (newVal) {
+        this.$router.push("/dashboard");
+      }
+    }
+  },
   methods: {
     onSubmit() {
       const formData = {
@@ -38,6 +51,11 @@ export default {
         password: formData.password
       });
     }
+    // toDashboard() {
+    //   console.log("Was I called?");
+    //   if (this.$store.) {
+    //   }
+    // }
   }
 };
 </script>
