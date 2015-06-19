@@ -33,17 +33,17 @@ p {
   margin: 10px;
   text-decoration: none;
   display: inline-block;
-  border: 1px solid #521751;
+  border: 1px solid #13575a;
   border-radius: 3px;
   width: 100px;
   padding: 10px;
   box-sizing: border-box;
-  color: #521751;
+  color: #13575a;
 }
 
 .cta a:hover,
 .cta a:active {
-  background-color: #521751;
+  background-color: #13575a;
   color: white;
 }
 </style>
