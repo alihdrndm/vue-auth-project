@@ -7,22 +7,54 @@
     </div>
     <br />
     <hr />
-    <p v-if="email">{{ email }}</p>
+    <p v-for="(user, index) in userList" :key="user.id">
+      User Name: {{ user.name }}
+      <span>
+        <router-link
+          :to="{ name: 'details', params: { user: user, id: index + 1 } }"
+          exact
+          >Show Details</router-link
+        >
+      </span>
+    </p>
   </div>
 </template>
 
 <script>
+import globalAxios from "axios";
 export default {
-  computed: {
-    email() {
-      return !this.$store.getters.user ? false : this.$store.getters.user.email;
-    }
+  data() {
+    return {
+      userList: []
+    };
   },
+  // computed: {
+  //   email() {
+  //     return !this.$store.getters.user ? false : this.$store.getters.user.email;
+  //   }
+  // },
 
   methods: {
     showUsers() {
-      this.$store.dispatch("fetchUser");
+      globalAxios
+        .get("/user.json" + "?auth=" + this.$store.state.idToken)
+        .then(res => {
+          console.log(res);
+          const data = res.data;
+          for (let key in data) {
+            const user = data[key];
+            user.id = key;
+            this.userList.push(user);
+          }
+        })
+        .catch(error => console.log(error));
+      // this.$store.dispatch("fetchUser");
     }
+
+    // doSomething() {
+    //   console.log("Did you do something?");
+    //   this.$router.go("/details");
+    // }
   }
 };
 </script>

@@ -13,16 +13,16 @@ axios.defaults.baseURL =
 // axios.defaults.headers.get["Accepts"] = "application.json";
 
 // eslint-disable-next-line no-unused-vars
-const reqInterceptor = axios.interceptors.request.use(config => {
-  // config.headers["Authorization"] = "not given";
-  console.log("ReqInterceptor", config);
-  return config;
-});
+// const reqInterceptor = axios.interceptors.request.use(config => {
+//   // config.headers["Authorization"] = "not given";
+//   console.log("ReqInterceptor", config);
+//   return config;
+// });
 
-const resInterceptor = axios.interceptors.response.use(res => {
-  console.log("ResInterceptor", res);
-  return res;
-});
+// const resInterceptor = axios.interceptors.response.use(res => {
+//   console.log("ResInterceptor", res);
+//   return res;
+// });
 
 // axios.interceptors.request.eject(reqInterceptor);
 // axios.interceptors.response.eject(resInterceptor);
