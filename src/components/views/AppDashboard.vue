@@ -76,20 +76,4 @@ p {
   justify-content: center;
   align-items: center;
 }
-
-.btn-cntnr button {
-  border: 1px solid #13575a;
-  border-radius: 6px;
-  color: #13575a;
-  padding: 10px 20px;
-  margin-top: 10px;
-  font: inherit;
-  cursor: pointer;
-}
-
-.btn-cntnr button:hover,
-.btn-cntnr button:active {
-  background-color: #13575a;
-  color: white;
-}
 </style>
