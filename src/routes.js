@@ -7,7 +7,7 @@ const routes = [
   { path: "/", component: WelcomePage },
   { path: "/signup", component: SignUp },
   { path: "/signin", component: SignIn },
-  { path: "./dashboard", component: AppDashboard }
+  { path: "/dashboard", component: AppDashboard }
 ];
 
 export default routes;
