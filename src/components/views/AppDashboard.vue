@@ -7,36 +7,21 @@
     </div>
     <br />
     <hr />
-    <p v-for="user in userList" :key="user.id">{{ user.name }}</p>
+    <p v-if="email">{{ email }}</p>
   </div>
 </template>
 
 <script>
-import axios from "axios";
 export default {
-  data() {
-    return {
-      // userEmail: ""
-      userList: []
-    };
+  computed: {
+    email() {
+      return !this.$store.getters.user ? false : this.$store.getters.user.email;
+    }
   },
 
   methods: {
     showUsers() {
-      axios
-        .get("/users.json")
-        .then(res => {
-          console.log(res);
-          const data = res.data;
-          // const users = [];
-          for (let key in data) {
-            const user = data[key];
-            user.id = key;
-            this.userList.push(user);
-          }
-          // this.userEmail = users[0].email;
-        })
-        .catch(error => console.log(error));
+      this.$store.dispatch("fetchUser");
     }
   }
 };
