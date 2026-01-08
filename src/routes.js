@@ -58,7 +58,7 @@ const routes = [
     }
   },
   {
-    path: "/users/:id",
+    path: "/users",
     name: "users",
     component: UsersPage,
     beforeEnter: (to, from, next) => {
@@ -73,7 +73,24 @@ const routes = [
     path: "/details",
     name: "details",
     component: UserDetails,
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem("token")) {
+        next();
+      } else {
+        router.go(-1);
+      }
+    },
     props: true
+  },
+  {
+    path: "/:NotFound(.*)*",
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem("token")) {
+        next("/dashboard");
+      } else {
+        router.go(-1);
+      }
+    }
   }
 ];
 

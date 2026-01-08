@@ -9,22 +9,16 @@
 
 <script>
 export default {
-  props: ["user"],
+  props: ["user", "id"],
   data() {
     return {
-      id: this.$route.params.id
+      // id: this.$route.params.id
     };
   },
 
   mounted() {
     console.log(this.$route);
     console.log(this.user);
-  },
-
-  watch: {
-    $route(to) {
-      this.id = to.params.id;
-    }
   }
 };
 </script>
