@@ -15,6 +15,11 @@
           <router-link to="/dashboard">Dashboard</router-link>
         </li>
         <li v-if="auth">
+          <router-link :to="{ name: 'users', params: { id: 10 } }"
+            >Users</router-link
+          >
+        </li>
+        <li v-if="auth">
           <button class="logout" @click="onLogout">Logout</button>
         </li>
       </ul>
