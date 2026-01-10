@@ -39,7 +39,7 @@ export default new Vuex.Store({
 
     signup({ commit, dispatch }, authData) {
       axios
-        .post(":signUp?key=REMOVED_API_KEY", {
+        .post(`:signUp?key=${process.env.VUE_APP_FIREBASE_API_KEY}`, {
           email: authData.email,
           password: authData.password,
           returnSecureToken: true
@@ -67,7 +67,7 @@ export default new Vuex.Store({
     login({ commit, dispatch }, authData) {
       axios
         .post(
-          ":signInWithPassword?key=REMOVED_API_KEY",
+          `:signInWithPassword?key=${process.env.VUE_APP_FIREBASE_API_KEY}`,
           {
             email: authData.email,
             password: authData.password,
