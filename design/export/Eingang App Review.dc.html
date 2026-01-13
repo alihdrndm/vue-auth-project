@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review · Eingang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&amp;family=Familjen+Grotesk:wght@700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<script src="./eingang-ui.js"></script>
+<style>
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:#f7f2ea;color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,ol,dl,dd,blockquote{margin:0}
+ol{padding:0}
+button,input,textarea{font:inherit;color:inherit}
+a{color:#2c4a8a;text-underline-offset:3px}
+a:hover{color:#1f1c18}
+:focus-visible{outline:2.5px solid #0f6e62;outline-offset:2px}
+::selection{background:#ffe53d;color:#1f1c18}
+</style>
+</helmet>
+
+<sc-if value="{{ diffFrame }}" hint-placeholder-val="{{ false }}">
+  <div style="min-height:100vh;display:grid;place-items:center;padding:32px">
+    <section aria-label="Check on invoice SA/26/1160" style="width:820px;max-width:100%;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden">
+      <div style="display:grid;gap:4px;padding:16px 20px;background:#f7f2ea;border-bottom:1px solid #ebe3d6">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px"><span style="display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:500;color:#8a4a06"><e-icon name="triangle" size="16" style="color:#c47408"></e-icon>Warning</span><h2 style="font-size:14px;font-weight:600;color:#1f1c18">PDF shows 1.190,00 € · XML says 1.200,00 € — the XML is the legally binding part.</h2></div>
+        <span style="font-size:12px;color:#746c61">Spedition Albers GmbH, <span style="font-family:'JetBrains Mono',monospace">SA/26/1160</span>, ZUGFeRD · EN 16931</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr">
+        <div style="border-right:1px solid #ebe3d6;min-width:0">
+          <div style="display:flex;justify-content:space-between;gap:8px;padding:8px 16px;border-bottom:1px solid #ebe3d6;font-size:12px"><span style="font-weight:600;color:#1f1c18">PDF shows</span><span style="color:#746c61">Page 1, printed text</span></div>
+          <div style="display:grid;grid-template-columns:40px 20px minmax(0,1fr);font:13px/32px 'JetBrains Mono',monospace;color:#1f1c18"><span style="text-align:right;color:#746c61">37</span><span></span><span lang="de">Nettobetrag 1.000,00 €</span></div>
+          <div style="display:grid;grid-template-columns:40px 20px minmax(0,1fr);font:13px/32px 'JetBrains Mono',monospace;background:#fcefd8;color:#1f1c18"><span style="text-align:right;color:#3f3a33">38</span><span style="text-align:center;color:#8a4a06">−</span><span lang="de">Gesamtbetrag <b style="font-weight:500;box-shadow:inset 0 -2px 0 #c47408">1.190,00 €</b></span></div>
+        </div>
+        <div style="min-width:0">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 16px;border-bottom:1px solid #ebe3d6;font-size:12px"><span style="font-weight:600;color:#1f1c18">XML says</span><span style="display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 8px;border-radius:999px;background:#e4f1ed;color:#0f6e62;font-weight:500"><e-icon name="check" size="12"></e-icon>Used</span></div>
+          <div style="display:grid;grid-template-columns:40px 20px minmax(0,1fr);font:13px/32px 'JetBrains Mono',monospace;color:#1f1c18"><span style="text-align:right;color:#746c61">56</span><span></span><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span style="color:#746c61">&lt;</span><span style="color:#2c4a8a">ram:TaxBasisTotalAmount</span><span style="color:#746c61">&gt;</span>1000.00<span style="color:#746c61">&lt;/…&gt;</span></span></div>
+          <div style="display:grid;grid-template-columns:40px 20px minmax(0,1fr);font:13px/32px 'JetBrains Mono',monospace;background:#e4f1ed;color:#1f1c18"><span style="text-align:right;color:#3f3a33">57</span><span style="text-align:center;color:#0f6e62">+</span><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><span style="color:#746c61">&lt;</span><span style="color:#2c4a8a">ram:GrandTotalAmount</span><span style="color:#746c61">&gt;</span><b style="font-weight:500;box-shadow:inset 0 -2px 0 #0f6e62">1200.00</b><span style="color:#746c61">&lt;/</span><span style="color:#2c4a8a">ram:GrandTotalAmount</span><span style="color:#746c61">&gt;</span></span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px 12px 20px;border-top:1px solid #ebe3d6">
+        <p style="font-size:13px;max-width:52ch">Eingang uses <span style="font-family:'JetBrains Mono',monospace;color:#1f1c18">1.200,00 €</span>. Check with the supplier which amount they meant before anyone approves it. <a href="https://www.elo.com/de-de/blog/e-rechnungspflicht-bmf-schreiben-und-faq.html" style="font-size:12px">Source: BMF letter, 15 Oct 2024</a></p>
+        <button style="display:inline-flex;align-items:center;white-space:nowrap;height:{{ sb }};padding:0 12px;border-radius:6px;font-size:13px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Resolve check</button>
+      </div>
+    </section>
+  </div>
+</sc-if>
+
+<sc-if value="{{ app }}" hint-placeholder-val="{{ true }}">
+<div style="height:100vh;display:grid;grid-template-rows:{{ L.rows }}">
+  <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
+    <header style="display:flex;align-items:center;gap:16px;padding:0 12px 0 16px;background:#f7f2ea;border-bottom:1px solid #ebe3d6">
+      <div style="display:flex;align-items:center;gap:8px"><span aria-hidden="true" style="width:1em;height:1em;font-size:24px;display:grid;place-items:center;border:0.0625em solid #2c4a8a;border-radius:0.15em;outline:0.025em solid #2c4a8a;outline-offset:-0.175em;background:#fffdf9;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1;filter:url(#eg-ink)"><span style="font-size:0.55em">E</span></span><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Eingang</span></div>
+      <span aria-hidden="true" style="color:#746c61">/</span>
+      <span style="font-size:14px;font-weight:500;color:#1f1c18;white-space:nowrap">Holzwerk Brandt GmbH</span>
+      <label style="flex:1 1 auto;max-width:440px;margin-left:24px;display:flex;align-items:center;gap:8px;height:32px;padding:0 4px 0 12px;border:1px solid #d6cbbb;border-radius:6px;background:#fffdf9;color:#746c61"><e-icon name="search" size="16"></e-icon><input aria-label="Search" placeholder="Search invoices, suppliers, numbers" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font-size:14px;color:#1f1c18"><kbd style="display:inline-grid;place-items:center;min-width:24px;height:24px;border:1px solid #d6cbbb;border-radius:6px;background:#f7f2ea;font:12px/1 'JetBrains Mono',monospace;color:#746c61">/</kbd></label>
+      <span style="flex:1"></span>
+      <button aria-haspopup="menu" aria-label="{{ u.aria }}" style="display:flex;align-items:center;gap:8px;height:40px;padding:0 8px 0 4px;border:1px solid transparent;border-radius:6px;background:transparent;cursor:pointer;color:#3f3a33" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><span style="width:28px;height:28px;border-radius:999px;background:#e8edf7;color:#2c4a8a;display:grid;place-items:center;font-size:12px;font-weight:600">{{ u.initials }}</span><span style="display:grid;text-align:left;line-height:1.2"><span style="font-size:13px;font-weight:500;color:#1f1c18">{{ u.name }}</span><span style="font-size:12px;color:#746c61">{{ u.role }}</span></span><e-icon name="chevron-down" size="16"></e-icon></button>
+    </header>
+  </sc-if>
+  <sc-if value="{{ phone }}" hint-placeholder-val="{{ false }}">
+    <header style="display:flex;align-items:center;gap:4px;padding:0 4px;background:#f7f2ea;border-bottom:1px solid #ebe3d6">
+      <a href="Eingang App Inbox.dc.html" aria-label="Back to inbox" style="display:grid;place-items:center;width:44px;height:44px;border-radius:6px;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:-3px"><e-icon name="chevron-left" size="20"></e-icon></a>
+      <h1 style="flex:1;min-width:0;font:700 16px/1.2 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ inv.supplier }}</h1>
+      <button aria-haspopup="menu" aria-label="{{ u.aria }}" style="display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:6px;background:transparent;cursor:pointer" style-focus="outline:2.5px solid #0f6e62;outline-offset:-3px"><span style="width:32px;height:32px;border-radius:999px;background:#e8edf7;color:#2c4a8a;display:grid;place-items:center;font-size:12px;font-weight:600">{{ u.initials }}</span></button>
+    </header>
+  </sc-if>
+
+  <div style="min-height:0;display:grid;grid-template-columns:{{ L.cols }}">
+    <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
+      <nav aria-label="Main" style="background:#f7f2ea;border-right:1px solid #ebe3d6;padding:8px;display:grid;align-content:start;gap:4px">
+        <a href="Eingang App Inbox.dc.html" aria-current="page" style="display:grid;justify-items:center;gap:4px;padding:8px 4px;border-radius:8px;background:#fffdf9;border:1px solid #ebe3d6;box-shadow:0 1px 0 #d6cbbb;color:#1f1c18;font-size:12px;font-weight:500;text-decoration:none" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="inbox" size="20"></e-icon><span style="font-size:{{ L.railFs }}">Inbox</span></a>
+        <a href="#approvals" style="display:grid;justify-items:center;gap:4px;padding:8px 4px;border-radius:8px;border:1px solid transparent;color:#746c61;font-size:12px;font-weight:500;text-decoration:none" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="check-check" size="20"></e-icon><span style="font-size:{{ L.railFs }}">Approvals</span></a>
+        <a href="#suppliers" style="display:grid;justify-items:center;gap:4px;padding:8px 4px;border-radius:8px;border:1px solid transparent;color:#746c61;font-size:12px;font-weight:500;text-decoration:none" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="building" size="20"></e-icon><span style="font-size:{{ L.railFs }}">Suppliers</span></a>
+        <a href="#exports" style="display:grid;justify-items:center;gap:4px;padding:8px 4px;border-radius:8px;border:1px solid transparent;color:#746c61;font-size:12px;font-weight:500;text-decoration:none" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="archive" size="20"></e-icon><span style="font-size:{{ L.railFs }}">Exports</span></a>
+        <a href="#accuracy" style="display:grid;justify-items:center;gap:4px;padding:8px 4px;border-radius:8px;border:1px solid transparent;color:#746c61;font-size:12px;font-weight:500;text-decoration:none" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="gauge" size="20"></e-icon><span style="font-size:{{ L.railFs }}">Accuracy</span></a>
+        <a href="#settings" style="display:grid;justify-items:center;gap:4px;padding:8px 4px;border-radius:8px;border:1px solid transparent;color:#746c61;font-size:12px;font-weight:500;text-decoration:none" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="sliders" size="20"></e-icon><span style="font-size:{{ L.railFs }}">Settings</span></a>
+      </nav>
+    </sc-if>
+
+    <main style="min-width:0;min-height:0;display:grid;grid-template-columns:{{ L.main }};grid-template-rows:{{ L.mainRows }};gap:{{ L.gap }};padding:{{ L.pad }};overflow:{{ L.mainOv }}">
+      <sc-if value="{{ phone }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;gap:8px;padding:12px 16px;background:#f7f2ea;border-bottom:1px solid #ebe3d6">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><span style="font:500 21px/1.2 'JetBrains Mono',monospace;color:#1f1c18">{{ inv.gross }}</span><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;background:{{ st.bg }};color:{{ st.fg }}"><e-icon name="{{ st.icon }}" size="14" style="color:{{ st.ic }}"></e-icon>{{ st.label }}</span></div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;font-size:12px"><span style="font-family:'JetBrains Mono',monospace;color:#746c61">{{ inv.number }}</span><span>Due {{ inv.due }}</span><span style="display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:#e8edf7;color:#2c4a8a;font-weight:500">{{ inv.rec }}</span></div>
+        </div>
+        <div role="tablist" aria-label="Invoice views" style="display:grid;grid-template-columns:repeat(3,1fr);background:#fffdf9;border-bottom:1px solid #ebe3d6">
+          <sc-for list="{{ mtabs }}" as="t" hint-placeholder-count="3">
+            <button role="tab" aria-selected="{{ t.sel }}" onClick="{{ t.select }}" style="height:44px;border:0;background:transparent;font-size:14px;font-weight:500;cursor:pointer;color:{{ t.color }};box-shadow:{{ t.line }}" style-focus="outline:2.5px solid #0f6e62;outline-offset:-3px">{{ t.label }}</button>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ tabletDoc }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toggleDoc }}" aria-expanded="{{ docOpenA }}" style="order:2;display:flex;align-items:center;justify-content:space-between;height:44px;padding:0 16px;border:1px solid #ebe3d6;border-radius:12px;background:#fffdf9;font-size:14px;font-weight:500;color:#1f1c18;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">{{ docToggle }}<e-icon name="chevron-down" size="16" style="transform:{{ docRot }}"></e-icon></button></sc-if>
+      <section aria-label="Document" style="order:{{ L.docOrder }};min-height:0;height:{{ L.docH }};grid-template-rows:auto minmax(0,1fr);background:#fffdf9;overflow:hidden;display:{{ L.docDisp }};border:{{ L.paneBd }};border-radius:{{ L.paneR }}">
+        <div style="display:flex;align-items:center;gap:12px;min-height:48px;padding:0 12px;background:#f7f2ea;border-bottom:1px solid #ebe3d6">
+          <div role="tablist" aria-label="Document views" style="display:inline-flex;gap:4px;padding:4px;background:#f7f2ea;border:1px solid #ebe3d6;border-radius:8px">
+            <sc-for list="{{ docTabs }}" as="t" hint-placeholder-count="3">
+              <button role="tab" aria-selected="{{ t.sel }}" aria-disabled="{{ t.dis }}" title="{{ t.title }}" onClick="{{ t.select }}" style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;height:{{ sb }};padding:0 12px;border-radius:6px;font-size:13px;font-weight:500;cursor:{{ t.cursor }};color:{{ t.fg }};background:{{ t.bg }};border:{{ t.bd }};box-shadow:{{ t.sh }}" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><sc-if value="{{ t.locked }}" hint-placeholder-val="{{ false }}"><e-icon name="lock" size="14"></e-icon></sc-if>{{ t.label }}</button>
+            </sc-for>
+          </div>
+          <span style="flex:1"></span>
+          <span style="font-size:12px;color:#746c61;white-space:nowrap">{{ docMeta }}</span>
+        </div>
+        <div style="min-height:0;overflow:auto;background:#f6f0e6">
+          <sc-if value="{{ dv.doc }}" hint-placeholder-val="{{ true }}">
+            <div style="display:grid;justify-items:center;gap:12px;padding:{{ L.docPad }}">
+              <div lang="de" style="width:520px;max-width:100%;background:#fffdf9;border:1px solid #ebe3d6;padding:32px;color:#1f1c18;display:grid;overflow:hidden">
+                <sc-for list="{{ page }}" as="l" hint-placeholder-count="10">
+                  <div style="display:flex;justify-content:space-between;gap:16px;padding:0 4px;margin:0 -4px;border-radius:6px;font-size:{{ l.fs }};font-weight:{{ l.fw }};margin-top:{{ l.mt }};background:{{ l.bg }};box-shadow:{{ l.ring }}"><span>{{ l.a }}</span><span style="white-space:nowrap">{{ l.b }}</span></div>
+                </sc-for>
+              </div>
+              <span style="font-size:12px;color:#746c61">{{ pageCaption }}</span>
+            </div>
+          </sc-if>
+          <sc-if value="{{ dv.xml }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#fffdf9;min-height:100%;font:13px/24px 'JetBrains Mono',monospace;color:#1f1c18;overflow-x:auto">
+              <sc-for list="{{ xml }}" as="x" hint-placeholder-count="12">
+                <div style="display:grid;grid-template-columns:48px max-content;min-width:100%;background:{{ x.bg }}"><span style="padding-right:12px;text-align:right;color:#746c61;background:{{ x.gBg }};border-right:1px solid #ebe3d6;user-select:none">{{ x.n }}</span><span style="padding:0 16px;white-space:pre"><sc-for list="{{ x.parts }}" as="p" hint-placeholder-count="1"><span style="color:{{ p.c }};font-family:{{ p.ff }}">{{ p.t }}</span></sc-for></span></div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ dv.text }}" hint-placeholder-val="{{ false }}">
+            <div lang="de" style="background:#fffdf9;min-height:100%;font:13px/24px 'JetBrains Mono',monospace;color:#1f1c18">
+              <div style="padding:8px 16px;border-bottom:1px solid #ebe3d6;font:12px/1.45 'Instrument Sans',sans-serif;color:#746c61">Text layer of the PDF, as the AI read it. Highlighted: the line behind the selected field.</div>
+              <sc-for list="{{ textLines }}" as="x" hint-placeholder-count="12">
+                <div style="display:grid;grid-template-columns:48px minmax(0,1fr);background:{{ x.bg }}"><span style="padding-right:12px;text-align:right;color:#746c61;background:#f7f2ea;border-right:1px solid #ebe3d6">{{ x.n }}</span><span style="padding:0 16px;white-space:pre-wrap">{{ x.t }}</span></div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+
+      <section aria-label="Invoice" style="order:{{ L.panelOrder }};min-height:0;background:#fffdf9;overflow:hidden;display:{{ L.panelDisp }};grid-template-rows:{{ L.panelRows }};border:{{ L.paneBd }};border-radius:{{ L.paneR }}">
+        <sc-if value="{{ desk }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;gap:12px;padding:16px 20px;background:#f7f2ea;border-bottom:1px solid #ebe3d6">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+              <a href="Eingang App Inbox.dc.html" style="display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:500;text-decoration:none;color:#3f3a33" style-hover="color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="chevron-left" size="16"></e-icon>Inbox</a>
+              <span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#746c61"><kbd style="display:inline-grid;place-items:center;min-width:20px;height:20px;border:1px solid #d6cbbb;border-radius:6px;background:#fffdf9;font:12px/1 'JetBrains Mono',monospace;color:#1f1c18">j</kbd><kbd style="display:inline-grid;place-items:center;min-width:20px;height:20px;border:1px solid #d6cbbb;border-radius:6px;background:#fffdf9;font:12px/1 'JetBrains Mono',monospace;color:#1f1c18">k</kbd><span style="padding-left:4px">next / previous invoice</span></span>
+            </div>
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px"><h1 style="font:700 21px/1.2 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">{{ inv.supplier }}</h1><span style="flex:none;display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;background:{{ st.bg }};color:{{ st.fg }}"><e-icon name="{{ st.icon }}" size="14" style="color:{{ st.ic }}"></e-icon>{{ st.label }}</span></div>
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:13px"><span style="font-family:'JetBrains Mono',monospace;color:#746c61">{{ inv.number }}</span><span style="display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500">{{ inv.rec }}</span><span style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;height:24px;padding:0 8px;border-radius:6px;border:1px solid #d6cbbb;background:#fffdf9;color:#3f3a33;font-size:12px;font-weight:500"><e-icon name="{{ inv.fIcon }}" size="14"></e-icon>{{ inv.format }}</span></div>
+            <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px">
+              <div style="display:grid;gap:4px"><span style="font:500 21px/1.2 'JetBrains Mono',monospace;color:#1f1c18">{{ inv.gross }}</span><span style="font-size:13px">Due {{ inv.due }}</span></div>
+              <div style="display:grid;gap:4px;justify-items:end">
+                <div style="display:flex;gap:8px">
+                  <sc-if value="{{ act.approveSet }}" hint-placeholder-val="{{ false }}"><button onClick="{{ act.reject }}" style="display:inline-flex;align-items:center;white-space:nowrap;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#fbe9e6;color:#b42318;border:1px solid #b42318;cursor:pointer" style-hover="background:#b42318;color:#fffdf9" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Reject…</button><button onClick="{{ act.approve }}" style="display:inline-flex;align-items:center;gap:8px;white-space:nowrap;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#1f1c18;color:#fffdf9;border:1px solid #1f1c18;cursor:pointer" style-hover="background:#3f3a33;border-color:#3f3a33" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="check" size="16"></e-icon>Approve</button></sc-if>
+                  <sc-if value="{{ act.approving }}" hint-placeholder-val="{{ false }}"><span aria-busy="true" style="display:inline-flex;align-items:center;gap:8px;white-space:nowrap;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#1f1c18;color:#fffdf9"><e-icon name="loader" size="16" spin="true"></e-icon>Approving…</span></sc-if>
+                  <sc-if value="{{ act.reviewSet }}" hint-placeholder-val="{{ false }}">
+                    <sc-if value="{{ act.showResolve }}" hint-placeholder-val="{{ false }}"><button onClick="{{ act.resolve }}" style="display:inline-flex;align-items:center;white-space:nowrap;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Resolve check</button></sc-if>
+                    <sc-if value="{{ act.reviewOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ act.review }}" style="display:inline-flex;align-items:center;white-space:nowrap;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#1f1c18;color:#fffdf9;border:1px solid #1f1c18;cursor:pointer" style-hover="background:#3f3a33;border-color:#3f3a33" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Mark reviewed</button></sc-if>
+                    <sc-if value="{{ act.reviewOff }}" hint-placeholder-val="{{ false }}"><button disabled="{{ true }}" aria-describedby="review-why" style="display:inline-flex;align-items:center;white-space:nowrap;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#f6f0e6;color:#746c61;border:1px solid #ebe3d6;cursor:not-allowed">Mark reviewed</button></sc-if>
+                  </sc-if>
+                  <sc-if value="{{ act.fourEyes }}" hint-placeholder-val="{{ false }}"><button disabled="{{ true }}" aria-describedby="review-why" style="display:inline-flex;align-items:center;gap:8px;white-space:nowrap;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#f6f0e6;color:#746c61;border:1px solid #ebe3d6;cursor:not-allowed"><e-icon name="lock" size="16"></e-icon>Approve</button></sc-if>
+                </div>
+                <sc-if value="{{ act.reviewOff }}" hint-placeholder-val="{{ false }}"><span id="review-why" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#746c61"><e-icon name="lock" size="14"></e-icon>{{ act.reason }}</span></sc-if>
+                <sc-if value="{{ act.fourEyes }}" hint-placeholder-val="{{ false }}"><span id="review-why" style="font-size:12px;color:#3f3a33">You reviewed this invoice. Someone else must approve it.</span></sc-if>
+                <sc-if value="{{ act.waiting }}" hint-placeholder-val="{{ false }}"><span role="status" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#2c4a8a"><e-icon name="hourglass" size="16"></e-icon>You marked this reviewed. Jonas Brandt approves next.</span></sc-if>
+                <sc-if value="{{ act.approved }}" hint-placeholder-val="{{ false }}"><span role="status" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#0f6e62"><e-icon name="circle-check" size="16"></e-icon>You approved this on 09 Oct 2026.</span></sc-if>
+                <sc-if value="{{ act.rejected }}" hint-placeholder-val="{{ false }}"><span role="status" style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#b42318"><e-icon name="ban" size="16"></e-icon>You rejected this on 09 Oct 2026.</span></sc-if>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+
+        <div style="min-height:0;overflow:auto">
+          <section aria-labelledby="h-val" style="display:{{ L.dataDisp }};gap:12px;padding:{{ L.secPad }};border-bottom:1px solid #ebe3d6">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px"><h2 id="h-val" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Validation</h2><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;background:{{ v.bg }};color:{{ v.fg }}"><e-icon name="{{ v.icon }}" size="14" style="color:{{ v.ic }}"></e-icon>{{ v.label }}</span></div>
+            <p style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#3f3a33"><e-icon name="{{ engineIcon }}" size="16" style="color:#746c61"></e-icon><span>{{ valText }}</span></p>
+            <sc-if value="{{ issue }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px solid #ebe3d6;border-radius:8px;overflow:hidden">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:12px 16px;background:#fbe9e6"><span style="display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:500;color:#b42318"><e-icon name="octagon" size="16"></e-icon>Error</span><code style="font:500 13px 'JetBrains Mono',monospace;color:#1f1c18">BR-DE-15</code><span style="font-size:14px;font-weight:600;color:#1f1c18">Buyer reference (Leitweg-ID) missing</span></div>
+                <div style="display:grid;gap:12px;padding:12px 16px 16px">
+                  <p style="font-size:14px;text-wrap:pretty">XRechnung invoices must name the buyer's reference — for public bodies this is the Leitweg-ID. Ask the supplier to resend the invoice with your reference.</p>
+                  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px"><span style="font-size:12px;color:#746c61">Location <code style="font:12px 'JetBrains Mono',monospace;color:#1f1c18">/Invoice</code></span><span style="flex:1"></span><button onClick="{{ showInXml }}" style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;height:{{ sb }};padding:0 8px;border-radius:6px;font-size:13px;font-weight:500;background:transparent;color:#3f3a33;border:1px solid transparent;cursor:pointer" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="file-code" size="16"></e-icon>Show in XML</button><button onClick="{{ toggleIssue }}" aria-expanded="{{ issueAria }}" aria-controls="br-msg" style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;height:{{ sb }};padding:0 8px;border-radius:6px;font-size:13px;font-weight:500;background:transparent;color:#3f3a33;border:1px solid transparent;cursor:pointer" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">{{ issueLabel }}<e-icon name="chevron-down" size="16" style="transform:{{ issueRot }}"></e-icon></button></div>
+                  <sc-if value="{{ issueOpen }}" hint-placeholder-val="{{ false }}"><div id="br-msg" style="display:grid;gap:4px"><span style="font-size:12px;color:#746c61">Official message, from the XRechnung rule files</span><blockquote lang="de" style="padding:12px;background:#f7f2ea;border:1px solid #ebe3d6;border-radius:6px;font:13px/1.45 'JetBrains Mono',monospace;color:#1f1c18">[BR-DE-15] Das Element „Buyer reference“ (BT-10) muss übermittelt werden.</blockquote></div></sc-if>
+                </div>
+              </div>
+            </sc-if>
+          </section>
+
+          <section aria-labelledby="h-checks" style="display:{{ L.dataDisp }};gap:12px;padding:{{ L.secPad }};border-bottom:1px solid #ebe3d6">
+            <h2 id="h-checks" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Checks</h2>
+            <sc-for list="{{ checks }}" as="c" hint-placeholder-count="2">
+              <div style="display:grid;gap:8px;padding:12px 16px;border:1px solid #ebe3d6;border-radius:8px">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px"><sc-if value="{{ c.open }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:500;color:{{ c.sev.fg }}"><e-icon name="{{ c.sev.icon }}" size="16" style="color:{{ c.sev.ic }}"></e-icon>{{ c.sev.label }}</span></sc-if><sc-if value="{{ c.resolved }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:500;color:#0f6e62"><e-icon name="circle-check" size="16"></e-icon>Resolved</span></sc-if><span style="font-size:14px;font-weight:600;color:#1f1c18">{{ c.title }}</span></div>
+                <p style="font-size:13px;text-wrap:pretty">{{ c.body }} <sc-if value="{{ c.hasLink }}" hint-placeholder-val="{{ false }}"><a href="{{ c.link }}" style="display:inline-flex;align-items:center;font-size:12px;min-height:{{ lk }}">{{ c.linkText }}</a></sc-if></p>
+                <sc-if value="{{ c.canResolve }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:8px"><button onClick="{{ c.resolve }}" style="display:inline-flex;align-items:center;white-space:nowrap;height:{{ sb }};padding:0 12px;border-radius:6px;font-size:13px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Resolve check</button><button onClick="{{ c.editVat }}" style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;height:{{ sb }};padding:0 8px;border-radius:6px;font-size:13px;font-weight:500;background:transparent;color:#3f3a33;border:1px solid transparent;cursor:pointer" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="pencil" size="14"></e-icon>Edit VAT ID</button></div></sc-if>
+                <sc-if value="{{ c.canAccept }}" hint-placeholder-val="{{ false }}"><div><button onClick="{{ c.accept }}" style="display:inline-flex;align-items:center;white-space:nowrap;height:{{ sb }};padding:0 12px;border-radius:6px;font-size:13px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Accept anyway…</button></div></sc-if>
+                <sc-if value="{{ c.noAccept }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px"><button disabled="{{ true }}" aria-describedby="accept-why" style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;height:{{ sb }};padding:0 12px;border-radius:6px;font-size:13px;font-weight:500;background:#f6f0e6;color:#746c61;border:1px solid #ebe3d6;cursor:not-allowed"><e-icon name="lock" size="14"></e-icon>Accept anyway…</button><span id="accept-why" style="font-size:12px;color:#746c61">Only an Admin can accept an invalid invoice.</span></div></sc-if>
+                <sc-if value="{{ c.resolved }}" hint-placeholder-val="{{ false }}"><div style="display:grid;gap:4px"><span style="font-size:12px;color:#746c61">{{ c.resText }}</span><q style="display:block;padding:8px 12px;background:#f7f2ea;border:1px solid #ebe3d6;border-radius:6px;font-size:13px;color:#1f1c18;quotes:none">{{ c.resNote }}</q></div></sc-if>
+              </div>
+            </sc-for>
+          </section>
+
+          <section aria-labelledby="h-fields" style="display:{{ L.dataDisp }};gap:12px;padding:{{ L.secPad }};border-bottom:1px solid #ebe3d6">
+            <div style="display:grid;gap:4px"><h2 id="h-fields" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Fields</h2><p style="font-size:12px;color:#746c61">{{ fieldsNote }}</p></div>
+            <div style="border:1px solid #ebe3d6;border-radius:8px;overflow:hidden">
+              <sc-for list="{{ fields }}" as="f" hint-placeholder-count="6">
+                <div style="border-bottom:1px solid #ebe3d6;background:{{ f.rowBg }}">
+                  <div onClick="{{ f.pick }}" style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;min-height:48px;padding:8px 8px 8px 12px">
+                    <span style="display:grid;flex:0 0 {{ L.fieldBasis }}"><span style="font-size:13px;color:{{ f.labelFg }}">{{ f.label }}</span><sc-if value="{{ f.bt }}" hint-placeholder-val="{{ false }}"><span style="font:12px/1.45 'JetBrains Mono',monospace;color:#746c61">{{ f.bt }}</span></sc-if></span>
+                    <span style="flex:1 1 140px;min-width:0">
+                      <sc-if value="{{ f.notEditing }}" hint-placeholder-val="{{ true }}"><sc-if value="{{ f.missing }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;font-size:14px;font-weight:500;color:#b42318"><e-icon name="octagon" size="14"></e-icon>Missing</span></sc-if><sc-if value="{{ f.isXml }}" hint-placeholder-val="{{ true }}"><span style="font-size:14px;color:#1f1c18;overflow-wrap:anywhere;font-family:{{ f.ff }}">{{ f.value }}</span></sc-if><sc-if value="{{ f.isAi }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:#1f1c18;overflow-wrap:anywhere;font-family:{{ f.ff }}">{{ f.value }}</span></sc-if></sc-if>
+                      <sc-if value="{{ f.editing }}" hint-placeholder-val="{{ false }}"><span style="display:flex;flex-wrap:wrap;align-items:center;gap:8px"><input value="{{ f.draft }}" onChange="{{ f.onDraft }}" aria-label="{{ f.label }}" style="flex:1 1 160px;min-width:0;height:32px;padding:0 12px;border:1px solid #1f1c18;border-radius:6px;background:#fffdf9;font:14px 'JetBrains Mono',monospace;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><button onClick="{{ f.save }}" style="display:inline-flex;align-items:center;white-space:nowrap;height:{{ sb }};padding:0 12px;border-radius:6px;font-size:13px;font-weight:500;background:#1f1c18;color:#fffdf9;border:1px solid #1f1c18;cursor:pointer" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Save</button><button onClick="{{ f.cancel }}" style="display:inline-flex;align-items:center;white-space:nowrap;height:{{ sb }};padding:0 8px;border-radius:6px;font-size:13px;font-weight:500;background:transparent;color:#3f3a33;border:1px solid transparent;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Cancel</button></span></sc-if>
+                    </span>
+                    <sc-if value="{{ f.isXml }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#746c61"><e-icon name="file-code" size="14"></e-icon>From the XML</span></sc-if>
+                    <sc-if value="{{ f.high }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e4f1ed;color:#0f6e62;font-size:12px;font-weight:500"><e-bars level="3"></e-bars>High</span></sc-if>
+                    <sc-if value="{{ f.med }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#fcefd8;color:#8a4a06;font-size:12px;font-weight:500"><e-bars level="2" style="color:#c47408"></e-bars>Medium</span></sc-if>
+                    <sc-if value="{{ f.lowC }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#fffdf9;color:#b42318;font-size:12px;font-weight:500;border:1px solid #b42318"><e-bars level="1"></e-bars>Low</span></sc-if>
+                    <sc-if value="{{ f.edited }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#f6f0e6;color:#746c61;font-size:12px;font-weight:500"><e-icon name="pencil" size="14"></e-icon>{{ f.editedBy }}</span></sc-if>
+                    <sc-if value="{{ f.isAi }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ f.canEdit }}" hint-placeholder-val="{{ false }}"><span style="display:flex;gap:4px"><button onClick="{{ f.startEdit }}" aria-label="Edit {{ f.label }}" title="Edit" style="display:grid;place-items:center;border:0;border-radius:6px;background:transparent;color:#3f3a33;cursor:pointer;width:{{ ib }};height:{{ ib }}" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="pencil" size="16"></e-icon></button><button onClick="{{ f.toggleEv }}" aria-expanded="{{ f.evAria }}" aria-label="{{ f.evLabel }}" title="Where this came from" style="display:grid;place-items:center;border:0;border-radius:6px;background:transparent;color:#3f3a33;cursor:pointer;width:{{ ib }};height:{{ ib }}" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="eye" size="16"></e-icon></button></span></sc-if></sc-if>
+                  </div>
+                  <sc-if value="{{ f.lowHint }}" hint-placeholder-val="{{ false }}"><p style="display:flex;gap:4px;align-items:center;padding:0 12px 12px;font-size:12px;font-weight:500;color:#b42318"><e-icon name="octagon" size="14"></e-icon>Cut off in the PDF. Type the full VAT ID from the paper invoice.</p></sc-if>
+                  <sc-if value="{{ f.evOpen }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:0 12px 12px">
+                      <div role="dialog" aria-label="Where this value came from" style="position:relative;margin-left:auto;max-width:360px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:8px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433">
+                        <span aria-hidden="true" style="position:absolute;top:-6px;right:20px;width:10px;height:10px;background:#fffdf9;border-left:1px solid #ebe3d6;border-top:1px solid #ebe3d6;transform:rotate(45deg)"></span>
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 8px 8px 16px;border-bottom:1px solid #ebe3d6"><span style="font-size:13px;font-weight:600;color:#1f1c18">Where this came from</span><button onClick="{{ f.toggleEv }}" aria-label="Close" style="display:grid;place-items:center;border:0;border-radius:6px;background:transparent;color:#3f3a33;cursor:pointer;width:{{ ib }};height:{{ ib }}" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="x" size="16"></e-icon></button></div>
+                        <div style="display:grid;gap:12px;padding:12px 16px">
+                          <span style="font-size:12px;color:#746c61">{{ f.evLine }}</span>
+                          <div lang="de" style="padding:12px;background:#f7f2ea;border:1px solid #ebe3d6;border-radius:6px;font:13px/1.45 'JetBrains Mono',monospace;color:#1f1c18;overflow-wrap:anywhere">{{ f.evPre }}<mark style="background:#ffe53d;color:#1f1c18">{{ f.evHl }}</mark>{{ f.evPost }}</div>
+                          <span style="font-size:12px;color:#3f3a33">{{ f.confLabel }} confidence. {{ f.evHint }}</span>
+                        </div>
+                        <div style="display:flex;justify-content:flex-end;padding:8px;border-top:1px solid #ebe3d6"><button onClick="{{ f.showInDoc }}" style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;height:{{ sb }};padding:0 8px;border-radius:6px;font-size:13px;font-weight:500;background:transparent;color:#3f3a33;border:1px solid transparent;cursor:pointer" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="file-text" size="16"></e-icon>Show in document</button></div>
+                      </div>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+
+          <section aria-labelledby="h-lines" style="display:{{ L.dataDisp }};gap:12px;padding:{{ L.secPad }};border-bottom:1px solid #ebe3d6">
+            <h2 id="h-lines" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Lines</h2>
+            <div style="border:1px solid #ebe3d6;border-radius:8px;overflow-x:auto">
+              <table style="width:100%;border-collapse:separate;border-spacing:0;font-size:13px">
+                <thead><tr><th style="background:#f7f2ea;border-bottom:1px solid #ebe3d6;height:32px;padding:0 12px;text-align:left;font-size:12px;font-weight:500;color:#746c61">Description</th><th style="background:#f7f2ea;border-bottom:1px solid #ebe3d6;padding:0 8px;text-align:right;font-size:12px;font-weight:500;color:#746c61">Qty</th><th style="background:#f7f2ea;border-bottom:1px solid #ebe3d6;padding:0 8px;text-align:right;font-size:12px;font-weight:500;color:#746c61;white-space:nowrap">Unit price</th><th style="background:#f7f2ea;border-bottom:1px solid #ebe3d6;padding:0 12px 0 8px;text-align:right;font-size:12px;font-weight:500;color:#746c61">Net</th></tr></thead>
+                <tbody>
+                  <sc-for list="{{ lines }}" as="l" hint-placeholder-count="2">
+                    <tr><td lang="de" style="padding:12px;border-bottom:1px solid #ebe3d6;color:#1f1c18">{{ l.d }}</td><td style="padding:0 8px;border-bottom:1px solid #ebe3d6;text-align:right;font-family:'JetBrains Mono',monospace">{{ l.q }}</td><td style="padding:0 8px;border-bottom:1px solid #ebe3d6;text-align:right;font-family:'JetBrains Mono',monospace;white-space:nowrap">{{ l.p }}</td><td style="padding:0 12px 0 8px;border-bottom:1px solid #ebe3d6;text-align:right;font-family:'JetBrains Mono',monospace;white-space:nowrap;color:#1f1c18">{{ l.t }}</td></tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section aria-labelledby="h-vat" style="display:{{ L.dataDisp }};gap:12px;padding:{{ L.secPad }};border-bottom:1px solid #ebe3d6">
+            <h2 id="h-vat" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">VAT breakdown</h2>
+            <dl style="display:grid;grid-template-columns:1fr auto;gap:8px 16px;font-size:13px">
+              <dt style="color:#746c61">Net</dt><dd style="text-align:right;font-family:'JetBrains Mono',monospace;color:#1f1c18">{{ tax.net }}</dd>
+              <dt style="color:#746c61">VAT 19 % on {{ tax.base }}</dt><dd style="text-align:right;font-family:'JetBrains Mono',monospace;color:#1f1c18">{{ tax.vat }}</dd>
+              <dt style="padding-top:8px;border-top:1px solid #ebe3d6;font-size:14px;font-weight:600;color:#1f1c18">Gross</dt><dd style="padding-top:8px;border-top:1px solid #ebe3d6;text-align:right;font:500 14px 'JetBrains Mono',monospace;color:#1f1c18">{{ tax.gross }}</dd>
+            </dl>
+          </section>
+
+          <section aria-labelledby="h-tl" style="display:{{ L.tlDisp }};gap:12px;padding:{{ L.secPad }}">
+            <h2 id="h-tl" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Timeline</h2>
+            <ol style="list-style:none;display:grid">
+              <sc-for list="{{ timeline }}" as="t" hint-placeholder-count="3">
+                <li style="display:grid;grid-template-columns:24px minmax(0,1fr);gap:12px"><span style="display:grid;justify-items:center;grid-template-rows:24px 1fr"><span style="display:grid;place-items:center;width:24px;height:24px;border-radius:999px;background:{{ t.bg }};color:{{ t.fg }}"><e-icon name="{{ t.icon }}" size="14"></e-icon></span><sc-if value="{{ t.line }}" hint-placeholder-val="{{ true }}"><span style="width:1px;background:#ebe3d6"></span></sc-if></span><span style="display:grid;gap:4px;padding-bottom:20px"><span style="font-size:14px;color:#1f1c18">{{ t.title }}</span><span style="font-size:12px;color:#746c61">{{ t.when }}</span></span></li>
+              </sc-for>
+            </ol>
+          </section>
+        </div>
+      </section>
+
+      <sc-if value="{{ phone }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;gap:8px;padding:12px 16px;background:#f7f2ea;border-top:1px solid #ebe3d6">
+          <sc-if value="{{ act.reviewSet }}" hint-placeholder-val="{{ false }}">
+            <sc-if value="{{ act.reviewOff }}" hint-placeholder-val="{{ false }}"><span id="review-why-m" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#746c61"><e-icon name="lock" size="14"></e-icon>{{ act.reason }}</span></sc-if>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <button onClick="{{ act.resolve }}" style="height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb;cursor:pointer" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Resolve check</button>
+              <sc-if value="{{ act.reviewOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ act.review }}" style="height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#1f1c18;color:#fffdf9;border:1px solid #1f1c18;cursor:pointer" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Mark reviewed</button></sc-if>
+              <sc-if value="{{ act.reviewOff }}" hint-placeholder-val="{{ false }}"><button disabled="{{ true }}" aria-describedby="review-why-m" style="height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#f6f0e6;color:#746c61;border:1px solid #ebe3d6;cursor:not-allowed">Mark reviewed</button></sc-if>
+            </div>
+          </sc-if>
+          <sc-if value="{{ act.waiting }}" hint-placeholder-val="{{ false }}"><span role="status" style="display:flex;align-items:center;gap:8px;min-height:44px;font-size:13px;color:#2c4a8a"><e-icon name="hourglass" size="16"></e-icon>You marked this reviewed. Jonas Brandt approves next.</span></sc-if>
+        </div>
+      </sc-if>
+    </main>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ dlg.open }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:24px 16px">
+    <div aria-hidden="true" onClick="{{ dlg.close }}" style="position:absolute;inset:0;background:#1f1c18;opacity:0.32"></div>
+    <div role="dialog" aria-modal="true" aria-labelledby="dlg-title" style="position:relative;width:520px;max-width:100%;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;overflow:hidden">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:20px 16px 0 24px"><div style="display:grid;gap:4px"><h2 id="dlg-title" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">{{ dlg.title }}</h2><p style="font-size:13px;color:#746c61">{{ dlg.body }}</p></div><button onClick="{{ dlg.close }}" aria-label="Close" style="flex:none;display:grid;place-items:center;width:32px;height:32px;border:0;border-radius:6px;background:transparent;color:#3f3a33;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="x" size="16"></e-icon></button></div>
+      <label style="display:grid;gap:4px;padding:20px 24px">
+        <span style="display:flex;justify-content:space-between;gap:8px"><span style="font-size:13px;font-weight:500;color:#1f1c18">{{ dlg.label }}</span><span aria-live="polite" style="font:12px/1.45 'JetBrains Mono',monospace;color:#746c61">{{ dlg.count }}</span></span>
+        <textarea value="{{ dlg.note }}" onChange="{{ dlg.onNote }}" maxlength="500" placeholder="{{ dlg.ph }}" aria-describedby="dlg-help" style="min-height:96px;padding:8px 12px;border-radius:6px;background:#fffdf9;font-size:14px;line-height:1.45;color:#1f1c18;resize:vertical;width:100%;border:1px solid {{ dlg.errBd }}" style-focus="border-color:#1f1c18;outline:2.5px solid #0f6e62;outline-offset:2px"></textarea>
+        <sc-if value="{{ dlg.err }}" hint-placeholder-val="{{ false }}"><span role="alert" style="display:flex;gap:4px;align-items:center;font-size:12px;color:#b42318"><e-icon name="octagon" size="14"></e-icon>Write at least 5 characters.</span></sc-if>
+        <span id="dlg-help" style="font-size:12px;color:#746c61">5 to 500 characters. Saved in the invoice’s activity.</span>
+      </label>
+      <div style="display:flex;justify-content:flex-end;gap:8px;padding:16px 24px;background:#f7f2ea;border-top:1px solid #ebe3d6">
+        <button onClick="{{ dlg.close }}" style="display:inline-flex;align-items:center;white-space:nowrap;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:transparent;color:#3f3a33;border:1px solid transparent;cursor:pointer" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Cancel</button>
+        <sc-if value="{{ dlg.idle }}" hint-placeholder-val="{{ true }}">
+          <sc-if value="{{ dlg.normal }}" hint-placeholder-val="{{ true }}"><button onClick="{{ dlg.confirm }}" style="display:inline-flex;align-items:center;white-space:nowrap;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#1f1c18;color:#fffdf9;border:1px solid #1f1c18;cursor:pointer" style-hover="background:#3f3a33;border-color:#3f3a33" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">{{ dlg.cta }}</button></sc-if>
+          <sc-if value="{{ dlg.danger }}" hint-placeholder-val="{{ false }}"><button onClick="{{ dlg.confirm }}" style="display:inline-flex;align-items:center;white-space:nowrap;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#fbe9e6;color:#b42318;border:1px solid #b42318;cursor:pointer" style-hover="background:#b42318;color:#fffdf9" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">{{ dlg.cta }}</button></sc-if>
+        </sc-if>
+        <sc-if value="{{ dlg.busy }}" hint-placeholder-val="{{ false }}"><span aria-busy="true" style="display:inline-flex;align-items:center;gap:8px;white-space:nowrap;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#1f1c18;color:#fffdf9"><e-icon name="loader" size="16" spin="true"></e-icon>Saving…</span></sc-if>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+  <div role="status" style="position:fixed;right:24px;bottom:24px;z-index:40;display:flex;align-items:center;gap:12px;max-width:calc(100vw - 48px);min-height:48px;padding:8px 16px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:8px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;font-size:14px;color:#1f1c18"><e-icon name="circle-check" size="16" style="color:#0f6e62"></e-icon>{{ toast }}</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;variant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;A: valid XRechnung (#1)&quot;,&quot;B: plain PDF (#8)&quot;,&quot;C: invalid XRechnung (#5)&quot;,&quot;PDF/XML mismatch (#10)&quot;],&quot;default&quot;:&quot;A: valid XRechnung (#1)&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Review states&quot;}}">
+const MU = '#746c61', ST_C = '#2c4a8a', AT = '#8a4a06', VA = '#0f6e62', INK = '#1f1c18', MONO = "'JetBrains Mono',monospace", SANS = "'Instrument Sans',sans-serif";
+function tok(s) {
+  const out = [];
+  const push = (t, c, ff) => { if (t) out.push({ t, c, ff: ff || MONO }); };
+  let i = 0;
+  while (i < s.length) {
+    if (s[i] === '<') {
+      const end = s.indexOf('>', i), tag = s.slice(i, end + 1); i = end + 1;
+      const m = tag.match(/^(<\/?\??)([\w:]+)(.*?)(\??\/?>)$/);
+      if (!m) { push(tag, MU); continue; }
+      push(m[1], MU); push(m[2], ST_C);
+      m[3].replace(/(\s+)([\w:]+)(=)("[^"]*")/g, (a, sp, n, eq, v) => { push(sp, MU); push(n, AT); push(eq, MU); push(v, VA); return ''; });
+      push(m[4], MU);
+    } else { const nx = s.indexOf('<', i), e = nx < 0 ? s.length : nx; push(s.slice(i, e), INK); i = e; }
+  }
+  return out;
+}
+const XML_HEAD = ['<?xml version="1.0" encoding="UTF-8"?>', '<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">', '  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</cbc:CustomizationID>'];
+const U = { anna: { initials: 'AW', name: 'Anna Weber', role: 'Accountant', admin: false }, jonas: { initials: 'JB', name: 'Jonas Brandt', role: 'Admin', admin: true } };
+const STATUS = {
+  needs: { label: 'Needs review', icon: 'eye', bg: '#fcefd8', fg: '#8a4a06', ic: '#c47408' },
+  awaiting: { label: 'Awaiting approval', icon: 'hourglass', bg: '#e8edf7', fg: '#2c4a8a', ic: '#2c4a8a' },
+  approved: { label: 'Approved', icon: 'circle-check', bg: '#e4f1ed', fg: '#0f6e62', ic: '#0f6e62' },
+  rejected: { label: 'Rejected', icon: 'ban', bg: '#fbe9e6', fg: '#b42318', ic: '#b42318' }
+};
+const VCHIP = {
+  valid: { label: 'Valid', icon: 'circle-check', bg: '#e4f1ed', fg: '#0f6e62', ic: '#0f6e62' },
+  invalid: { label: 'Invalid · 1 error', icon: 'octagon', bg: '#fbe9e6', fg: '#b42318', ic: '#b42318' },
+  na: { label: 'Not applicable — plain PDF', icon: 'minus', bg: '#f6f0e6', fg: '#746c61', ic: '#746c61' }
+};
+const SEV = { block: { label: 'Block', icon: 'octagon', fg: '#b42318', ic: '#b42318' }, warn: { label: 'Warning', icon: 'triangle', fg: '#8a4a06', ic: '#c47408' }, info: { label: 'Info', icon: 'info', fg: '#2f5d8a', ic: '#2f5d8a' } };
+const ENGINE = 'Checked with the official XRechnung rules (KoSIT 2026-01-31).';
+const EC = 'https://ec.europa.eu/digital-building-blocks/sites/spaces/DIGITAL/pages/467108886/eInvoicing+in+Germany';
+const P = (a, b, fs, fw, mt, k) => ({ a, b, fs, fw, mt, k });
+const INV = {
+  1: {
+    viewer: 'jonas', supplier: 'Elektro Kessler GmbH', number: 'RE-2026-0412', gross: '1.190,00 €', due: '23 Oct 2026', rec: '07 Oct, 14:30', format: 'XRechnung · UBL', fIcon: 'file-code', status: 'awaiting', kind: 'xml', val: 'valid', valText: ENGINE + ' No errors, no warnings.',
+    checks: [{ id: 'first', sev: 'info', title: 'First invoice from Elektro Kessler GmbH', body: 'There are no earlier invoices from this supplier to compare the bank account with.' }],
+    fields: [['BT-27', 'Supplier', 'Elektro Kessler GmbH', 0, 'supplier'], ['BT-1', 'Invoice number', 'RE-2026-0412', 1, 'number'], ['BT-9', 'Due date', '23 Oct 2026', 0, 'due'], ['BT-44', 'Buyer', 'Holzwerk Brandt GmbH', 0, 'buyer'], ['BT-48', 'Buyer VAT ID', 'DE143826055', 1, 'buyerVat'], ['BT-112', 'Gross', '1.190,00 €', 1, 'gross']],
+    lines: [['Elektroarbeiten Werkstatt, laut Angebot', '1', '1.000,00 €', '1.000,00 €']], tax: ['1.000,00 €', '1.000,00 €', '190,00 €', '1.190,00 €'],
+    timeline: [['inbox', '#e8edf7', '#2c4a8a', 'Received', '07 Oct 2026, 14:30'], ['circle-check', '#e4f1ed', '#0f6e62', 'Checked: valid e-invoice', '07 Oct 2026, 14:30'], ['eye', '#f6f0e6', '#3f3a33', 'Marked reviewed by Anna Weber', '08 Oct 2026, 16:05']],
+    page: [P('Elektro Kessler GmbH', '', '14px', 600, '0', 'supplier'), P('Rechnung RE-2026-0412', '', '16px', 600, '16px', 'number'), P('An: Holzwerk Brandt GmbH, Leipzig', '', '12px', 400, '4px', 'buyer'), P('USt-IdNr. Käufer: DE143826055', '', '12px', 400, '0', 'buyerVat'), P('Elektroarbeiten Werkstatt, laut Angebot', '1.000,00 €', '12px', 400, '20px', null), P('Nettobetrag', '1.000,00 €', '12px', 400, '12px', null), P('USt. 19 %', '190,00 €', '12px', 400, '0', null), P('Gesamtbetrag', '1.190,00 €', '12px', 600, '0', 'gross'), P('Fällig am 23.10.2026', '', '12px', 400, '12px', 'due')],
+    caption: 'Rendered from the XML. The XML is the invoice.',
+    xml: XML_HEAD.concat(['  <cbc:ID>RE-2026-0412</cbc:ID>', '  <cbc:DueDate>2026-10-23</cbc:DueDate>', '  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>', '  <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>', '  <cbc:BuyerReference>HB-4100-EK</cbc:BuyerReference>', '  <cac:AccountingSupplierParty>', '    <cac:Party><cac:PartyName><cbc:Name>Elektro Kessler GmbH</cbc:Name></cac:PartyName></cac:Party>', '  </cac:AccountingSupplierParty>', '  <cac:AccountingCustomerParty>', '    <cac:Party><cac:PartyTaxScheme><cbc:CompanyID>DE143826055</cbc:CompanyID></cac:PartyTaxScheme></cac:Party>', '  </cac:AccountingCustomerParty>', '  <cac:LegalMonetaryTotal>', '    <cbc:TaxExclusiveAmount currencyID="EUR">1000.00</cbc:TaxExclusiveAmount>', '    <cbc:TaxInclusiveAmount currencyID="EUR">1190.00</cbc:TaxInclusiveAmount>', '    <cbc:PayableAmount currencyID="EUR">1190.00</cbc:PayableAmount>', '  </cac:LegalMonetaryTotal>', '</Invoice>']),
+    xmlKeys: { 3: 'number', 4: 'due', 12: 'buyerVat', 16: 'gross' }
+  },
+  8: {
+    viewer: 'anna', supplier: 'Druckerei Sommer GmbH', number: '2026-1043', gross: '1.547,00 €', due: '20 Oct 2026', rec: '06 Oct, 17:44', format: 'Plain PDF', fIcon: 'file-text', status: 'needs', kind: 'pdf', val: 'na', valText: 'A plain PDF has no structured data to check against the e-invoice rules. AI read the fields below; check them before you mark it reviewed.',
+    checks: [{ id: 'first', sev: 'info', title: 'First invoice from Druckerei Sommer GmbH', body: 'There are no earlier invoices from this supplier to compare the bank account with.' }, { id: 'einv', sev: 'info', title: 'Not an e-invoice', body: 'Plain PDFs are not e-invoices. Suppliers may still send them during the transition period.', link: EC, linkText: 'Source: European Commission' }, { id: 'vat', sev: 'block', title: 'Low confidence: VAT ID', body: 'The VAT ID is cut off in the PDF. Type the full VAT ID, or resolve the check with a note.', resolvable: true }],
+    ai: [['Supplier', 'Druckerei Sommer GmbH', 0, 'supplier', 3, 'Druckerei Sommer GmbH', 1], ['Invoice number', '2026-1043', 1, 'number', 3, 'Rechnung 2026-1043', 4], ['Invoice date', '05 Oct 2026', 0, 'date', 3, 'Rechnungsdatum 05.10.2026', 5], ['Due date', '20 Oct 2026', 0, 'due', 3, 'Zahlbar bis 20.10.2026', 12], ['Gross', '1.547,00 €', 1, 'gross', 3, 'Gesamtbetrag 1.547,00 €', 11], ['IBAN', 'DE44 5001 0517 5407 3249 31', 1, 'iban', 2, 'IBAN: DE44 5001 0517 5407 3249 31', 13], ['VAT ID', 'DE 81 2…', 1, 'vat', 1, 'USt-IdNr. DE 81 2…', 14]],
+    hl: { supplier: 'Druckerei Sommer GmbH', number: '2026-1043', date: '05.10.2026', due: '20.10.2026', gross: '1.547,00 €', iban: 'DE44 5001 0517 5407 3249 31', vat: 'DE 81 2…' },
+    lines: [['Flyer A5, 4/4-farbig, 2.000 Stk.', '1', '780,00 €', '780,00 €'], ['Visitenkarten, 500 Stk.', '2', '160,00 €', '320,00 €'], ['Versandpauschale', '1', '200,00 €', '200,00 €']], tax: ['1.300,00 €', '1.300,00 €', '247,00 €', '1.547,00 €'],
+    timeline: [['inbox', '#e8edf7', '#2c4a8a', 'Received', '06 Oct 2026, 17:44'], ['file-text', '#f6f0e6', '#3f3a33', 'Read by AI: plain PDF, 7 fields, 1 low confidence', '06 Oct 2026, 17:45']],
+    page: [P('Druckerei Sommer GmbH', '', '14px', 600, '0', 'supplier'), P('Karl-Heine-Str. 12, 04229 Leipzig', '', '12px', 400, '0', null), P('Holzwerk Brandt GmbH, Leipzig', '', '12px', 400, '12px', null), P('Rechnung 2026-1043', '', '16px', 600, '12px', 'number'), P('Rechnungsdatum 05.10.2026', '', '12px', 400, '4px', 'date'), P('Flyer A5, 4/4-farbig, 2.000 Stk.', '780,00 €', '12px', 400, '20px', null), P('Visitenkarten, 500 Stk., 2 × 160,00 €', '320,00 €', '12px', 400, '0', null), P('Versandpauschale', '200,00 €', '12px', 400, '0', null), P('Nettobetrag', '1.300,00 €', '12px', 400, '12px', null), P('USt. 19 %', '247,00 €', '12px', 400, '0', null), P('Gesamtbetrag', '1.547,00 €', '12px', 600, '0', 'gross'), P('Zahlbar bis 20.10.2026', '', '12px', 400, '12px', 'due'), P('IBAN: DE44 5001 0517 5407 3249 31', '', '12px', 400, '20px', 'iban'), P('USt-IdNr. DE 81 2', '', '12px', 400, '0', 'vat')],
+    caption: 'Page 1 of 1, original PDF.'
+  },
+  5: {
+    viewer: 'anna', supplier: 'Elektro Kessler GmbH', number: 'RE-2026-0413', gross: '238,00 €', due: '22 Oct 2026', rec: '08 Oct, 09:15', format: 'XRechnung · UBL', fIcon: 'file-code', status: 'needs', kind: 'xml', val: 'invalid', valText: ENGINE + ' 1 error.', issue: true,
+    checks: [{ id: 'valfail', sev: 'block', title: 'Validation failed', body: 'This XRechnung breaks 1 rule (BR-DE-15), so it can’t go to approval as it is. Ask the supplier for a corrected invoice, or accept it anyway with a note.', accept: true }],
+    fields: [['BT-27', 'Supplier', 'Elektro Kessler GmbH', 0, 'supplier'], ['BT-1', 'Invoice number', 'RE-2026-0413', 1, 'number'], ['BT-9', 'Due date', '22 Oct 2026', 0, 'due'], ['BT-44', 'Buyer', 'Holzwerk Brandt GmbH', 0, 'buyer'], ['BT-10', 'Buyer reference', 'Missing', 0, 'buyerRef'], ['BT-112', 'Gross', '238,00 €', 1, 'gross']],
+    lines: [['Wartung Elektroverteilung', '1', '200,00 €', '200,00 €']], tax: ['200,00 €', '200,00 €', '38,00 €', '238,00 €'],
+    timeline: [['inbox', '#e8edf7', '#2c4a8a', 'Received', '08 Oct 2026, 09:15'], ['octagon', '#fbe9e6', '#b42318', 'Checked: invalid, 1 error (BR-DE-15)', '08 Oct 2026, 09:15']],
+    page: [P('Elektro Kessler GmbH', '', '14px', 600, '0', 'supplier'), P('Rechnung RE-2026-0413', '', '16px', 600, '16px', 'number'), P('An: Holzwerk Brandt GmbH, Leipzig', '', '12px', 400, '4px', 'buyer'), P('Käuferreferenz (Leitweg-ID): —', '', '12px', 400, '0', 'buyerRef'), P('Wartung Elektroverteilung', '200,00 €', '12px', 400, '20px', null), P('Nettobetrag', '200,00 €', '12px', 400, '12px', null), P('USt. 19 %', '38,00 €', '12px', 400, '0', null), P('Gesamtbetrag', '238,00 €', '12px', 600, '0', 'gross'), P('Fällig am 22.10.2026', '', '12px', 400, '12px', 'due')],
+    caption: 'Rendered from the XML. The XML is the invoice.',
+    xml: XML_HEAD.concat(['  <cbc:ID>RE-2026-0413</cbc:ID>', '  <cbc:DueDate>2026-10-22</cbc:DueDate>', '  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>', '  <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>', '@BR-DE-15  cbc:BuyerReference (BT-10) is missing. It belongs here.', '  <cac:AccountingSupplierParty>', '    <cac:Party><cac:PartyName><cbc:Name>Elektro Kessler GmbH</cbc:Name></cac:PartyName></cac:Party>', '  </cac:AccountingSupplierParty>', '  <cac:LegalMonetaryTotal>', '    <cbc:TaxExclusiveAmount currencyID="EUR">200.00</cbc:TaxExclusiveAmount>', '    <cbc:TaxInclusiveAmount currencyID="EUR">238.00</cbc:TaxInclusiveAmount>', '    <cbc:PayableAmount currencyID="EUR">238.00</cbc:PayableAmount>', '  </cac:LegalMonetaryTotal>', '</Invoice>']),
+    xmlKeys: { 3: 'number', 4: 'due', 14: 'gross' }
+  }
+};
+const ORDER = [1, 8, 5];
+
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    const qs = new URLSearchParams(window.location.search);
+    const v = ({ 'A: valid XRechnung (#1)': 1, 'B: plain PDF (#8)': 8, 'C: invalid XRechnung (#5)': 5, 'PDF/XML mismatch (#10)': 10 })[this.props.variant];
+    const inv = +(qs.get('inv') || v || 1);
+    this.frame = inv === 10 ? 'diff' : 'app';
+    this.state = Object.assign(this.fresh(INV[inv] ? inv : 1), {
+      vw: window.innerWidth,
+      as: qs.get('as') || null,
+      tab: qs.get('tab') || 'doc', mtab: qs.get('mtab') || 'data',
+      ev: qs.get('ev') || null, sel: qs.get('ev') || null,
+      issueOpen: qs.get('issue') === 'open',
+      dialog: qs.get('dialog') || null
+    });
+  }
+  toggleDoc = () => this.setState(s => ({ docOpen: !s.docOpen }));
+  fresh(inv) { return { docOpen: false, inv, status: INV[inv].status, resolved: {}, edits: {}, editing: null, draft: '', note: '', tried: false, busy: false, toast: null, dialog: null, ev: null, sel: null, issueOpen: false, tab: 'doc', mtab: 'data' }; }
+  timers = [];
+  later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
+  componentDidMount() {
+    this.onResize = () => this.setState({ vw: window.innerWidth });
+    window.addEventListener('resize', this.onResize);
+    this.onKey = e => {
+      const tag = (e.target.tagName || '').toLowerCase();
+      if (tag === 'input' || tag === 'textarea') return;
+      if (e.key === 'Escape') { if (this.state.dialog) this.setState({ dialog: null }); else if (this.state.ev) this.setState({ ev: null }); return; }
+      if ((e.key === 'j' || e.key === 'k') && !this.state.dialog) {
+        const i = ORDER.indexOf(this.state.inv), n = ORDER[(i + (e.key === 'j' ? 1 : ORDER.length - 1)) % ORDER.length];
+        this.setState(Object.assign(this.fresh(n), { as: null, toast: (e.key === 'j' ? 'Next: ' : 'Previous: ') + INV[n].supplier + ', ' + INV[n].number }));
+        this.later(() => this.setState({ toast: null }), 2500);
+      }
+    };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); window.removeEventListener('keydown', this.onKey); this.timers.forEach(clearTimeout); }
+  toast(msg) { this.setState({ toast: msg }); this.later(() => this.setState({ toast: null }), 4000); }
+  viewer() { return U[this.state.as || INV[this.state.inv].viewer]; }
+  openDialog = kind => () => this.setState({ dialog: kind, note: '', tried: false, busy: false });
+  closeDialog = () => this.setState({ dialog: null });
+  onNote = e => this.setState({ note: e.target.value });
+  confirm = () => {
+    const n = this.state.note.trim();
+    if (n.length < 5) return this.setState({ tried: true });
+    const d = this.state.dialog, who = this.viewer().name;
+    this.setState({ busy: true });
+    this.later(() => {
+      if (d === 'reject') { this.setState({ dialog: null, busy: false, status: 'rejected', rejectNote: n }); this.toast('You rejected ' + INV[this.state.inv].number + '.'); return; }
+      const id = d === 'accept' ? 'valfail' : 'vat';
+      this.setState(s => ({ dialog: null, busy: false, resolved: Object.assign({}, s.resolved, { [id]: { by: who, note: n, how: d === 'accept' ? 'Accepted anyway by ' : 'Resolved by ' } }) }));
+      this.toast('Check resolved.');
+    }, 500);
+  };
+  approve = () => { this.setState({ busy: true }); this.later(() => { this.setState({ busy: false, status: 'approved' }); this.toast('You approved ' + INV[this.state.inv].number + '.'); }, 700); };
+  review = () => { this.setState({ status: 'awaiting' }); this.toast('Marked reviewed. Jonas Brandt approves next.'); };
+  startEdit = (key, val) => () => this.setState({ editing: key, draft: val === 'DE 81 2…' ? 'DE 81 2' : val, ev: null });
+  onDraft = e => this.setState({ draft: e.target.value });
+  cancelEdit = () => this.setState({ editing: null });
+  saveEdit = () => {
+    const k = this.state.editing, v = this.state.draft.trim();
+    if (!v) return;
+    this.setState(s => {
+      const resolved = Object.assign({}, s.resolved);
+      if (k === 'vat' && /^DE\s?\d{3}\s?\d{3}\s?\d{3}$/.test(v.replace(/\s+/g, ' '))) resolved.vat = { by: this.viewer().name, note: 'VAT ID typed in from the paper invoice.', how: 'Resolved by ' };
+      return { edits: Object.assign({}, s.edits, { [k]: v }), editing: null, resolved };
+    });
+  };
+  toggleEv = key => () => this.setState(s => ({ ev: s.ev === key ? null : key, sel: key }));
+  pick = key => () => this.setState({ sel: key });
+  toggleIssue = () => this.setState(s => ({ issueOpen: !s.issueOpen }));
+  showInXml = () => this.setState({ tab: 'xml', mtab: 'document' });
+
+  renderVals() {
+    const s = this.state, w = s.vw, phone = w <= 767, tablet = w > 767 && w < 1280;
+    if (this.frame === 'diff') return { diffFrame: true, app: false };
+    const inv = INV[s.inv], u = this.viewer(), xmlInv = inv.kind === 'xml';
+    const L = tablet
+      ? { rows: '48px minmax(0,1fr)', cols: '64px minmax(0,1fr)', main: 'minmax(0,1fr)', mainRows: 'max-content max-content max-content', gap: '16px', pad: '16px', docDisp: s.docOpen ? 'grid' : 'none', panelDisp: 'grid', docOrder: 3, panelOrder: 1, panelRows: 'max-content max-content', paneBd: '1px solid #ebe3d6', paneR: '12px', docPad: '24px', dataDisp: 'grid', tlDisp: 'grid', fieldBasis: '128px', secPad: '20px', mainOv: 'auto', docH: '480px', railFs: '0' }
+      : phone
+      ? { rows: '56px minmax(0,1fr)', cols: 'minmax(0,1fr)', main: 'minmax(0,1fr)', mainRows: s.mtab === 'document' ? 'auto auto minmax(0,1fr) auto' : 'auto auto minmax(0,1fr) auto', gap: '0', pad: '0', docDisp: s.mtab === 'document' ? 'grid' : 'none', panelDisp: s.mtab === 'document' ? 'none' : 'grid', panelRows: 'minmax(0,1fr)', paneBd: '0', paneR: '0', docPad: '16px', dataDisp: s.mtab === 'data' ? 'grid' : 'none', tlDisp: s.mtab === 'activity' ? 'grid' : 'none', fieldBasis: '100%', secPad: '16px', docOrder: 0, panelOrder: 0, mainOv: 'visible', docH: 'auto', railFs: '12px' }
+      : { rows: '48px minmax(0,1fr)', cols: '88px minmax(0,1fr)', main: 'minmax(0,1fr) minmax(0,600px)', mainRows: 'minmax(0,1fr)', gap: '16px', pad: '16px', docDisp: 'grid', panelDisp: 'grid', panelRows: 'auto minmax(0,1fr)', paneBd: '1px solid #ebe3d6', paneR: '12px', docPad: '32px 24px', dataDisp: 'grid', tlDisp: 'grid', fieldBasis: '128px', secPad: '20px', docOrder: 0, panelOrder: 0, mainOv: 'visible', docH: 'auto', railFs: '12px' };
+    const docTabs = [['doc', 'Document', true], ['xml', 'XML', xmlInv], ['text', 'Text', !xmlInv]].map(([k, label, ok]) => {
+      const on = s.tab === k && ok;
+      return { label, sel: on ? 'true' : 'false', dis: ok ? 'false' : 'true', locked: !ok, title: ok ? label : (k === 'xml' ? 'This PDF has no XML inside' : 'This invoice is XML only, there is no PDF text'), cursor: ok ? 'pointer' : 'not-allowed', fg: ok ? '#1f1c18' : '#746c61', bg: on ? '#fffdf9' : 'transparent', bd: on ? '1px solid #ebe3d6' : '1px solid transparent', sh: on ? '0 1px 0 #d6cbbb' : 'none', select: () => { if (ok) this.setState({ tab: k }); } };
+    });
+    const tab = (s.tab === 'xml' && !xmlInv) || (s.tab === 'text' && xmlInv) ? 'doc' : s.tab;
+    const hlOn = k => !!k && k === s.sel;
+    const page = inv.page.map((l, i) => Object.assign({}, l, { key: i, bg: hlOn(l.k) ? '#ffe53d' : 'transparent', ring: hlOn(l.k) ? '0 0 0 2px #2c4a8a' : 'none' }));
+    const xmlLines = [];
+    let n = 0;
+    (inv.xml || []).forEach((line, i) => {
+      if (line[0] === '@') { xmlLines.push({ key: 'a' + i, n: '', bg: '#fbe9e6', gBg: '#fbe9e6', parts: [{ t: 'BR-DE-15', c: '#b42318', ff: MONO }, { t: line.slice(9), c: '#b42318', ff: SANS }] }); return; }
+      n++;
+      const k = inv.xmlKeys && inv.xmlKeys[n], on = hlOn(k);
+      xmlLines.push({ key: i, n, bg: on ? '#ffe53d' : '#fffdf9', gBg: '#f7f2ea', parts: tok(line) });
+    });
+    const textLines = inv.page.map((l, i) => ({ key: i, n: i + 1, t: l.a + (l.b ? '    ' + l.b : ''), bg: hlOn(l.k) ? '#ffe53d' : 'transparent' }));
+
+    const blockOpen = inv.checks.filter(c => c.sev === 'block' && !s.resolved[c.id]).length;
+    const checks = inv.checks.map(c => {
+      const r = s.resolved[c.id], sev = SEV[c.sev];
+      return { key: c.id, sev, title: c.title, body: c.body, hasLink: !!c.link, link: c.link, linkText: c.linkText, open: !r, resolved: !!r, resText: r ? r.how + r.by + ', just now' : '', resNote: r ? r.note : '',
+        canResolve: !r && !!c.resolvable, canAccept: !r && !!c.accept && u.admin, noAccept: !r && !!c.accept && !u.admin,
+        resolve: this.openDialog('resolve'), accept: this.openDialog('accept'), editVat: this.startEdit('vat', s.edits.vat || 'DE 81 2…') };
+    });
+    let fields;
+    if (inv.ai) {
+      fields = inv.ai.map(([label, value, mono, key, conf, ev, line]) => {
+        const edited = s.edits[key], val = edited || value, low = conf === 1 && !edited, editing = s.editing === key, evOpen = s.ev === key;
+        const hl = inv.hl[key], i = ev.indexOf(hl);
+        return { key, label, bt: '', value: val, ff: mono ? MONO : SANS, isAi: true, isXml: false, missing: false,
+          high: !edited && conf === 3, med: !edited && conf === 2, lowC: low, edited: !!edited, editedBy: 'Edited by ' + this.viewer().name,
+          rowBg: low ? '#fbe9e6' : (s.sel === key ? '#f6f0e6' : 'transparent'), labelFg: low ? '#3f3a33' : '#746c61', lowHint: low, editing, notEditing: !editing, canEdit: !editing,
+          evOpen, evAria: evOpen ? 'true' : 'false', evLabel: 'Show where ' + label + ' came from', toggleEv: this.toggleEv(key), pick: this.pick(key),
+          evPre: ev.slice(0, i), evHl: hl, evPost: ev.slice(i + hl.length), evLine: 'Page 1, line ' + line + ' of the PDF text', confLabel: conf === 3 ? 'High' : conf === 2 ? 'Medium' : 'Low',
+          evHint: conf === 1 ? 'The text stops at the page edge.' : conf === 2 ? 'Check it against the document.' : 'Matches the document.',
+          showInDoc: () => this.setState({ sel: key, tab: 'doc', mtab: 'document', ev: null }),
+          startEdit: this.startEdit(key, val), draft: s.draft, onDraft: this.onDraft, save: this.saveEdit, cancel: this.cancelEdit };
+      });
+    } else {
+      fields = inv.fields.map(([bt, label, value, mono, key]) => ({ key, label, bt, value, ff: mono ? MONO : SANS, isAi: false, isXml: value !== 'Missing', missing: value === 'Missing', labelFg: '#746c61', high: false, med: false, lowC: false, edited: false, rowBg: s.sel === key ? '#f6f0e6' : 'transparent', lowHint: false, editing: false, notEditing: true, canEdit: false, evOpen: false, pick: this.pick(key) }));
+    }
+    const lines = inv.lines.map((l, i) => ({ key: i, d: l[0], q: l[1], p: l[2], t: l[3] }));
+    const timeline = inv.timeline.map((t, i) => ({ key: i, icon: t[0], bg: t[1], fg: t[2], title: t[3], when: t[4], line: true }));
+    if (s.status === 'awaiting' && inv.status === 'needs') timeline.push({ key: 'r', icon: 'eye', bg: '#f6f0e6', fg: '#3f3a33', title: 'Marked reviewed by ' + u.name, when: 'Just now', line: true });
+    if (s.status === 'approved') timeline.push({ key: 'ap', icon: 'circle-check', bg: '#e4f1ed', fg: '#0f6e62', title: 'Approved by ' + u.name, when: 'Just now', line: true });
+    if (s.status === 'rejected') timeline.push({ key: 'rj', icon: 'ban', bg: '#fbe9e6', fg: '#b42318', title: 'Rejected by ' + u.name, when: 'Just now', line: true });
+    if (s.status === 'awaiting') timeline.push({ key: 'w', icon: 'hourglass', bg: '#e8edf7', fg: '#2c4a8a', title: inv.viewer === 'jonas' && u.admin ? 'Waiting for your approval' : 'Waiting for approval by Jonas Brandt', when: 'Now', line: false });
+    else if (s.status === 'needs') timeline.push({ key: 'w', icon: 'eye', bg: '#fcefd8', fg: '#8a4a06', title: 'Waiting for review', when: 'Now', line: false });
+    if (timeline.length) timeline[timeline.length - 1].line = false;
+
+    const st = STATUS[s.status];
+    const reviewedByMe = s.status === 'awaiting' && inv.status === 'needs';
+    const act = {
+      approveSet: s.status === 'awaiting' && u.admin && !reviewedByMe && !s.busy,
+      approving: s.status === 'awaiting' && s.busy && !s.dialog,
+      fourEyes: reviewedByMe && u.admin,
+      reviewSet: s.status === 'needs', reviewOn: s.status === 'needs' && blockOpen === 0, reviewOff: s.status === 'needs' && blockOpen > 0,
+      reason: blockOpen === 1 ? 'Resolve 1 blocking check first' : 'Resolve ' + blockOpen + ' blocking checks first',
+      showResolve: s.status === 'needs' && checks.some(c => c.canResolve),
+      waiting: reviewedByMe && !u.admin, approved: s.status === 'approved', rejected: s.status === 'rejected',
+      approve: this.approve, reject: this.openDialog('reject'), review: this.review, resolve: this.openDialog('resolve')
+    };
+    const dlgKind = s.dialog;
+    const dlg = {
+      open: !!dlgKind, title: dlgKind === 'accept' ? 'Accept ' + inv.number + ' anyway?' : dlgKind === 'reject' ? 'Reject invoice ' + inv.number + '?' : 'Resolve check: Low confidence: VAT ID',
+      body: dlgKind === 'accept' ? 'It breaks BR-DE-15. Accepting keeps the error on record, saves your note and lets the invoice go to approval.' : dlgKind === 'reject' ? inv.supplier + ', ' + inv.gross + '. The reason is saved in the invoice’s activity.' : 'Say how you confirmed the VAT ID. The note is saved with the invoice and shown to the approver.',
+      label: dlgKind === 'reject' ? 'Reason' : 'Note', ph: dlgKind === 'reject' ? 'What should the supplier correct?' : 'How did you check this?',
+      cta: dlgKind === 'accept' ? 'Accept anyway' : dlgKind === 'reject' ? 'Reject invoice' : 'Resolve check', danger: dlgKind === 'reject', normal: dlgKind !== 'reject',
+      note: s.note, count: s.note.length + ' / 500', err: s.tried && s.note.trim().length < 5, errBd: s.tried && s.note.trim().length < 5 ? '#b42318' : '#d6cbbb',
+      busy: s.busy, idle: !s.busy, onNote: this.onNote, close: this.closeDialog, confirm: this.confirm
+    };
+    const mtabs = [['data', 'Data'], ['document', 'Document'], ['activity', 'Activity']].map(([k, label]) => ({ label, sel: s.mtab === k ? 'true' : 'false', color: s.mtab === k ? '#1f1c18' : '#746c61', line: s.mtab === k ? 'inset 0 -2px 0 #1f1c18' : 'none', select: () => this.setState({ mtab: k }) }));
+    return {
+      diffFrame: false, app: true, desk: !phone, phone, L, tabletDoc: tablet, toggleDoc: this.toggleDoc, docOpenA: s.docOpen ? 'true' : 'false', docToggle: s.docOpen ? 'Hide document' : 'Show document', docRot: s.docOpen ? 'rotate(180deg)' : 'none', ib: phone ? '44px' : '32px', sb: phone ? '44px' : '28px', lk: phone ? '44px' : '0', u: Object.assign({}, u, { aria: u.name + ', ' + u.role + '. Account menu' }),
+      inv, st, v: VCHIP[inv.val], valText: inv.val === 'na' ? inv.valText : inv.valText, engineIcon: inv.val === 'na' ? 'info' : 'file-code',
+      issue: !!inv.issue, issueOpen: s.issueOpen, issueAria: s.issueOpen ? 'true' : 'false', issueRot: s.issueOpen ? 'rotate(180deg)' : 'none', issueLabel: s.issueOpen ? 'Hide official message' : 'Show official message', toggleIssue: this.toggleIssue, showInXml: this.showInXml,
+      docTabs, dv: { doc: tab === 'doc', xml: tab === 'xml', text: tab === 'text' }, docMeta: tab === 'xml' ? inv.number + '.xml' : xmlInv ? 'Rendered from XML' : 'Page 1 of 1', page, pageCaption: inv.caption, xml: xmlLines, textLines,
+      checks, fields, fieldsNote: inv.ai ? 'Read by AI from the PDF text. Select a field to see where it came from.' : 'From the XML. Read-only: the XML is the invoice.',
+      lines, tax: { net: inv.tax[0], base: inv.tax[1], vat: inv.tax[2], gross: inv.tax[3] }, timeline, act, dlg, mtabs,
+      toast: s.toast, hasToast: !!s.toast
+    };
+  }
+}
+
+</script>
+</body>
+</html>

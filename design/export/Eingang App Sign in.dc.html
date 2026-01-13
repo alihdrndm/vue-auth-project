@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in · Eingang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&amp;family=Familjen+Grotesk:wght@700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<script src="./eingang-ui.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f7f2ea;color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+h1,p{margin:0}
+button,input{font:inherit;color:inherit}
+a{color:#2c4a8a;text-underline-offset:3px}
+a:hover{color:#1f1c18}
+:focus-visible{outline:2.5px solid #0f6e62;outline-offset:2px}
+</style>
+</helmet>
+<main style="min-height:100vh;display:grid;place-items:center;padding:40px 16px">
+  <div style="width:400px;max-width:100%;display:grid;gap:24px">
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+      <span aria-hidden="true" style="width:1em;height:1em;font-size:40px;display:grid;place-items:center;border:0.0625em solid #2c4a8a;border-radius:0.15em;outline:0.025em solid #2c4a8a;outline-offset:-0.175em;background:#fffdf9;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1;filter:url(#eg-ink)"><span style="font-size:0.55em">E</span></span>
+      <span style="font:700 28px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Eingang</span>
+    </div>
+    <form onSubmit="{{ submit }}" novalidate="" style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;padding:32px;display:grid;gap:20px">
+      <h1 style="font:700 21px/1.2 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Sign in</h1>
+      <label style="display:grid;gap:4px">
+        <span style="font-size:13px;font-weight:500;color:#1f1c18">Email</span>
+        <input type="email" autocomplete="username" value="{{ email }}" onChange="{{ onEmail }}" aria-invalid="{{ emailInvalid }}" placeholder="anna.weber@holzwerk-brandt.de" style="height:44px;padding:0 12px;border-radius:6px;background:#fffdf9;font-size:16px;color:#1f1c18;width:100%;border:1px solid {{ emailBd }}" style-hover="border-color:#746c61" style-focus="border-color:#1f1c18;outline:2.5px solid #0f6e62;outline-offset:2px">
+        <sc-if value="{{ emailErr }}" hint-placeholder-val="{{ false }}"><span role="alert" style="display:flex;gap:4px;align-items:center;font-size:12px;color:#b42318"><e-icon name="octagon" size="14"></e-icon>Enter your email address.</span></sc-if>
+      </label>
+      <label style="display:grid;gap:4px">
+        <span style="font-size:13px;font-weight:500;color:#1f1c18">Password</span>
+        <span style="position:relative;display:flex">
+          <input type="{{ pwType }}" autocomplete="current-password" value="{{ pw }}" onChange="{{ onPw }}" aria-invalid="{{ pwInvalid }}" style="height:44px;padding:0 56px 0 12px;border-radius:6px;background:#fffdf9;font-size:16px;color:#1f1c18;width:100%;border:1px solid {{ pwBd }}" style-hover="border-color:#746c61" style-focus="border-color:#1f1c18;outline:2.5px solid #0f6e62;outline-offset:2px">
+          <button type="button" onClick="{{ toggleShow }}" aria-label="{{ showLabel }}" aria-pressed="{{ showPressed }}" style="position:absolute;right:4px;top:4px;display:grid;place-items:center;width:36px;height:36px;border:0;border-radius:6px;background:transparent;color:#3f3a33;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="eye" size="16"></e-icon></button>
+        </span>
+        <sc-if value="{{ pwErr }}" hint-placeholder-val="{{ false }}"><span role="alert" style="display:flex;gap:4px;align-items:center;font-size:12px;color:#b42318"><e-icon name="octagon" size="14"></e-icon>Enter your password.</span></sc-if>
+      </label>
+      <sc-if value="{{ idle }}" hint-placeholder-val="{{ true }}"><button type="submit" style="height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#1f1c18;color:#fffdf9;border:1px solid #1f1c18;cursor:pointer" style-hover="background:#3f3a33" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Sign in</button></sc-if>
+      <sc-if value="{{ busy }}" hint-placeholder-val="{{ false }}"><span aria-busy="true" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#1f1c18;color:#fffdf9"><e-icon name="loader" size="16" spin="true"></e-icon>Signing in…</span></sc-if>
+    </form>
+    <div style="display:grid;gap:12px;text-align:center">
+      <a href="#sandbox" style="display:flex;align-items:center;justify-content:center;height:44px;border-radius:6px;font-size:16px;font-weight:500;text-decoration:none;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Open the sandbox instead</a>
+      <p style="font-size:13px;color:#746c61">Free and open source. No sign-up for the sandbox.</p>
+    </div>
+  </div>
+</main>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { email: '', pw: '', show: false, tried: false, busy: false };
+  onEmail = e => this.setState({ email: e.target.value });
+  onPw = e => this.setState({ pw: e.target.value });
+  toggleShow = () => this.setState(s => ({ show: !s.show }));
+  submit = e => {
+    e.preventDefault();
+    if (!this.state.email.trim() || !this.state.pw) return this.setState({ tried: true });
+    this.setState({ busy: true });
+    this.t = setTimeout(() => { window.location.href = 'Eingang App Inbox.dc.html'; }, 800);
+  };
+  componentWillUnmount() { clearTimeout(this.t); }
+  renderVals() {
+    const s = this.state, eErr = s.tried && !s.email.trim(), pErr = s.tried && !s.pw;
+    return {
+      email: s.email, pw: s.pw, onEmail: this.onEmail, onPw: this.onPw, submit: this.submit,
+      emailErr: eErr, pwErr: pErr, emailInvalid: eErr ? 'true' : 'false', pwInvalid: pErr ? 'true' : 'false',
+      emailBd: eErr ? '#b42318' : '#d6cbbb', pwBd: pErr ? '#b42318' : '#d6cbbb',
+      pwType: s.show ? 'text' : 'password', toggleShow: this.toggleShow, showLabel: s.show ? 'Hide password' : 'Show password', showPressed: s.show ? 'true' : 'false',
+      idle: !s.busy, busy: s.busy
+    };
+  }
+}
+
+</script>
+</body>
+</html>

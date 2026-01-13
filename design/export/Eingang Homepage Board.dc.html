@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f7f2ea;color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,figure{margin:0}
+a{color:#2c4a8a;text-underline-offset:3px}
+a:hover{color:#1f1c18}
+:focus-visible{outline:2.5px solid #0f6e62;outline-offset:2px}
+</style>
+</helmet>
+
+<section data-screen-label="Homepage board" style="padding:72px;display:grid;gap:40px;width:max-content">
+  <div style="display:grid;gap:8px;max-width:760px">
+    <h1 style="font:700 42px/1.1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Homepage: desktop, motion, phone</h1>
+    <div style="display:flex;flex-wrap:wrap;gap:8px 24px;font-size:14px;color:#746c61"><span>Both frames are the live pages, fully interactive.</span><a href="Eingang Homepage.dc.html">Open desktop</a><a href="Eingang Homepage Phone.dc.html">Open phone</a></div>
+  </div>
+  <div style="display:flex;gap:72px;align-items:flex-start">
+    <figure style="display:grid;gap:16px">
+      <figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Desktop</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#746c61">1440 px</span></figcaption>
+      <iframe title="Eingang homepage, desktop" src="Eingang Homepage.dc.html" onLoad="{{ fitD }}" style="display:block;width:1440px;border:1px solid #d6cbbb;border-radius:12px;background:#ebe4d6;height:{{ hd }}"></iframe>
+    </figure>
+
+    <aside aria-label="Motion spec" style="width:760px;flex:none;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;margin-top:32px">
+      <div style="display:grid;gap:8px;padding:32px 32px 24px;border-bottom:1px solid #ebe3d6">
+        <h2 style="font:700 21px/1.2 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Motion spec</h2>
+        <p style="font-size:13px;color:#746c61;max-width:62ch">Every motion finishes within 1.2 s. With prefers-reduced-motion, or the Reduced Tweak on either page, nothing moves: each element is shown in its end state the moment its trigger fires.</p>
+        <dl style="display:grid;grid-template-columns:max-content 1fr;gap:4px 16px;margin:8px 0 0;font-size:13px">
+          <dt style="font:500 12px/1.6 'JetBrains Mono',monospace;color:#1f1c18">draw</dt><dd style="margin:0">cubic-bezier(.65, 0, .35, 1). Pen, highlighter, export slide.</dd>
+          <dt style="font:500 12px/1.6 'JetBrains Mono',monospace;color:#1f1c18">out</dt><dd style="margin:0">ease-out. Direct responses to a press.</dd>
+          <dt style="font:500 12px/1.6 'JetBrains Mono',monospace;color:#1f1c18">arrive</dt><dd style="margin:0">cubic-bezier(.2, .8, .2, 1). Things that arrive from elsewhere.</dd>
+        </dl>
+      </div>
+      <div role="table" aria-label="Motion spec" style="display:grid;font-size:13px">
+        <div role="row" style="display:grid;grid-template-columns:132px 1fr 132px 88px 1fr;gap:16px;padding:12px 32px;background:#f7f2ea;border-bottom:1px solid #ebe3d6;font-size:12px;font-weight:500;color:#746c61"><span role="columnheader">Motion</span><span role="columnheader">Trigger</span><span role="columnheader">Duration</span><span role="columnheader">Easing</span><span role="columnheader">Reduced motion</span></div>
+
+        <div role="row" style="display:grid;grid-template-columns:132px 1fr 132px 88px 1fr;gap:16px;padding:16px 32px;border-bottom:1px solid #ebe3d6;align-items:start">
+          <span role="cell" style="font-size:14px;font-weight:600;color:#1f1c18">Stamp press</span>
+          <span role="cell">A document is dropped on the stamp, or Stamp it is pressed. Desktop: the stamp in the window moves 3 px down and to 96 %. Phone: the impression lands on the sheet, from 125 % to 100 %.</span>
+          <span role="cell" style="font:12px/1.6 'JetBrains Mono',monospace;color:#1f1c18">140 ms down, held 20 ms, 140 ms back. Phone: 140 ms</span>
+          <span role="cell" style="font:12px/1.6 'JetBrains Mono',monospace">out</span>
+          <span role="cell">No movement. The impression is on the sheet at once.</span>
+        </div>
+        <div role="row" style="display:grid;grid-template-columns:132px 1fr 132px 88px 1fr;gap:16px;padding:16px 32px;border-bottom:1px solid #ebe3d6;align-items:start">
+          <span role="cell" style="font-size:14px;font-weight:600;color:#1f1c18">Document to row</span>
+          <span role="cell">The stamp press. The row fades in and slides 8 px down. Its status steps from Received to Processing at 400 ms and to the verdict at 1,100 ms.</span>
+          <span role="cell" style="font:12px/1.6 'JetBrains Mono',monospace;color:#1f1c18">240 ms entry, 1,100 ms to verdict</span>
+          <span role="cell" style="font:12px/1.6 'JetBrains Mono',monospace">out</span>
+          <span role="cell">The row appears in place with its verdict. No Received or Processing steps.</span>
+        </div>
+        <div role="row" style="display:grid;grid-template-columns:132px 1fr 132px 88px 1fr;gap:16px;padding:16px 32px;border-bottom:1px solid #ebe3d6;align-items:start">
+          <span role="cell" style="font-size:14px;font-weight:600;color:#1f1c18">Red-pen draw-on</span>
+          <span role="cell">Hero: 600 ms after load. Act 1 note: when the first verdict appears. Act 2: when 30 % of the sheet is in view (20 % on phone). Strokes trace their path; notes wipe in from the left. Each group plays once.</span>
+          <span role="cell" style="font:12px/1.6 'JetBrains Mono',monospace;color:#1f1c18">circle 600, arrow 350–400, note 400, folder 800 ms, staggered; each group ≤ 1,200 ms</span>
+          <span role="cell" style="font:12px/1.6 'JetBrains Mono',monospace">draw</span>
+          <span role="cell">Every stroke and note is drawn from the start.</span>
+        </div>
+        <div role="row" style="display:grid;grid-template-columns:132px 1fr 132px 88px 1fr;gap:16px;padding:16px 32px;border-bottom:1px solid #ebe3d6;align-items:start">
+          <span role="cell" style="font-size:14px;font-weight:600;color:#1f1c18">Highlighter swipe</span>
+          <span role="cell">With the hero pen, 600 ms after load. Grows from the left edge, skewed −12°. Desktop only; the simplified phone hero has no highlighter.</span>
+          <span role="cell" style="font:12px/1.6 'JetBrains Mono',monospace;color:#1f1c18">450 ms</span>
+          <span role="cell" style="font:12px/1.6 'JetBrains Mono',monospace">draw</span>
+          <span role="cell">Full swipe from the start.</span>
+        </div>
+        <div role="row" style="display:grid;grid-template-columns:132px 1fr 132px 88px 1fr;gap:16px;padding:16px 32px;border-bottom:1px solid #ebe3d6;align-items:start">
+          <span role="cell" style="font-size:14px;font-weight:600;color:#1f1c18">Check resolve</span>
+          <span role="cell">Resolve check, with a note. The resolved line, the quoted note and the Confirmed change tag fade in; New and the form go at once. With an empty note, an inline error appears and nothing moves.</span>
+          <span role="cell" style="font:12px/1.6 'JetBrains Mono',monospace;color:#1f1c18">200 ms</span>
+          <span role="cell" style="font:12px/1.6 'JetBrains Mono',monospace">out</span>
+          <span role="cell">Resolved state at once.</span>
+        </div>
+        <div role="row" style="display:grid;grid-template-columns:132px 1fr 132px 88px 1fr;gap:16px;padding:16px 32px;border-bottom:1px solid #ebe3d6;align-items:start">
+          <span role="cell" style="font-size:14px;font-weight:600;color:#1f1c18">Hand-off to phone</span>
+          <span role="cell">Mark reviewed. The approval card rises 24 px into Jonas's phone and fades in; the window chip turns to Awaiting approval.</span>
+          <span role="cell" style="font:12px/1.6 'JetBrains Mono',monospace;color:#1f1c18">320 ms</span>
+          <span role="cell" style="font:12px/1.6 'JetBrains Mono',monospace">arrive</span>
+          <span role="cell">The card is on the phone at once.</span>
+        </div>
+        <div role="row" style="display:grid;grid-template-columns:132px 1fr 132px 88px 1fr;gap:16px;padding:16px 32px;border-bottom:1px solid #ebe3d6;align-items:start">
+          <span role="cell" style="font-size:14px;font-weight:600;color:#1f1c18">Approve</span>
+          <span role="cell">Approve on the phone. The button shows a spinner and Approving… while the request runs (700 ms in the demo), then the status line replaces the buttons and the window chip turns to Approved.</span>
+          <span role="cell" style="font:12px/1.6 'JetBrains Mono',monospace;color:#1f1c18">700 ms wait; spinner 900 ms per turn</span>
+          <span role="cell" style="font:12px/1.6 'JetBrains Mono',monospace">linear</span>
+          <span role="cell">No spinning. Approved state as soon as the request returns; in the demo, at once.</span>
+        </div>
+        <div role="row" style="display:grid;grid-template-columns:132px 1fr 132px 88px 1fr;gap:16px;padding:16px 32px;align-items:start">
+          <span role="cell" style="font-size:14px;font-weight:600;color:#1f1c18">Export slide</span>
+          <span role="cell">500 ms after approval. The export row drops from above into the drawn folder (−48 px to +26 px) and stops with about 30 px showing; the window chip turns to Exported.</span>
+          <span role="cell" style="font:12px/1.6 'JetBrains Mono',monospace;color:#1f1c18">700 ms</span>
+          <span role="cell" style="font:12px/1.6 'JetBrains Mono',monospace">draw</span>
+          <span role="cell">The row rests in the folder, number and Exported chip visible.</span>
+        </div>
+      </div>
+    </aside>
+
+    <figure style="display:grid;gap:16px">
+      <figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Phone</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#746c61">390 px</span></figcaption>
+      <iframe title="Eingang homepage, phone" src="Eingang Homepage Phone.dc.html" onLoad="{{ fitP }}" style="display:block;width:392px;border:1px solid #d6cbbb;border-radius:12px;background:#ebe4d6;height:{{ hp }}"></iframe>
+    </figure>
+    <figure style="display:grid;gap:16px">
+      <figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Tablet fallback</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#746c61">900 px: phone layout, centred, content at most 680 px</span></figcaption>
+      <iframe title="Eingang homepage, tablet fallback" src="Eingang Homepage Phone.dc.html" onLoad="{{ fitT }}" style="display:block;width:902px;border:1px solid #d6cbbb;border-radius:12px;background:#ebe4d6;height:{{ ht }}"></iframe>
+    </figure>
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { hd: 4800, hp: 7800, ht: 7800 };
+  ros = [];
+  timers = [];
+  fit = key => e => {
+    const f = e.target;
+    const upd = () => {
+      try {
+        const d = f.contentDocument, ft = d && d.querySelector('footer');
+        if (!ft) return;
+        const h = Math.ceil(ft.getBoundingClientRect().bottom + d.defaultView.scrollY) + 2;
+        if (h > 200 && Math.abs(h - this.state[key]) > 4) this.setState({ [key]: h });
+      } catch (_) {}
+    };
+    upd();
+    try { const ro = new f.contentWindow.ResizeObserver(upd); const d = f.contentDocument; ro.observe(d.body); const ft = d.querySelector('footer'); if (ft && ft.parentElement) ro.observe(ft.parentElement); this.ros.push(ro); } catch (_) {}
+    [400, 1500, 3500, 7000].forEach(ms => this.timers.push(setTimeout(upd, ms)));
+  };
+  fitD = this.fit('hd');
+  fitP = this.fit('hp');
+  fitT = this.fit('ht');
+  componentWillUnmount() { this.ros.forEach(r => r.disconnect()); this.timers.forEach(clearTimeout); }
+  renderVals() {
+    return { hd: this.state.hd + 'px', hp: this.state.hp + 'px', ht: this.state.ht + 'px', fitD: this.fitD, fitP: this.fitP, fitT: this.fitT };
+  }
+}
+
+</script>
+</body>
+</html>

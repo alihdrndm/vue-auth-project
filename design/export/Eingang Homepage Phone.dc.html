@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eingang: every supplier invoice in one inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&amp;family=Caveat:wght@600&amp;family=Familjen+Grotesk:wght@700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<script src="./eingang-ui.js"></script>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased;background-color:#ebe4d6;background-image:linear-gradient(#3a2a140b 1px,transparent 1px),linear-gradient(90deg,#3a2a140b 1px,transparent 1px);background-size:32px 32px}
+h1,h2,h3,h4,p,figure,blockquote,dl,dd,ol{margin:0}
+ol{padding:0}
+button,input,textarea{font:inherit;color:inherit}
+a{color:#2c4a8a;text-underline-offset:3px}
+a:hover{color:#1f1c18}
+:focus-visible{outline:2.5px solid #0f6e62;outline-offset:2px}
+::selection{background:#ffe53d;color:#1f1c18}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+</style>
+</helmet>
+
+<div style="max-width:680px;margin:0 auto">
+<header style="padding:8px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+  <a href="#top" aria-label="Eingang, home" style="display:flex;align-items:center;gap:8px;min-height:44px;text-decoration:none;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">
+    <span aria-hidden="true" style="width:1em;height:1em;font-size:28px;display:grid;place-items:center;border:0.0625em solid #2c4a8a;border-radius:0.15em;outline:0.025em solid #2c4a8a;outline-offset:-0.175em;background:#fffdf9;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1;filter:url(#eg-ink)"><span style="font-size:0.55em">E</span></span>
+    <span style="font:700 21px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em">Eingang</span>
+  </a>
+  <nav aria-label="Main" style="display:flex;align-items:center;font-size:14px;font-weight:500">
+    <a href="#github" style="display:inline-flex;align-items:center;min-height:44px;padding:0 8px;color:#1f1c18;text-decoration:none" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">GitHub</a>
+    <a href="#sign-in" style="display:inline-flex;align-items:center;min-height:44px;padding:0 8px;color:#1f1c18;text-decoration:none" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Sign in</a>
+  </nav>
+</header>
+
+<section id="top" data-screen-label="Phone: hero" style="padding:16px 16px 56px;display:grid;gap:24px">
+  <h1 style="font:700 38px/1.05 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18;text-wrap:balance"><sc-if value="{{ hA }}" hint-placeholder-val="{{ true }}">Some of our invoices are e-invoices. We couldn’t tell you which.</sc-if><sc-if value="{{ hB }}" hint-placeholder-val="{{ false }}">We checked every invoice by eye. The one with the new bank account looked fine too.</sc-if><sc-if value="{{ hC }}" hint-placeholder-val="{{ false }}">We paid the same invoice twice. Both copies looked perfectly valid.</sc-if></h1>
+  <p style="font-size:17px;line-height:1.6;text-wrap:pretty">Eingang puts every supplier invoice, XML or PDF, in one inbox and tells you which ones are valid e-invoices. It flags duplicates and changed bank accounts, and someone else approves before anything goes to the tax advisor.</p>
+  <div style="display:grid;gap:12px">
+    <a href="#sandbox" style="display:flex;align-items:center;justify-content:center;height:44px;border-radius:6px;font-size:16px;font-weight:500;text-decoration:none;background:#1f1c18;color:#fffdf9;border:1px solid #1f1c18" style-hover="background:#3f3a33;color:#fffdf9" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Open the sandbox</a>
+    <a href="#sign-in" style="display:flex;align-items:center;justify-content:center;height:44px;border-radius:6px;font-size:16px;font-weight:500;text-decoration:none;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Sign in</a>
+    <p style="font-size:14px;color:#5f574d;text-align:center">Free and open source. No sign-up for the sandbox.</p>
+  </div>
+
+  <div role="img" aria-label="A pile on the desk: an XML print-out, a French invoice with a paper-clip and a stamped envelope." style="position:relative;width:358px;height:340px;margin-top:8px;justify-self:center">
+    <div style="position:absolute;left:156px;top:0;width:190px;height:236px;transform:rotate(5deg);background:#fdfaf4;border-radius:12px;box-shadow:0 1px 0 #3a2a140f, 0 30px 60px -34px #3a2a1470, 0 2px 6px -2px #3a2a1426;overflow:hidden">
+      <pre style="margin:0;padding:16px;font:12px/19px 'JetBrains Mono',monospace;color:#1f1c18;white-space:pre">&lt;Invoice&gt;
+  &lt;cbc:ID&gt;RE-2026-0
+  &lt;cbc:IssueDate&gt;20
+  &lt;cbc:DueDate&gt;2026
+
+  &lt;cac:Accounting
+    &lt;cbc:Name&gt;Elek
+  &lt;cac:LegalMonet
+    &lt;cbc:PayableA
+&lt;/Invoice&gt;</pre>
+    </div>
+    <div lang="fr" style="position:absolute;left:8px;top:36px;width:200px;height:220px;transform:rotate(-3deg);background:#fdfaf4;border-radius:12px;box-shadow:0 1px 0 #3a2a140f, 0 30px 60px -34px #3a2a1470, 0 2px 6px -2px #3a2a1426;padding:16px;display:grid;gap:8px;align-content:start;font-size:12px;color:#1f1c18">
+      <span style="font-size:13px;font-weight:600">Atelier Moreau SARL</span>
+      <span style="font-size:14px;font-weight:600">Facture F-2026-118</span>
+      <div style="display:flex;justify-content:space-between;gap:8px;padding-top:8px;border-top:1px solid #d6cbbb;font-weight:600"><span>Total TTC</span><span>640,00 €</span></div>
+      <span style="padding-top:8px;color:#746c61">PDF/A-3, Factur-X</span>
+    </div>
+    <svg aria-hidden="true" width="40" height="72" viewBox="0 0 40 72" style="position:absolute;left:166px;top:18px;transform:rotate(10deg);overflow:visible"><path d="M 26 20 L 26 56 C 26 66, 10 66, 10 56 L 10 12 C 10 4, 22 4, 22 12 L 22 50 C 22 54, 16 54, 16 50 L 16 20" style="fill:none;stroke:#746c61;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"></path></svg>
+    <div style="position:absolute;left:96px;top:208px;width:250px;height:128px;transform:rotate(4deg);background:#f6f0e6;border-radius:6px;box-shadow:0 1px 0 #3a2a140f, 0 30px 60px -34px #3a2a1470, 0 2px 6px -2px #3a2a1426;overflow:hidden">
+      <svg aria-hidden="true" width="250" height="128" viewBox="0 0 250 128" style="position:absolute;inset:0"><path d="M 0 0 L 125 66 L 250 0" style="fill:none;stroke:#d6cbbb;stroke-width:1.5"></path></svg>
+      <div style="position:absolute;left:16px;bottom:16px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;line-height:1.35;color:#1f1c18">Holzwerk Brandt GmbH<br>Leipzig</div>
+      <div style="position:absolute;right:12px;top:24px"><div role="img" aria-label="Eingang stamp, 9 October 2026" style="display:inline-grid;justify-items:center;gap:0.09em;padding:0.27em 0.36em;border:0.07em solid #2c4a8a;border-radius:0.14em;outline:0.035em solid #2c4a8a;outline-offset:-0.18em;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;text-transform:uppercase;letter-spacing:0.08em;line-height:1;transform:rotate(-7deg);filter:url(#eg-ink)"><span style="font-size:1em;padding:0.09em 0.1em 0 0.18em">Eingang</span><span style="font-size:0.45em;padding:0.2em 0.2em 0.2em 0.28em;border-top:0.1em solid #2c4a8a">09. OKT. 2026</span></div></div>
+    </div>
+    <div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none">
+      <svg width="358" height="340" viewBox="0 0 358 340" style="position:absolute;inset:0;overflow:visible;filter:url(#eg-ink)"><path d="M 252 118 C 236 108, 222 92, 206 70 M 206 70 L 210 83 M 206 70 L 218 75" style="fill:none;stroke:#d3241b;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:200;stroke-dashoffset:{{ hero.o200 }};transition:{{ hero.tA }}"></path></svg>
+      <span style="position:absolute;left:236px;top:120px;width:120px;transform:rotate(-6deg);font:600 28px/1 Caveat,cursive;color:#d3241b;clip-path:{{ hero.clip }};transition:{{ hero.tN }}">XML inside?</span>
+    </div>
+  </div>
+</section>
+
+<section id="inbox" data-screen-label="Phone: Act 1" style="padding:56px 16px;display:grid;gap:24px">
+  <h2 style="font:700 28px/1.1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Every format lands in one inbox.</h2>
+  <p style="font-size:17px;line-height:1.6;text-wrap:pretty">XRechnung, ZUGFeRD or a plain PDF: each one is stamped, checked against the official rules and given a verdict you can read. For plain PDFs, AI reads the fields and shows the text each one came from.</p>
+  <p style="font-size:13px;color:#5f574d">Sample documents. Press Stamp it under each one.</p>
+
+  <div style="display:grid;gap:40px;padding-top:8px">
+    <div style="display:grid;gap:12px">
+      <div aria-label="XRechnung file RE-2026-0412 from Elektro Kessler GmbH" style="position:relative;height:200px;transform:rotate(-1.5deg);background:#fdfaf4;border-radius:12px;box-shadow:0 1px 0 #3a2a140f, 0 30px 60px -34px #3a2a1470, 0 2px 6px -2px #3a2a1426;overflow:hidden">
+        <div style="padding:12px 16px;border-bottom:1px solid #ebe3d6;font:12px/1.45 'JetBrains Mono',monospace;color:#746c61">RE-2026-0412.xml</div>
+        <pre style="margin:0;padding:12px 16px;font:12px/19px 'JetBrains Mono',monospace;color:#1f1c18;white-space:pre">&lt;cbc:ID&gt;RE-2026-0412&lt;/cbc:ID&gt;
+&lt;cbc:BuyerReference&gt;…&lt;/cbc:Buye
+&lt;cbc:Name&gt;Elektro Kessler GmbH&lt;/
+&lt;cbc:PayableAmount&gt;1190.00&lt;/cbc
+&lt;/Invoice&gt;</pre>
+        <sc-if value="{{ docs.xr.stamped }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;right:16px;bottom:16px;opacity:{{ docs.xr.impOp }};transform:{{ docs.xr.impTf }};transition:{{ docs.xr.impTr }}"><div role="img" aria-label="Stamped" style="display:inline-grid;justify-items:center;gap:0.09em;padding:0.27em 0.36em;border:0.07em solid #2c4a8a;border-radius:0.14em;outline:0.035em solid #2c4a8a;outline-offset:-0.18em;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;text-transform:uppercase;letter-spacing:0.08em;line-height:1;transform:rotate(-8deg);filter:url(#eg-ink);background:#fdfaf4"><span style="font-size:1em;padding:0.09em 0.1em 0 0.18em">Eingang</span><span style="font-size:0.45em;padding:0.2em 0.2em 0.2em 0.28em;border-top:0.1em solid #2c4a8a">09. OKT. 2026</span></div></div></sc-if>
+      </div>
+      <sc-if value="{{ docs.xr.open }}" hint-placeholder-val="{{ true }}"><button onClick="{{ docs.xr.stampIt }}" aria-label="Stamp it: RE-2026-0412" style="height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Stamp it</button></sc-if>
+      <sc-if value="{{ docs.xr.stamped }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:8px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;opacity:{{ docs.xr.op }};transform:{{ docs.xr.tf }};transition:{{ docs.xr.tr }}">
+          <div style="display:flex;align-items:center;gap:8px;height:36px;padding:0 12px;background:#f7f2ea;border-bottom:1px solid #ebe3d6;border-radius:8px 8px 0 0"><e-icon name="inbox" size="16" style="color:#1f1c18"></e-icon><span style="font-size:13px;font-weight:600;color:#1f1c18">Inbox</span><span style="flex:1"></span><span style="display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500">{{ docs.xr.t }}</span></div>
+          <div style="padding:12px;display:grid;gap:8px;justify-items:start">
+            <div style="display:grid"><span style="font-size:14px;font-weight:500;color:#1f1c18">Elektro Kessler GmbH</span><span style="font:12px/1.45 'JetBrains Mono',monospace;color:#746c61">RE-2026-0412</span></div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:6px;border:1px solid #d6cbbb;background:#fffdf9;color:#3f3a33;font-size:12px;font-weight:500"><e-icon name="file-code" size="14"></e-icon>XRechnung · UBL</span>
+              <sc-if value="{{ docs.xr.received }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500"><e-icon name="inbox" size="14"></e-icon>Received</span></sc-if>
+              <sc-if value="{{ docs.xr.processing }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e6eef7;color:#2f5d8a;font-size:12px;font-weight:500"><e-icon name="loader" size="14" spin="true"></e-icon>Processing</span></sc-if>
+              <sc-if value="{{ docs.xr.done }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e4f1ed;color:#0f6e62;font-size:12px;font-weight:500"><e-icon name="circle-check" size="14"></e-icon>Valid e-invoice</span></sc-if>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="display:grid;gap:12px">
+      <div aria-label="Plain PDF invoice 2026-1043 from Druckerei Sommer GmbH" lang="de" style="position:relative;height:200px;transform:rotate(1deg);background:#fdfaf4;border-radius:12px;box-shadow:0 1px 0 #3a2a140f, 0 30px 60px -34px #3a2a1470, 0 2px 6px -2px #3a2a1426;overflow:hidden;padding:16px;display:grid;gap:8px;align-content:start;font-size:12px;color:#1f1c18">
+        <div style="display:grid"><span style="font-size:13px;font-weight:600">Druckerei Sommer GmbH</span><span style="color:#3f3a33">Karl-Heine-Str. 12, 04229 Leipzig</span></div>
+        <span style="font-size:14px;font-weight:600">Rechnung 2026-1043</span>
+        <div style="display:flex;justify-content:space-between;gap:8px;padding-top:8px;border-top:1px solid #d6cbbb;font-weight:600"><span>Gesamtbetrag</span><span>1.547,00 €</span></div>
+        <span style="justify-self:end;margin-right:-24px;padding-top:12px;white-space:nowrap;color:#3f3a33">USt-IdNr. DE 81 2</span>
+        <sc-if value="{{ docs.pdf.stamped }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:16px;bottom:16px;opacity:{{ docs.pdf.impOp }};transform:{{ docs.pdf.impTf }};transition:{{ docs.pdf.impTr }}"><div role="img" aria-label="Stamped" style="display:inline-grid;justify-items:center;gap:0.09em;padding:0.27em 0.36em;border:0.07em solid #2c4a8a;border-radius:0.14em;outline:0.035em solid #2c4a8a;outline-offset:-0.18em;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;text-transform:uppercase;letter-spacing:0.08em;line-height:1;transform:rotate(5deg);filter:url(#eg-ink);background:#fdfaf4"><span style="font-size:1em;padding:0.09em 0.1em 0 0.18em">Eingang</span><span style="font-size:0.45em;padding:0.2em 0.2em 0.2em 0.28em;border-top:0.1em solid #2c4a8a">09. OKT. 2026</span></div></div></sc-if>
+      </div>
+      <sc-if value="{{ docs.pdf.open }}" hint-placeholder-val="{{ true }}"><button onClick="{{ docs.pdf.stampIt }}" aria-label="Stamp it: 2026-1043" style="height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Stamp it</button></sc-if>
+      <sc-if value="{{ docs.pdf.stamped }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:8px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;opacity:{{ docs.pdf.op }};transform:{{ docs.pdf.tf }};transition:{{ docs.pdf.tr }}">
+          <div style="display:flex;align-items:center;gap:8px;height:36px;padding:0 12px;background:#f7f2ea;border-bottom:1px solid #ebe3d6;border-radius:8px 8px 0 0"><e-icon name="inbox" size="16" style="color:#1f1c18"></e-icon><span style="font-size:13px;font-weight:600;color:#1f1c18">Inbox</span><span style="flex:1"></span><span style="display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500">{{ docs.pdf.t }}</span></div>
+          <div style="padding:12px;display:grid;gap:8px;justify-items:start">
+            <div style="display:grid"><span style="font-size:14px;font-weight:500;color:#1f1c18">Druckerei Sommer GmbH</span><span style="font:12px/1.45 'JetBrains Mono',monospace;color:#746c61">2026-1043</span></div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:6px;border:1px solid #d6cbbb;background:#fffdf9;color:#3f3a33;font-size:12px;font-weight:500"><e-icon name="file-text" size="14"></e-icon>Plain PDF</span>
+              <sc-if value="{{ docs.pdf.received }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500"><e-icon name="inbox" size="14"></e-icon>Received</span></sc-if>
+              <sc-if value="{{ docs.pdf.processing }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e6eef7;color:#2f5d8a;font-size:12px;font-weight:500"><e-icon name="loader" size="14" spin="true"></e-icon>Processing</span></sc-if>
+              <sc-if value="{{ docs.pdf.done }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#f6f0e6;color:#746c61;font-size:12px;font-weight:500"><e-icon name="info" size="14"></e-icon>Not an e-invoice</span></sc-if>
+            </div>
+            <sc-if value="{{ docs.pdf.done }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:500;color:#8a4a06"><e-icon name="eye" size="14" style="color:#c47408"></e-icon>AI-read, 1 field to check</span></sc-if>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="display:grid;gap:12px">
+      <div aria-label="Factur-X invoice F-2026-118 from Atelier Moreau SARL" lang="fr" style="position:relative;height:200px;transform:rotate(-1deg);background:#fdfaf4;border-radius:12px;box-shadow:0 1px 0 #3a2a140f, 0 30px 60px -34px #3a2a1470, 0 2px 6px -2px #3a2a1426;padding:16px;display:grid;gap:8px;align-content:start;font-size:12px;color:#1f1c18">
+        <svg aria-hidden="true" width="40" height="72" viewBox="0 0 40 72" style="position:absolute;right:32px;top:-16px;overflow:visible"><path d="M 26 20 L 26 56 C 26 66, 10 66, 10 56 L 10 12 C 10 4, 22 4, 22 12 L 22 50 C 22 54, 16 54, 16 50 L 16 20" style="fill:none;stroke:#746c61;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"></path></svg>
+        <span style="font-size:13px;font-weight:600">Atelier Moreau SARL</span>
+        <span style="font-size:14px;font-weight:600">Facture F-2026-118</span>
+        <div style="display:flex;justify-content:space-between;gap:8px;padding-top:8px;border-top:1px solid #d6cbbb;font-weight:600"><span>Total TTC</span><span>640,00 €</span></div>
+        <span style="padding-top:12px;color:#746c61">PDF/A-3 with factur-x.xml</span>
+        <sc-if value="{{ docs.bwl.stamped }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;right:16px;bottom:16px;opacity:{{ docs.bwl.impOp }};transform:{{ docs.bwl.impTf }};transition:{{ docs.bwl.impTr }}"><div role="img" aria-label="Stamped" style="display:inline-grid;justify-items:center;gap:0.09em;padding:0.27em 0.36em;border:0.07em solid #2c4a8a;border-radius:0.14em;outline:0.035em solid #2c4a8a;outline-offset:-0.18em;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;text-transform:uppercase;letter-spacing:0.08em;line-height:1;transform:rotate(-4deg);filter:url(#eg-ink);background:#fdfaf4"><span style="font-size:1em;padding:0.09em 0.1em 0 0.18em">Eingang</span><span style="font-size:0.45em;padding:0.2em 0.2em 0.2em 0.28em;border-top:0.1em solid #2c4a8a">09. OKT. 2026</span></div></div></sc-if>
+      </div>
+      <sc-if value="{{ docs.bwl.open }}" hint-placeholder-val="{{ true }}"><button onClick="{{ docs.bwl.stampIt }}" aria-label="Stamp it: F-2026-118" style="height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Stamp it</button></sc-if>
+      <sc-if value="{{ docs.bwl.stamped }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:8px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;opacity:{{ docs.bwl.op }};transform:{{ docs.bwl.tf }};transition:{{ docs.bwl.tr }}">
+          <div style="display:flex;align-items:center;gap:8px;height:36px;padding:0 12px;background:#f7f2ea;border-bottom:1px solid #ebe3d6;border-radius:8px 8px 0 0"><e-icon name="inbox" size="16" style="color:#1f1c18"></e-icon><span style="font-size:13px;font-weight:600;color:#1f1c18">Inbox</span><span style="flex:1"></span><span style="display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500">{{ docs.bwl.t }}</span></div>
+          <div style="padding:12px;display:grid;gap:8px;justify-items:start">
+            <div style="display:grid"><span style="font-size:14px;font-weight:500;color:#1f1c18">Atelier Moreau SARL</span><span style="font:12px/1.45 'JetBrains Mono',monospace;color:#746c61">F-2026-118</span></div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px"><span title="ZUGFeRD and Factur-X are the same standard" style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:6px;border:1px solid #d6cbbb;background:#fffdf9;color:#3f3a33;font-size:12px;font-weight:500"><e-icon name="paperclip" size="14"></e-icon>ZUGFeRD · BASIC WL</span>
+              <sc-if value="{{ docs.bwl.received }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500"><e-icon name="inbox" size="14"></e-icon>Received</span></sc-if>
+              <sc-if value="{{ docs.bwl.processing }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e6eef7;color:#2f5d8a;font-size:12px;font-weight:500"><e-icon name="loader" size="14" spin="true"></e-icon>Processing</span></sc-if>
+              <sc-if value="{{ docs.bwl.done }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#f6f0e6;color:#746c61;font-size:12px;font-weight:500"><e-icon name="info" size="14"></e-icon>Not an e-invoice</span><span style="align-self:center;font-size:12px;color:#746c61">(profile BASIC WL)</span></sc-if>
+            </div>
+            <sc-if value="{{ docs.bwl.done }}" hint-placeholder-val="{{ false }}"><p style="font-size:13px;color:#3f3a33">BASIC WL carries too little data to count as an e-invoice.</p><a href="https://www.elo.com/de-de/blog/e-rechnungspflicht-bmf-schreiben-und-faq.html" style="display:inline-flex;align-items:center;min-height:44px;font-size:12px">Source: BMF letter, 15 Oct 2024</a></sc-if>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="display:grid;gap:12px">
+      <div aria-label="XRechnung file RE-2026-0413 from Elektro Kessler GmbH" style="position:relative;height:200px;transform:rotate(1.5deg);background:#fdfaf4;border-radius:12px;box-shadow:0 1px 0 #3a2a140f, 0 30px 60px -34px #3a2a1470, 0 2px 6px -2px #3a2a1426;overflow:hidden">
+        <div style="padding:12px 16px;border-bottom:1px solid #ebe3d6;font:12px/1.45 'JetBrains Mono',monospace;color:#746c61">RE-2026-0413.xml</div>
+        <pre style="margin:0;padding:12px 16px;font:12px/19px 'JetBrains Mono',monospace;color:#1f1c18;white-space:pre">&lt;cbc:ID&gt;RE-2026-0413&lt;/cbc:ID&gt;
+&lt;cbc:DueDate&gt;2026-10-22&lt;/cbc:Du
+
+&lt;cbc:Name&gt;Elektro Kessler GmbH&lt;/
+&lt;cbc:PayableAmount&gt;238.00&lt;/cbc:</pre>
+        <sc-if value="{{ docs.inv.stamped }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;right:16px;bottom:16px;opacity:{{ docs.inv.impOp }};transform:{{ docs.inv.impTf }};transition:{{ docs.inv.impTr }}"><div role="img" aria-label="Stamped" style="display:inline-grid;justify-items:center;gap:0.09em;padding:0.27em 0.36em;border:0.07em solid #2c4a8a;border-radius:0.14em;outline:0.035em solid #2c4a8a;outline-offset:-0.18em;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;text-transform:uppercase;letter-spacing:0.08em;line-height:1;transform:rotate(6deg);filter:url(#eg-ink);background:#fdfaf4"><span style="font-size:1em;padding:0.09em 0.1em 0 0.18em">Eingang</span><span style="font-size:0.45em;padding:0.2em 0.2em 0.2em 0.28em;border-top:0.1em solid #2c4a8a">09. OKT. 2026</span></div></div></sc-if>
+      </div>
+      <sc-if value="{{ docs.inv.open }}" hint-placeholder-val="{{ true }}"><button onClick="{{ docs.inv.stampIt }}" aria-label="Stamp it: RE-2026-0413" style="height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Stamp it</button></sc-if>
+      <sc-if value="{{ docs.inv.stamped }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:8px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;opacity:{{ docs.inv.op }};transform:{{ docs.inv.tf }};transition:{{ docs.inv.tr }}">
+          <div style="display:flex;align-items:center;gap:8px;height:36px;padding:0 12px;background:#f7f2ea;border-bottom:1px solid #ebe3d6;border-radius:8px 8px 0 0"><e-icon name="inbox" size="16" style="color:#1f1c18"></e-icon><span style="font-size:13px;font-weight:600;color:#1f1c18">Inbox</span><span style="flex:1"></span><span style="display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500">{{ docs.inv.t }}</span></div>
+          <div style="padding:12px;display:grid;gap:8px;justify-items:start">
+            <div style="display:grid"><span style="font-size:14px;font-weight:500;color:#1f1c18">Elektro Kessler GmbH</span><span style="font:12px/1.45 'JetBrains Mono',monospace;color:#746c61">RE-2026-0413</span></div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:6px;border:1px solid #d6cbbb;background:#fffdf9;color:#3f3a33;font-size:12px;font-weight:500"><e-icon name="file-code" size="14"></e-icon>XRechnung · UBL</span>
+              <sc-if value="{{ docs.inv.received }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500"><e-icon name="inbox" size="14"></e-icon>Received</span></sc-if>
+              <sc-if value="{{ docs.inv.processing }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e6eef7;color:#2f5d8a;font-size:12px;font-weight:500"><e-icon name="loader" size="14" spin="true"></e-icon>Processing</span></sc-if>
+              <sc-if value="{{ docs.inv.done }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#fbe9e6;color:#b42318;font-size:12px;font-weight:500"><e-icon name="octagon" size="14"></e-icon>Invalid · BR-DE-15</span></sc-if>
+            </div>
+            <sc-if value="{{ docs.inv.done }}" hint-placeholder-val="{{ false }}"><p style="font-size:13px;color:#3f3a33;text-wrap:pretty">XRechnung invoices must name the buyer's reference — for public bodies this is the Leitweg-ID. Ask the supplier to resend the invoice with your reference.</p></sc-if>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <div aria-hidden="true" style="position:relative;height:96px">
+    <svg width="80" height="80" viewBox="0 0 80 80" style="position:absolute;left:24px;top:-40px;overflow:visible;filter:url(#eg-ink)"><path d="M 60 76 C 44 60, 30 40, 22 8 M 22 8 L 18 21 M 22 8 L 31 18" style="fill:none;stroke:#d3241b;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:200;stroke-dashoffset:{{ p1.o200 }};transition:{{ p1.tA }}"></path></svg>
+    <span style="position:absolute;left:88px;top:28px;width:270px;transform:rotate(-2deg);font:600 28px/1.05 Caveat,cursive;color:#d3241b;clip-path:{{ p1.clip }};transition:{{ p1.tN }}">finally, someone tells me which ones count</span>
+  </div>
+  <sc-if value="{{ a1.allDone }}" hint-placeholder-val="{{ false }}"><div style="display:grid;gap:12px"><p style="font-size:14px">4 invoices stamped. 1 is a valid e-invoice.</p><button onClick="{{ a1.reset }}" style="display:flex;align-items:center;justify-content:center;gap:8px;height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="refresh" size="16"></e-icon>Do it again</button></div></sc-if>
+</section>
+
+
+<section id="approval" data-screen-label="Phone: Act 2" style="padding:56px 16px">
+  <div ref="{{ act2Ref }}" style="position:relative;background:#fdfaf4;border-radius:12px;box-shadow:0 1px 0 #3a2a140f, 0 30px 60px -34px #3a2a1470, 0 2px 6px -2px #3a2a1426;padding:32px 20px">
+    <span aria-hidden="true" style="position:absolute;inset:8px;pointer-events:none;background:linear-gradient(#d6cbbb,#d6cbbb) left top/12px 1px no-repeat,linear-gradient(#d6cbbb,#d6cbbb) left top/1px 12px no-repeat,linear-gradient(#d6cbbb,#d6cbbb) right top/12px 1px no-repeat,linear-gradient(#d6cbbb,#d6cbbb) right top/1px 12px no-repeat,linear-gradient(#d6cbbb,#d6cbbb) left bottom/12px 1px no-repeat,linear-gradient(#d6cbbb,#d6cbbb) left bottom/1px 12px no-repeat,linear-gradient(#d6cbbb,#d6cbbb) right bottom/12px 1px no-repeat,linear-gradient(#d6cbbb,#d6cbbb) right bottom/1px 12px no-repeat"></span>
+    <span aria-hidden="true" style="position:absolute;left:50%;top:-14px;width:96px;height:28px;background:#ebe3d6;transform:translateX(-50%) rotate(-3deg);clip-path:polygon(2% 0,98% 6%,100% 30%,97% 55%,100% 80%,98% 100%,3% 94%,0 70%,3% 45%,0 20%)"></span>
+    <div style="display:grid;gap:16px">
+      <h2 style="font:700 28px/1.1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Someone still has to say yes.</h2>
+      <p style="font-size:17px;line-height:1.6;text-wrap:pretty">Anna resolves the check and marks the invoice reviewed. Jonas approves it on his phone. With four-eyes on, nobody approves an invoice they reviewed themselves.</p>
+      <ol aria-label="Steps" style="list-style:none;display:grid;gap:8px;padding-top:8px">
+        <sc-for list="{{ a2.steps }}" as="s" hint-placeholder-count="4">
+          <li aria-current="{{ s.aria }}" style="display:flex;align-items:center;gap:8px;font-size:14px;color:{{ s.color }};font-weight:{{ s.weight }}"><e-icon name="{{ s.icon }}" size="16"></e-icon>{{ s.n }}. {{ s.label }}</li>
+        </sc-for>
+      </ol>
+    </div>
+
+    <div aria-hidden="true" style="position:relative;z-index:2;height:96px;margin-top:24px">
+      <span style="position:absolute;left:0;top:8px;width:220px;transform:rotate(-3deg);font:600 28px/1.05 Caveat,cursive;color:#d3241b;clip-path:{{ p2.clip }};transition:{{ p2.tN }}">this is how invoice fraud starts</span>
+      <svg width="110" height="260" viewBox="0 0 110 260" style="position:absolute;right:4px;top:16px;overflow:visible;filter:url(#eg-ink)"><path d="M 20 8 C 70 20, 96 80, 92 250 M 92 250 L 85 238 M 92 250 L 100 239" style="fill:none;stroke:#d3241b;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1200;stroke-dashoffset:{{ p2.o1200 }};transition:{{ p2.tA }}"></path></svg>
+    </div>
+
+    <div style="position:relative;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433">
+      <div style="display:flex;align-items:center;gap:8px;height:40px;padding:0 8px 0 12px;background:#f7f2ea;border-bottom:1px solid #ebe3d6;border-radius:12px 12px 0 0">
+        <span aria-hidden="true" style="width:1em;height:1em;font-size:24px;display:grid;place-items:center;border:0.0625em solid #2c4a8a;border-radius:0.15em;outline:0.025em solid #2c4a8a;outline-offset:-0.175em;background:#fffdf9;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1;filter:url(#eg-ink)"><span style="font-size:0.55em">E</span></span>
+        <span style="font:700 14px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Eingang</span>
+        <span style="flex:1"></span>
+        <span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;background:#fffdf9;color:#746c61;border:1px dashed #746c61">Sample data</span>
+        <span aria-label="Anna Weber, Accountant" style="width:28px;height:28px;border-radius:999px;background:#e8edf7;color:#2c4a8a;display:grid;place-items:center;font-size:12px;font-weight:600">AW</span>
+      </div>
+      <div style="display:grid;gap:8px;padding:12px 16px;border-bottom:1px solid #ebe3d6">
+        <div style="display:flex;align-items:center;gap:4px;margin-left:-8px"><span aria-label="Back to inbox" style="display:inline-grid;place-items:center;width:28px;height:28px;color:#3f3a33"><e-icon name="chevron-left" size="16"></e-icon></span><h3 style="font:700 16px/1.2 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Bürobedarf Nord KG</h3></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span style="font:12px/1 'JetBrains Mono',monospace;color:#746c61">BN-88290</span>
+          <sc-if value="{{ a2.sNeeds }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#fcefd8;color:#8a4a06;font-size:12px;font-weight:500"><e-icon name="eye" size="14" style="color:#c47408"></e-icon>Needs review</span></sc-if>
+          <sc-if value="{{ a2.sAwait }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500"><e-icon name="hourglass" size="14"></e-icon>Awaiting approval</span></sc-if>
+          <sc-if value="{{ a2.sAppr }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e4f1ed;color:#0f6e62;font-size:12px;font-weight:500"><e-icon name="circle-check" size="14"></e-icon>Approved</span></sc-if>
+          <sc-if value="{{ a2.sExp }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#f6f0e6;color:#746c61;font-size:12px;font-weight:500"><e-icon name="check" size="14"></e-icon>Exported</span></sc-if>
+        </div>
+      </div>
+      <div style="padding:16px;display:grid;gap:16px">
+        <div style="display:grid;gap:8px">
+          <h4 style="font-size:13px;font-weight:600;color:#1f1c18">Checks</h4>
+          <div style="position:relative">
+            <div style="height:472px;border:1px solid #ebe3d6;border-radius:8px;padding:16px;display:grid;gap:12px;align-content:start;background:#fffdf9">
+              <div style="display:grid;gap:4px"><span style="display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:500;color:#b42318"><e-icon name="octagon" size="16"></e-icon>Block</span><span style="font-size:14px;font-weight:600;color:#1f1c18">Bank account differs from earlier invoices</span></div>
+              <dl style="display:grid;gap:4px;font-size:13px">
+                <dt style="font-size:12px;color:#746c61">Before</dt><dd style="font-family:'JetBrains Mono',monospace;color:#1f1c18">DE89 3704 0044 0532 0130 00</dd>
+                <dt style="font-size:12px;color:#746c61;padding-top:4px">Now</dt><dd style="font-family:'JetBrains Mono',monospace;color:#1f1c18">DE02 1203 0000 0000 2020 51</dd>
+                <dd><sc-if value="{{ a2.open }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#fbe9e6;color:#b42318;font-size:12px;font-weight:500"><e-icon name="circle-alert" size="14"></e-icon>New account</span></sc-if><sc-if value="{{ a2.resolved }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e4f1ed;color:#0f6e62;font-size:12px;font-weight:500;opacity:{{ a2.resOp }};transition:{{ a2.resTr }}"><e-icon name="circle-check" size="14"></e-icon>Confirmed change</span></sc-if></dd>
+              </dl>
+              <sc-if value="{{ a2.open }}" hint-placeholder-val="{{ true }}">
+                <label style="display:grid;gap:4px"><span style="font-size:13px;font-weight:500;color:#1f1c18">How did you check this?</span><textarea value="{{ a2.note }}" onChange="{{ a2.onNote }}" placeholder="Who did you call, and on which number?" style="min-height:72px;padding:8px 12px;border:1px solid #d6cbbb;border-radius:6px;background:#fffdf9;font-size:16px;line-height:1.4;color:#1f1c18;resize:none;width:100%" style-focus="border-color:#1f1c18;outline:2.5px solid #0f6e62;outline-offset:2px"></textarea></label>
+                <sc-if value="{{ a2.noteErr }}" hint-placeholder-val="{{ false }}"><span role="alert" style="display:flex;gap:4px;align-items:center;font-size:12px;color:#b42318"><e-icon name="octagon" size="14"></e-icon>Add a note before you resolve this check.</span></sc-if>
+                <button onClick="{{ a2.resolve }}" style="height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#1f1c18;color:#fffdf9;border:1px solid #1f1c18;cursor:pointer" style-hover="background:#3f3a33" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Resolve check</button>
+                <button onClick="{{ a2.example }}" style="height:44px;border-radius:6px;font-size:16px;font-weight:500;background:transparent;color:#3f3a33;border:1px solid transparent;cursor:pointer" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Use example note</button>
+              </sc-if>
+              <sc-if value="{{ a2.resolved }}" hint-placeholder-val="{{ false }}">
+                <span role="status" style="display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:500;color:#0f6e62;opacity:{{ a2.resOp }};transition:{{ a2.resTr }}"><e-icon name="circle-check" size="16"></e-icon>Resolved by Anna Weber, just now</span>
+                <q style="display:block;padding:8px 12px;background:#f7f2ea;border:1px solid #ebe3d6;border-radius:6px;font-size:13px;color:#1f1c18;quotes:none;opacity:{{ a2.resOp }};transition:{{ a2.resTr }}">{{ a2.quote }}</q>
+              </sc-if>
+            </div>
+            <svg aria-hidden="true" width="308" height="492" viewBox="0 0 308 492" style="position:absolute;left:-12px;top:-10px;overflow:visible;pointer-events:none;filter:url(#eg-ink)"><path d="M 170 6 C 260 4, 302 60, 302 246 C 302 430, 250 488, 150 486 C 56 485, 6 430, 6 250 C 6 70, 60 8, 190 10" style="fill:none;stroke:#d3241b;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1600;stroke-dashoffset:{{ p2.o1600 }};transition:{{ p2.tC }}"></path></svg>
+          </div>
+        </div>
+        <dl style="display:grid;grid-template-columns:1fr 1fr;gap:12px 16px">
+          <div style="display:grid;gap:4px"><dt style="font-size:12px;color:#746c61">Gross</dt><dd style="font:500 21px/1.2 'JetBrains Mono',monospace;color:#1f1c18">97,58 €</dd></div>
+          <div style="display:grid;gap:4px"><dt style="font-size:12px;color:#746c61">Due</dt><dd style="font-size:14px;color:#1f1c18;line-height:25px">06 Nov 2026</dd></div>
+          <dd style="grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:8px"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:6px;border:1px solid #d6cbbb;background:#fffdf9;color:#3f3a33;font-size:12px;font-weight:500"><e-icon name="file-code" size="14"></e-icon>XRechnung · CII</span><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e4f1ed;color:#0f6e62;font-size:12px;font-weight:500"><e-icon name="circle-check" size="14"></e-icon>Valid</span><span style="display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500">07 Oct, 10:05</span></dd>
+        </dl>
+      </div>
+      <div style="display:grid;gap:8px;padding:12px 16px 16px;background:#f7f2ea;border-top:1px solid #ebe3d6;border-radius:0 0 12px 12px;font-size:13px">
+        <sc-if value="{{ a2.blockedReview }}" hint-placeholder-val="{{ true }}"><span style="display:inline-flex;align-items:center;gap:8px;color:#746c61"><e-icon name="lock" size="16"></e-icon>Resolve the block check first.</span><button disabled="{{ true }}" style="height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#f6f0e6;color:#746c61;border:1px solid #ebe3d6;cursor:not-allowed">Mark reviewed</button></sc-if>
+        <sc-if value="{{ a2.canReview }}" hint-placeholder-val="{{ false }}"><span style="color:#3f3a33">Check resolved. Ready for review.</span><button onClick="{{ a2.review }}" style="height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#1f1c18;color:#fffdf9;border:1px solid #1f1c18;cursor:pointer" style-hover="background:#3f3a33" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Mark reviewed</button></sc-if>
+        <sc-if value="{{ a2.waiting }}" hint-placeholder-val="{{ false }}"><span role="status" style="display:flex;align-items:center;gap:8px;min-height:44px;color:#2c4a8a"><e-icon name="hourglass" size="16"></e-icon>You marked this reviewed. Jonas Brandt approves next.</span></sc-if>
+        <sc-if value="{{ a2.finished }}" hint-placeholder-val="{{ false }}"><span role="status" style="display:flex;align-items:center;gap:8px;min-height:44px;color:#0f6e62"><e-icon name="circle-check" size="16"></e-icon>Approved by Jonas Brandt.</span></sc-if>
+      </div>
+    </div>
+
+    <div aria-label="Jonas Brandt's phone" style="margin:32px auto 0;width:100%;max-width:358px;height:600px;border:8px solid #1f1c18;border-radius:40px;background:#fffdf9;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;overflow:hidden;display:grid;grid-template-rows:36px 52px minmax(0,1fr) 60px">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:#f7f2ea;font-size:12px;font-weight:600;color:#1f1c18"><span>10:12</span><span aria-hidden="true" style="width:72px;height:20px;border-radius:999px;background:#1f1c18"></span><span style="width:24px"></span></div>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 16px;background:#f7f2ea;border-bottom:1px solid #ebe3d6"><h4 style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Approvals</h4><span style="flex:1"></span><span aria-label="Jonas Brandt, Admin" style="width:28px;height:28px;border-radius:999px;background:#e8edf7;color:#2c4a8a;display:grid;place-items:center;font-size:12px;font-weight:600">JB</span></div>
+      <div style="padding:12px;overflow:hidden;display:grid;align-content:start">
+        <sc-if value="{{ a2.phoneEmpty }}" hint-placeholder-val="{{ true }}"><div style="display:grid;justify-items:center;align-content:center;gap:8px;min-height:400px;text-align:center"><span style="display:grid;place-items:center;width:48px;height:48px;border-radius:999px;background:#f6f0e6;color:#1f1c18"><e-icon name="hourglass" size="20"></e-icon></span><span style="font-size:14px;font-weight:600;color:#1f1c18">Nothing to approve yet</span><span style="font-size:13px;color:#746c61">Anna is still reviewing.</span></div></sc-if>
+        <sc-if value="{{ a2.phoneCard }}" hint-placeholder-val="{{ false }}">
+          <article style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:8px;padding:12px;display:grid;gap:12px;opacity:{{ a2.cardOp }};transform:{{ a2.cardTf }};transition:{{ a2.cardTr }}">
+            <div style="display:grid"><span style="font-size:14px;font-weight:600;color:#1f1c18">Bürobedarf Nord KG</span><span style="font:12px/1.45 'JetBrains Mono',monospace;color:#746c61">BN-88290</span></div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px"><span style="font:500 21px/1.2 'JetBrains Mono',monospace;color:#1f1c18">97,58 €</span><span style="font-size:12px">Due 06 Nov 2026</span></div>
+            <div style="display:grid;gap:4px;justify-items:start"><span style="font:12px/1.45 'JetBrains Mono',monospace;color:#1f1c18">DE02 1203 0000 0000 2020 51</span><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e4f1ed;color:#0f6e62;font-size:12px;font-weight:500"><e-icon name="circle-check" size="14"></e-icon>Confirmed change</span></div>
+            <span style="font-size:12px;color:#746c61">Reviewed by Anna Weber, just now</span>
+            <q style="display:block;padding:8px;background:#f7f2ea;border:1px solid #ebe3d6;border-radius:6px;font-size:12px;color:#1f1c18;quotes:none">{{ a2.quote }}</q>
+            <sc-if value="{{ a2.canApprove }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button onClick="{{ a2.reject }}" style="height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#fbe9e6;color:#b42318;border:1px solid #b42318;cursor:pointer" style-hover="background:#b42318;color:#fffdf9" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Reject…</button><button onClick="{{ a2.approve }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#1f1c18;color:#fffdf9;border:1px solid #1f1c18;cursor:pointer" style-hover="background:#3f3a33" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="check" size="16"></e-icon>Approve</button></div></sc-if>
+            <sc-if value="{{ a2.approving }}" hint-placeholder-val="{{ false }}"><div aria-busy="true" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><span style="display:grid;place-items:center;height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#f6f0e6;color:#746c61;border:1px solid #ebe3d6">Reject…</span><span style="display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#1f1c18;color:#fffdf9"><e-icon name="loader" size="16" spin="true"></e-icon>Approving…</span></div></sc-if>
+            <sc-if value="{{ a2.approved }}" hint-placeholder-val="{{ false }}"><div role="status" style="display:flex;gap:8px;align-items:center;min-height:44px;padding:8px 12px;border-radius:6px;background:#e4f1ed;color:#0f6e62;font-size:13px;font-weight:500"><e-icon name="circle-check" size="16"></e-icon>You approved this on 09 Oct 2026.</div></sc-if>
+            <sc-if value="{{ a2.rejectHint }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#746c61">Rejecting works in the sandbox. Here, approve it to see the export.</span></sc-if>
+          </article>
+        </sc-if>
+      </div>
+      <nav aria-label="Phone tabs" style="display:grid;grid-template-columns:repeat(5,1fr);background:#f7f2ea;border-top:1px solid #ebe3d6">
+        <span style="display:grid;justify-items:center;align-content:center;gap:4px;color:#746c61;font-size:12px"><e-icon name="inbox" size="20"></e-icon>Inbox</span>
+        <span aria-current="page" style="display:grid;justify-items:center;align-content:center;gap:4px;color:#1f1c18;font-size:12px;font-weight:600"><e-icon name="check-check" size="20"></e-icon>Approvals</span>
+        <span style="display:grid;justify-items:center;align-content:center;gap:4px;color:#746c61;font-size:12px"><e-icon name="building" size="20"></e-icon>Suppliers</span>
+        <span style="display:grid;justify-items:center;align-content:center;gap:4px;color:#746c61;font-size:12px"><e-icon name="archive" size="20"></e-icon>Exports</span>
+        <span style="display:grid;justify-items:center;align-content:center;gap:4px;color:#746c61;font-size:12px"><e-icon name="more" size="20"></e-icon>More</span>
+      </nav>
+    </div>
+
+    <div style="position:relative;width:318px;height:200px;margin:40px auto 0">
+      <svg aria-hidden="true" width="318" height="200" viewBox="0 0 318 200" style="position:absolute;inset:0;overflow:visible;filter:url(#eg-ink)"><path d="M 16 54 C 16 44, 22 38, 32 38 L 110 36 C 118 36, 121 40, 125 46 L 134 58 L 296 56 C 304 56, 306 62, 306 70 L 304 188 L 20 190 Z" style="fill:#fdfaf4;stroke:#d3241b;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1200;stroke-dashoffset:{{ p2.o1200 }};transition:{{ p2.tF }}"></path></svg>
+      <sc-if value="{{ a2.exported }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;left:16px;top:30px;width:286px;height:40px;display:flex;align-items:center;gap:8px;padding:0 12px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:6px;font-size:12px;color:#1f1c18;transform:{{ a2.rowTf }};transition:{{ a2.rowTr }}"><span style="font-family:'JetBrains Mono',monospace">BN-88290</span><span style="flex:1"></span><span style="font-family:'JetBrains Mono',monospace">97,58 €</span><span style="display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 8px;border-radius:999px;background:#f6f0e6;color:#746c61;font-weight:500"><e-icon name="check" size="12"></e-icon>Exported</span></div></sc-if>
+      <svg aria-hidden="true" width="318" height="200" viewBox="0 0 318 200" style="position:absolute;inset:0;overflow:visible;pointer-events:none;filter:url(#eg-ink)"><path d="M 8 88 C 90 82, 220 80, 312 84 L 306 192 L 14 194 Z" style="fill:#fdfaf4;stroke:#d3241b;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1200;stroke-dashoffset:{{ p2.o1200 }};transition:{{ p2.tF }}"></path></svg>
+      <span lang="de" style="position:absolute;left:0;right:0;top:122px;text-align:center;font:600 28px/1 Caveat,cursive;color:#d3241b;clip-path:{{ p2.clip }};transition:{{ p2.tN }}">Für den Steuerberater</span>
+    </div>
+    <sc-if value="{{ a2.done }}" hint-placeholder-val="{{ false }}"><button onClick="{{ a2.reset }}" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:44px;margin-top:24px;border-radius:6px;font-size:16px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="refresh" size="16"></e-icon>Do it again</button></sc-if>
+  </div>
+</section>
+
+<section id="facts" data-screen-label="Phone: close" style="padding:56px 16px 40px;display:grid;gap:40px">
+  <ul role="list" style="list-style:none;margin:0;padding:0;background:#fffdf9;border:1px solid #d6cbbb;border-radius:12px">
+    <li style="padding:20px;display:grid;gap:8px"><strong style="font-size:14px;font-weight:600;color:#1f1c18">Receiving: since 1 Jan 2025</strong><p style="font-size:13px">Every German business must be able to receive structured e-invoices (EN 16931).</p><a href="https://ec.europa.eu/digital-building-blocks/sites/spaces/DIGITAL/pages/467108886/eInvoicing+in+Germany" style="display:inline-flex;align-items:center;min-height:44px;justify-self:start;font-size:12px">Source: European Commission</a></li>
+    <li style="padding:20px;display:grid;gap:8px;border-top:1px solid #ebe3d6"><strong style="font-size:14px;font-weight:600;color:#1f1c18">Sending: from 2027 and 2028</strong><p style="font-size:13px">Plain PDF invoices to other German businesses end: in 2027 above €800,000 turnover, in 2028 for everyone. Invoices up to €250 stay exempt.</p><a href="https://ec.europa.eu/digital-building-blocks/sites/spaces/DIGITAL/pages/467108886/eInvoicing+in+Germany" style="display:inline-flex;align-items:center;min-height:44px;justify-self:start;font-size:12px">Source: European Commission</a></li>
+    <li style="padding:20px;display:grid;gap:8px;border-top:1px solid #ebe3d6"><strong style="font-size:14px;font-weight:600;color:#1f1c18">Checks the official EN 16931 and XRechnung rules</strong><p style="font-size:13px">Every verdict names the rule it rests on and says in plain English what to do.</p></li>
+    <li style="padding:20px;display:grid;gap:8px;border-top:1px solid #ebe3d6"><strong style="font-size:14px;font-weight:600;color:#1f1c18">AI shows where every value came from</strong><p style="font-size:13px">For plain PDFs, each value comes with the text it was read from. Scans have no text, so those are typed in by hand.</p></li>
+    <li style="padding:20px;display:grid;gap:8px;border-top:1px solid #ebe3d6"><strong style="font-size:14px;font-weight:600;color:#1f1c18">Open source, MIT</strong><p style="font-size:13px">The code is on GitHub. Read it, check it, change it.</p><a href="#github" style="display:inline-flex;align-items:center;min-height:44px;justify-self:start;font-size:12px">GitHub</a></li>
+  </ul>
+  <div style="display:grid;gap:16px">
+    <h2 style="font:700 28px/1.1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">The sandbox has all twelve sample invoices.</h2>
+    <p style="font-size:17px;line-height:1.6">Stamp them, check them, approve them. Nothing in there is real, and it deletes itself.</p>
+    <a href="#sandbox" style="display:flex;align-items:center;justify-content:center;height:44px;border-radius:6px;font-size:16px;font-weight:500;text-decoration:none;background:#1f1c18;color:#fffdf9;border:1px solid #1f1c18" style-hover="background:#3f3a33;color:#fffdf9" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Open the sandbox</a>
+    <a href="#sign-in" style="display:flex;align-items:center;justify-content:center;height:44px;border-radius:6px;font-size:16px;font-weight:500;text-decoration:none;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Sign in</a>
+    <p style="font-size:14px;color:#5f574d;text-align:center">Free and open source. No sign-up for the sandbox.</p>
+    <a href="#accuracy" style="display:flex;align-items:center;justify-content:center;min-height:44px;font-size:14px">How accurate is it? Measured, with the method</a>
+  </div>
+</section>
+
+<footer style="padding:0 16px 32px">
+  <div style="display:grid;gap:12px;padding-top:24px;border-top:1px solid #d6cbbb;font-size:13px;color:#5f574d">
+    <span style="display:flex;align-items:center;gap:8px;color:#1f1c18"><span aria-hidden="true" style="width:1em;height:1em;font-size:24px;display:grid;place-items:center;border:0.0625em solid #2c4a8a;border-radius:0.15em;outline:0.025em solid #2c4a8a;outline-offset:-0.175em;background:#fffdf9;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1;filter:url(#eg-ink)"><span style="font-size:0.55em">E</span></span><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em">Eingang</span></span>
+    <span>Not tax advice. Eingang checks published technical rules.</span>
+    <a href="#github" style="display:inline-flex;align-items:center;min-height:44px">GitHub</a>
+  </div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;headline&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Which ones count&quot;,&quot;The new bank account&quot;,&quot;Paid twice&quot;],&quot;default&quot;:&quot;Which ones count&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Copy&quot;},&quot;motion&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Full&quot;,&quot;Reduced (end state)&quot;],&quot;default&quot;:&quot;Full&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;inkTexture&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Motion&quot;}}">
+const DOCS = { xr: 'valid', pdf: 'ai', bwl: 'bwl', inv: 'invalid' };
+const EXAMPLE_NOTE = 'Called Bürobedarf Nord on their old number — confirmed';
+const A2_RESET = { note: '', noteErr: false, resolved: false, resIn: false, reviewed: false, cardIn: false, approving: false, approved: false, exported: false, rowIn: false, rejectHint: false };
+
+class Component extends DCLogic {
+  state = Object.assign({ draw: { hero: true, act1: true, act2: true }, anim: false, rows: {}, n: 0 }, A2_RESET);
+  timers = [];
+  act2Ref = React.createRef();
+  later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
+  raf2(fn) { requestAnimationFrame(() => requestAnimationFrame(fn)); }
+  reduced() { return (this.props.motion ?? 'Full') !== 'Full' || window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  ink() { const on = this.props.inkTexture ?? true; const go = () => (window.egInk ? window.egInk(on) : setTimeout(go, 200)); go(); }
+  componentDidMount() {
+    this.ink();
+    if (this.reduced()) return;
+    this.setState({ draw: { hero: false, act1: false, act2: false } });
+    this.later(() => this.drawGroup('hero'), 600);
+    if ('IntersectionObserver' in window && this.act2Ref.current) {
+      this.io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { this.io.disconnect(); this.drawGroup('act2'); } }, { threshold: 0.2 });
+      this.io.observe(this.act2Ref.current);
+    } else this.drawGroup('act2');
+  }
+  componentDidUpdate(p) {
+    if (p.inkTexture !== this.props.inkTexture) this.ink();
+    if (p.motion !== this.props.motion && this.reduced()) {
+      const rows = {};
+      Object.keys(this.state.rows).forEach(k => { rows[k] = Object.assign({}, this.state.rows[k], { phase: 'done', in: true }); });
+      this.setState({ draw: { hero: true, act1: true, act2: true }, anim: false, rows, cardIn: this.state.reviewed, rowIn: this.state.exported, resIn: this.state.resolved });
+    }
+  }
+  componentWillUnmount() { this.timers.forEach(clearTimeout); if (this.io) this.io.disconnect(); }
+  drawGroup(g) { this.setState({ anim: true }, () => this.raf2(() => this.setState(s => ({ draw: Object.assign({}, s.draw, { [g]: true }) })))); }
+
+  setRow(id, p) { this.setState(s => ({ rows: Object.assign({}, s.rows, { [id]: Object.assign({}, s.rows[id], p) }) })); }
+  stamp = id => {
+    if (!DOCS[id] || this.state.rows[id]) return;
+    const red = this.reduced(), n = this.state.n;
+    this.setState(s => ({ n: s.n + 1, rows: Object.assign({}, s.rows, { [id]: { t: '09 Oct, 10:4' + (1 + n), phase: red ? 'done' : 'received', in: red } }) }));
+    if (red) return;
+    this.raf2(() => this.setRow(id, { in: true }));
+    this.later(() => this.setRow(id, { phase: 'processing' }), 400);
+    this.later(() => { this.setRow(id, { phase: 'done' }); if (!this.state.draw.act1) this.drawGroup('act1'); }, 1100);
+  };
+  reset1 = () => this.setState({ rows: {}, n: 0 });
+
+  onNote = e => this.setState({ note: e.target.value, noteErr: false });
+  example = () => this.setState({ note: EXAMPLE_NOTE, noteErr: false });
+  resolve = () => {
+    if (!this.state.note.trim()) return this.setState({ noteErr: true });
+    const red = this.reduced();
+    this.setState({ resolved: true, resIn: red });
+    if (!red) this.raf2(() => this.setState({ resIn: true }));
+  };
+  review = () => {
+    if (!this.state.resolved || this.state.reviewed) return;
+    const red = this.reduced();
+    this.setState({ reviewed: true, cardIn: red });
+    if (!red) this.raf2(() => this.setState({ cardIn: true }));
+  };
+  approve = () => {
+    if (!this.state.reviewed || this.state.approving || this.state.approved) return;
+    if (this.reduced()) return this.setState({ approved: true, exported: true, rowIn: true, rejectHint: false });
+    this.setState({ approving: true, rejectHint: false });
+    this.later(() => this.setState({ approving: false, approved: true }), 700);
+    this.later(() => this.setState({ exported: true }, () => this.raf2(() => this.setState({ rowIn: true }))), 1200);
+  };
+  reject = () => this.setState({ rejectHint: true });
+  reset2 = () => this.setState(Object.assign({}, A2_RESET));
+
+  renderVals() {
+    const h = this.props.headline ?? 'Which ones count';
+    const red = this.reduced(), A = this.state.anim && !red, dr = this.state.draw;
+    const ease = 'cubic-bezier(.65,0,.35,1)';
+    const tr = (p, d, l) => A ? `${p} ${d}ms ${ease} ${l}ms` : 'none';
+    const grp = on => ({ o200: on ? 0 : 200, o1200: on ? 0 : 1200, o1600: on ? 0 : 1600, clip: on ? 'inset(-30% -5% -30% -5%)' : 'inset(-30% 105% -30% -5%)' });
+    const hero = Object.assign(grp(dr.hero), { tA: tr('stroke-dashoffset', 400, 0), tN: tr('clip-path', 400, 350) });
+    const p1 = Object.assign(grp(dr.act1), { tA: tr('stroke-dashoffset', 400, 0), tN: tr('clip-path', 400, 300) });
+    const p2 = Object.assign(grp(dr.act2), { tC: tr('stroke-dashoffset', 600, 0), tA: tr('stroke-dashoffset', 350, 500), tN: tr('clip-path', 400, 800), tF: tr('stroke-dashoffset', 800, 350) });
+
+    const rows = this.state.rows;
+    const docs = {};
+    Object.keys(DOCS).forEach(id => {
+      const r = rows[id], done = !!r && r.phase === 'done', inn = !!r && r.in;
+      docs[id] = {
+        stamped: !!r, open: !r, stampIt: () => this.stamp(id), t: r ? r.t : '',
+        received: !!r && r.phase === 'received', processing: !!r && r.phase === 'processing', done,
+        op: inn ? 1 : 0, tf: inn ? 'none' : 'translateY(-8px)', tr: red ? 'none' : 'opacity 240ms ease-out, transform 240ms ease-out',
+        impOp: inn ? 1 : 0, impTf: inn ? 'scale(1)' : 'scale(1.25)', impTr: red ? 'none' : 'opacity 140ms ease-out, transform 140ms ease-out'
+      };
+    });
+    const ids = Object.keys(rows);
+    const a1 = { allDone: ids.length === 4 && ids.every(k => rows[k].phase === 'done'), reset: this.reset1 };
+
+    const s = this.state;
+    const stepState = [s.resolved, s.reviewed, s.approved, s.exported];
+    const cur = stepState.indexOf(false);
+    const steps = ['Resolve the check', 'Mark reviewed', 'Approve on Jonas’s phone', 'Export for the tax advisor'].map((label, i) => {
+      const done = stepState[i], now = i === cur;
+      return { label, n: i + 1, icon: done ? 'circle-check' : 'circle', color: done ? '#0f6e62' : (now ? '#1f1c18' : '#5f574d'), weight: now ? 600 : 500, aria: now ? 'step' : 'false' };
+    });
+    const a2 = {
+      note: s.note, onNote: this.onNote, example: this.example, resolve: this.resolve, review: this.review, approve: this.approve, reject: this.reject, reset: this.reset2,
+      noteErr: s.noteErr, open: !s.resolved, resolved: s.resolved, quote: s.note.trim(), resOp: s.resIn ? 1 : 0, resTr: red ? 'none' : 'opacity 200ms ease-out',
+      canReview: s.resolved && !s.reviewed, blockedReview: !s.resolved,
+      sNeeds: !s.reviewed, sAwait: s.reviewed && !s.approved, sAppr: s.approved && !s.exported, sExp: s.exported,
+      waiting: s.reviewed && !s.approved, finished: s.approved,
+      phoneEmpty: !s.reviewed, phoneCard: s.reviewed,
+      cardOp: s.cardIn ? 1 : 0, cardTf: s.cardIn ? 'none' : 'translateY(24px)', cardTr: red ? 'none' : 'opacity 320ms ease-out, transform 320ms cubic-bezier(.2,.8,.2,1)',
+      canApprove: s.reviewed && !s.approving && !s.approved, approving: s.approving, approved: s.approved, rejectHint: s.rejectHint && !s.approved,
+      exported: s.exported, rowTf: s.rowIn ? 'translateY(26px)' : 'translateY(-48px)', rowTr: red ? 'none' : 'transform 700ms cubic-bezier(.65,0,.35,1)',
+      done: s.exported, steps
+    };
+    return { hA: h === 'Which ones count', hB: h === 'The new bank account', hC: h === 'Paid twice', hero, p1, p2, docs, a1, a2, act2Ref: this.act2Ref };
+  }
+}
+
+</script>
+</body>
+</html>

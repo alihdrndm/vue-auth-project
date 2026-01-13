@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&amp;family=Familjen+Grotesk:wght@700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<script src="./eingang-ui.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f7f2ea;color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,figure{margin:0}
+button{font:inherit;color:inherit}
+a{color:#2c4a8a;text-underline-offset:3px}
+a:hover{color:#1f1c18}
+:focus-visible{outline:2.5px solid #0f6e62;outline-offset:2px}
+</style>
+</helmet>
+
+<section data-screen-label="States board" style="padding:72px;display:grid;gap:56px;width:max-content">
+  <div style="display:grid;gap:8px;max-width:900px">
+    <h1 style="font:700 42px/1.1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">States</h1>
+    <p style="font-size:14px;color:#746c61">Loading, empty, error and success for every data view, then the special states. Skeletons are static, shaped like the layout they replace, and appear only after 300 ms.</p>
+    <p role="note" style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px dashed #746c61;border-radius:8px;background:#fffdf9;font-size:13px;color:#3f3a33"><e-icon name="info" size="16" style="color:#746c61"></e-icon>Error column: example text only. The app shows the title and detail the server returns, plus “Try again”.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:160px repeat(4,440px);gap:16px 24px;align-items:start">
+    <span></span>
+    <sc-for list="{{ heads }}" as="h" hint-placeholder-count="4"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">{{ h }}</span></sc-for>
+    <sc-for list="{{ views }}" as="v" hint-placeholder-count="6">
+      <span style="padding-top:12px;font-size:14px;font-weight:600;color:#1f1c18">{{ v.name }}</span>
+
+      <div aria-busy="true" aria-label="{{ v.name }} loading" style="height:300px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden;display:grid;grid-template-rows:44px minmax(0,1fr)">
+        <div style="display:flex;align-items:center;gap:12px;padding:0 16px;background:#f7f2ea;border-bottom:1px solid #ebe3d6"><span style="font:700 14px/1 'Familjen Grotesk',sans-serif;color:#1f1c18">{{ v.name }}</span><span style="width:48px;height:12px;border-radius:6px;background:#ebe3d6"></span></div>
+        <div style="display:grid;align-content:start;gap:0;padding:4px 16px">
+          <sc-for list="{{ v.skel }}" as="row" hint-placeholder-count="5">
+            <div style="display:flex;align-items:center;gap:12px;border-bottom:1px solid #ebe3d6;height:{{ row.h }}">
+              <sc-for list="{{ row.segs }}" as="g" hint-placeholder-count="4"><span style="flex:{{ g.f }};height:{{ g.h }};border-radius:{{ g.r }};background:#ebe3d6"></span></sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="height:300px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden;display:grid;grid-template-rows:44px minmax(0,1fr)">
+        <div style="display:flex;align-items:center;padding:0 16px;background:#f7f2ea;border-bottom:1px solid #ebe3d6;font:700 14px/1 'Familjen Grotesk',sans-serif;color:#1f1c18">{{ v.name }}</div>
+        <div style="display:grid;justify-items:center;align-content:center;gap:8px;padding:24px;text-align:center">
+          <span style="display:grid;place-items:center;width:44px;height:44px;border-radius:999px;background:#f6f0e6;color:#1f1c18"><e-icon name="{{ v.eIcon }}" size="20"></e-icon></span>
+          <h2 style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">{{ v.eTitle }}</h2>
+          <p style="font-size:13px;color:#746c61;max-width:36ch">{{ v.eBody }}</p>
+          <span style="display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;margin-top:4px;border-radius:6px;font-size:14px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb"><e-icon name="{{ v.eActIcon }}" size="16"></e-icon>{{ v.eAct }}</span>
+        </div>
+      </div>
+
+      <div role="alert" style="height:300px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden;display:grid;grid-template-rows:44px minmax(0,1fr)">
+        <div style="display:flex;align-items:center;padding:0 16px;background:#f7f2ea;border-bottom:1px solid #ebe3d6;font:700 14px/1 'Familjen Grotesk',sans-serif;color:#1f1c18">{{ v.name }}</div>
+        <div style="display:grid;justify-items:center;align-content:center;gap:8px;padding:24px;text-align:center">
+          <span style="display:grid;place-items:center;width:44px;height:44px;border-radius:999px;background:#fbe9e6;color:#b42318"><e-icon name="circle-alert" size="20"></e-icon></span>
+          <span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;color:#746c61;border:1px dashed #746c61">Example text</span><h2 style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">{{ v.xTitle }}</h2>
+          <p style="font-size:13px;color:#746c61;max-width:36ch">{{ v.xBody }}</p>
+          <span style="display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;margin-top:4px;border-radius:6px;font-size:14px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb"><e-icon name="refresh" size="16"></e-icon>Try again</span>
+        </div>
+      </div>
+
+      <div style="height:300px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden;display:grid;grid-template-rows:44px auto minmax(0,1fr)">
+        <div style="display:flex;align-items:center;padding:0 16px;background:#f7f2ea;border-bottom:1px solid #ebe3d6;font:700 14px/1 'Familjen Grotesk',sans-serif;color:#1f1c18">{{ v.name }}</div>
+        <p role="status" style="display:flex;align-items:center;gap:8px;margin:12px 16px 4px;padding:8px 12px;border-radius:6px;background:#e4f1ed;color:#0f6e62;font-size:13px;font-weight:500"><e-icon name="circle-check" size="16"></e-icon>{{ v.sMsg }}</p>
+        <div style="display:grid;align-content:start;padding:0 16px">
+          <sc-for list="{{ v.rows }}" as="r" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:12px;min-height:48px;border-bottom:1px solid #ebe3d6;font-size:13px"><span style="flex:1;min-width:0;display:grid"><span style="font-weight:500;color:#1f1c18;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.a }}</span><span style="font:12px/1.45 'JetBrains Mono',monospace;color:#746c61">{{ r.b }}</span></span><span style="flex:none;font-family:'JetBrains Mono',monospace;color:#1f1c18">{{ r.c }}</span><span style="flex:none;display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;background:{{ r.chip.bg }};color:{{ r.chip.fg }}"><e-icon name="{{ r.chip.icon }}" size="14" style="color:{{ r.chip.ic }}"></e-icon>{{ r.chip.label }}</span></div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="display:grid;gap:16px">
+    <h2 style="font:700 28px/1.1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Special states</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,600px);gap:24px;align-items:start">
+
+      <figure style="display:grid;gap:8px"><figcaption style="font-size:13px;font-weight:600;color:#1f1c18">Processing and failed document, inbox rows</figcaption>
+        <div style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden">
+          <div style="display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 16px;border-bottom:1px solid #ebe3d6;font-size:13px"><span style="display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500">09 Oct, 10:41</span><span style="flex:1;display:grid"><span style="font-weight:500;color:#1f1c18">Albers_SA-26-1160.pdf</span><span style="font-size:12px;color:#2f5d8a">Step 2 of 4: checking the e-invoice rules</span></span><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e6eef7;color:#2f5d8a;font-size:12px;font-weight:500"><e-icon name="loader" size="14" spin="true"></e-icon>Processing</span></div>
+          <div style="display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 16px;font-size:13px"><span style="display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500">09 Oct, 10:43</span><span style="flex:1;display:grid"><span style="font-weight:500;color:#1f1c18">Rechnung_Oktober.pdf</span><span style="font-size:12px;color:#b42318">This PDF is damaged and could not be opened.</span></span><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#fbe9e6;color:#b42318;font-size:12px;font-weight:500"><e-icon name="circle-alert" size="14"></e-icon>Failed</span><span style="display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 12px;border-radius:6px;font-size:13px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb"><e-icon name="refresh" size="14"></e-icon>Retry</span></div>
+        </div>
+      </figure>
+
+      <figure style="display:grid;gap:8px"><figcaption style="font-size:13px;font-weight:600;color:#1f1c18">Upload rows: sandbox and demo limits</figcaption>
+        <div style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden">
+          <div style="display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:12px;align-items:start;padding:12px 16px;border-bottom:1px solid #ebe3d6"><e-icon name="file-text" size="20" style="color:#746c61"></e-icon><span style="display:grid;gap:4px"><span style="font:13px 'JetBrains Mono',monospace;color:#1f1c18">Moreau_Novembre.pdf</span><span role="alert" style="display:flex;gap:4px;align-items:flex-start;font-size:13px;color:#b42318"><e-icon name="octagon" size="16"></e-icon>This sandbox has reached its limit of 10 uploaded files.</span></span><span style="display:inline-flex;align-items:center;height:28px;padding:0 8px;font-size:13px;font-weight:500;color:#3f3a33">Remove</span></div>
+          <div style="display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:12px;align-items:start;padding:12px 16px"><e-icon name="file-code" size="20" style="color:#746c61"></e-icon><span style="display:grid;gap:4px"><span style="font:13px 'JetBrains Mono',monospace;color:#1f1c18">Kessler_RE-2026-0420.xml</span><span role="alert" style="display:flex;gap:4px;align-items:flex-start;font-size:13px;color:#b42318"><e-icon name="octagon" size="16"></e-icon>The demo's storage is full for today. Try again tomorrow.</span></span><span style="display:inline-flex;align-items:center;height:28px;padding:0 8px;font-size:13px;font-weight:500;color:#3f3a33">Remove</span></div>
+        </div>
+      </figure>
+
+      <figure style="display:grid;gap:8px"><figcaption style="font-size:13px;font-weight:600;color:#1f1c18">Expired sandbox page</figcaption>
+        <div style="height:224px;display:grid;justify-items:center;align-content:center;gap:12px;text-align:center;background:#f7f2ea;border:1px solid #ebe3d6;border-radius:12px">
+          <span aria-hidden="true" style="width:1em;height:1em;font-size:40px;display:grid;place-items:center;border:0.0625em solid #2c4a8a;border-radius:0.15em;outline:0.025em solid #2c4a8a;outline-offset:-0.175em;background:#fffdf9;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1;filter:url(#eg-ink)"><span style="font-size:0.55em">E</span></span>
+          <h3 style="font:700 21px/1.2 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">This sandbox has expired. Open a new one.</h3>
+          <span style="display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:6px;font-size:16px;font-weight:500;background:#1f1c18;color:#fffdf9">Open a new sandbox</span>
+        </div>
+      </figure>
+
+      <figure style="display:grid;gap:8px;grid-column:span 2"><figcaption style="font-size:13px;font-weight:600;color:#1f1c18">Block check “Extraction unavailable”, on a plain PDF in review. The first reason is also the AI-budget-used-up state.</figcaption>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <sc-for list="{{ extract }}" as="x" hint-placeholder-count="5">
+            <div style="display:grid;gap:8px;padding:12px 16px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:8px">
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px"><span style="display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:500;color:#b42318"><e-icon name="octagon" size="16"></e-icon>Block</span><span style="font-size:14px;font-weight:600;color:#1f1c18">Extraction unavailable</span><span style="flex:1"></span><span style="font:12px 'JetBrains Mono',monospace;color:#746c61">{{ x.code }}</span></div>
+              <p style="font-size:13px">{{ x.text }}</p>
+              <div style="display:flex;gap:8px"><span style="display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 12px;border-radius:6px;font-size:13px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb"><e-icon name="pencil" size="14"></e-icon>Enter fields by hand</span><sc-if value="{{ x.retry }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 8px;border-radius:6px;font-size:13px;font-weight:500;color:#3f3a33"><e-icon name="refresh" size="14"></e-icon>Retry</span></sc-if></div>
+            </div>
+          </sc-for>
+        </div>
+      </figure>
+
+      <figure style="display:grid;gap:8px"><figcaption style="font-size:13px;font-weight:600;color:#1f1c18">Toasts</figcaption>
+        <div style="display:grid;gap:12px">
+          <div role="status" style="display:flex;align-items:center;gap:12px;min-height:48px;padding:8px 8px 8px 16px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:8px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;font-size:14px;color:#1f1c18"><e-icon name="circle-check" size="16" style="color:#0f6e62"></e-icon><span style="flex:1">You approved <span style="font-family:'JetBrains Mono',monospace">RE-2026-0412</span>.</span><span aria-label="Dismiss" style="display:grid;place-items:center;width:28px;height:28px;color:#3f3a33"><e-icon name="x" size="16"></e-icon></span></div>
+          <div role="alert" style="display:flex;align-items:center;gap:12px;min-height:48px;padding:8px 8px 8px 16px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:8px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;font-size:14px;color:#1f1c18"><e-icon name="octagon" size="16" style="color:#b42318"></e-icon><span style="flex:1">Export failed. No file was created.</span><span style="display:inline-flex;align-items:center;height:28px;padding:0 8px;font-size:13px;font-weight:500">Try again</span><span aria-label="Dismiss" style="display:grid;place-items:center;width:28px;height:28px;color:#3f3a33"><e-icon name="x" size="16"></e-icon></span></div>
+          <div role="alert" style="display:flex;align-items:center;gap:12px;min-height:48px;padding:8px 8px 8px 16px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:8px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;font-size:14px;color:#1f1c18"><e-icon name="clock" size="16" style="color:#c47408"></e-icon><span style="flex:1">Too many requests. Wait a minute and try again.</span><span aria-label="Dismiss" style="display:grid;place-items:center;width:28px;height:28px;color:#3f3a33"><e-icon name="x" size="16"></e-icon></span></div>
+        </div>
+      </figure>
+
+      <figure style="display:grid;gap:8px;grid-column:1 / -1"><figcaption style="font-size:13px;font-weight:600;color:#1f1c18">Permission-disabled buttons, with the tooltip shown on hover and focus</figcaption>
+        <div style="display:grid;grid-template-columns:repeat(4,260px);gap:72px 24px;padding:56px 24px 24px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px">
+          <sc-for list="{{ perms }}" as="p" hint-placeholder-count="7">
+            <div style="display:grid;gap:8px;justify-items:start">
+              <span style="position:relative;display:inline-flex">
+                <span role="tooltip" style="position:absolute;left:0;bottom:calc(100% + 8px);width:max-content;max-width:248px;background:#1f1c18;color:#fffdf9;font-size:12px;line-height:1.4;padding:4px 8px;border-radius:6px">{{ p.tip }}</span>
+                <span aria-disabled="true" style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#f6f0e6;color:#746c61;border:1px solid #ebe3d6;cursor:not-allowed"><e-icon name="lock" size="14"></e-icon>{{ p.label }}</span>
+              </span>
+              <span style="font-size:12px;color:#746c61">{{ p.who }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </figure>
+    </div>
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const CH = {
+  needs: { label: 'Needs review', icon: 'eye', bg: '#fcefd8', fg: '#8a4a06', ic: '#c47408' },
+  awaiting: { label: 'Awaiting approval', icon: 'hourglass', bg: '#e8edf7', fg: '#2c4a8a', ic: '#2c4a8a' },
+  approved: { label: 'Approved', icon: 'circle-check', bg: '#e4f1ed', fg: '#0f6e62', ic: '#0f6e62' },
+  received: { label: 'Received', icon: 'inbox', bg: '#e8edf7', fg: '#2c4a8a', ic: '#2c4a8a' },
+  known: { label: 'Known account', icon: 'check', bg: '#f6f0e6', fg: '#746c61', ic: '#746c61' },
+  confirmed: { label: 'Confirmed change', icon: 'circle-check', bg: '#e4f1ed', fg: '#0f6e62', ic: '#0f6e62' },
+  exported: { label: 'Exported', icon: 'check', bg: '#f6f0e6', fg: '#746c61', ic: '#746c61' },
+  sample: { label: 'Sample', icon: 'info', bg: '#f6f0e6', fg: '#746c61', ic: '#746c61' }
+};
+const S = (f, h, r) => ({ f, h: h || '12px', r: r || '6px' });
+const TABLE = n => Array.from({ length: n }, (_, i) => ({ h: '48px', segs: [S('0 0 88px', '20px'), S('1 1 0'), S('0 0 72px'), S('0 0 96px', '20px', '999px')] }));
+const VIEWS = [
+  { name: 'Inbox', skel: TABLE(5), eIcon: 'inbox', eTitle: 'Nothing has arrived yet.', eBody: 'Upload an invoice or open the sample set.', eAct: 'Upload invoices', eActIcon: 'upload', xTitle: 'Couldn’t load the inbox', xBody: 'The server didn’t answer. Nothing was changed.', sMsg: '3 invoices stamped in.', rows: [['Elektro Kessler GmbH', 'RE-2026-0412', '1.190,00 €', 'awaiting'], ['Druckerei Sommer GmbH', '2026-1043', '1.547,00 €', 'needs'], ['Spedition Albers GmbH', 'SA/26/1187', '2.856,00 €', 'received']] },
+  { name: 'Invoice review', skel: [{ h: '104px', segs: [S('0 0 120px', '80px', '6px'), S('1 1 0', '12px')] }, { h: '48px', segs: [S('0 0 96px'), S('1 1 0'), S('0 0 64px', '20px', '999px')] }, { h: '48px', segs: [S('0 0 96px'), S('1 1 0'), S('0 0 64px', '20px', '999px')] }, { h: '48px', segs: [S('0 0 96px'), S('1 1 0'), S('0 0 64px', '20px', '999px')] }], eIcon: 'check-check', eTitle: 'Nothing to review', eBody: 'Every invoice in the inbox has been reviewed.', eAct: 'Go to the Inbox', eActIcon: 'inbox', xTitle: 'Couldn’t open this invoice', xBody: 'The preview didn’t load. The invoice itself is unchanged.', sMsg: 'Marked reviewed. Jonas Brandt approves next.', rows: [['Druckerei Sommer GmbH', '2026-1043', '1.547,00 €', 'awaiting']] },
+  { name: 'Approvals', skel: Array.from({ length: 4 }, () => ({ h: '56px', segs: [S('1 1 0'), S('0 0 72px'), S('0 0 64px', '28px'), S('0 0 72px', '28px')] })), eIcon: 'circle-check', eTitle: 'Nothing waiting for you', eBody: 'Invoices arrive here once someone else marks them reviewed.', eAct: 'Go to the Inbox', eActIcon: 'inbox', xTitle: 'Couldn’t load approvals', xBody: 'The server didn’t answer. Nothing was approved or rejected.', sMsg: 'You approved RE-2026-0412.', rows: [['Bürobedarf Nord KG', 'BN-88213', '412,34 €', 'awaiting'], ['Spedition Albers GmbH', 'SA/26/1187', '2.856,00 €', 'awaiting']] },
+  { name: 'Suppliers', skel: Array.from({ length: 5 }, () => ({ h: '48px', segs: [S('1 1 0'), S('0 0 40px'), S('0 0 88px'), S('0 0 104px', '20px', '999px')] })), eIcon: 'building', eTitle: 'No suppliers yet', eBody: 'A supplier appears here with its first invoice.', eAct: 'Upload invoices', eActIcon: 'upload', xTitle: 'Couldn’t load suppliers', xBody: 'The server didn’t answer. Nothing was changed.', sMsg: 'Bank account change confirmed.', rows: [['DE02 1203 0000 0000 2020 51', 'First seen on BN-88290', '', 'confirmed'], ['DE89 3704 0044 0532 0130 00', 'First seen on BN-88102-G', '', 'known']] },
+  { name: 'Exports', skel: [{ h: '56px', segs: [S('0 0 20px', '20px', '999px'), S('1 1 0')] }, { h: '56px', segs: [S('0 0 20px', '20px', '999px'), S('1 1 0')] }, { h: '56px', segs: [S('0 0 20px', '20px', '999px'), S('1 1 0')] }, { h: '48px', segs: [S('1 1 0'), S('0 0 104px', '32px')] }], eIcon: 'archive', eTitle: 'Nothing ready to export', eBody: 'Approved invoices wait here until you export them for the tax advisor.', eAct: 'Go to Approvals', eActIcon: 'check-check', xTitle: 'Export failed', xBody: 'No file was created. Approved invoices stay where they are.', sMsg: 'Export ready. 1 invoice moved to Exported.', rows: [['CSV, one row per invoice', '09 Oct 2026, 10:52', 'Download', 'exported']] },
+  { name: 'Accuracy', skel: [{ h: '96px', segs: [S('0 0 120px', '48px'), S('1 1 0')] }, { h: '40px', segs: [S('1 1 0'), S('0 0 48px'), S('0 0 48px'), S('0 0 48px')] }, { h: '40px', segs: [S('1 1 0'), S('0 0 48px'), S('0 0 48px'), S('0 0 48px')] }, { h: '40px', segs: [S('1 1 0'), S('0 0 48px'), S('0 0 48px'), S('0 0 48px')] }], eIcon: 'gauge', eTitle: 'No results published yet', eBody: 'The first test run hasn’t been published. The method is already public.', eAct: 'Read the method', eActIcon: 'file-text', xTitle: 'Couldn’t load the results', xBody: 'The results file didn’t answer. The method page still works.', sMsg: 'Results from the latest run (sample).', rows: [['Critical fields correct', 'Interval 0.00–0.00', '0.00', 'sample'], ['Agreement with KoSIT', 'Validator run', '—', 'sample']] }
+];
+const EXTRACT = [
+  ['budget-demo', 'Automatic extraction is unavailable today: the demo\'s AI budget for today is used up. Enter the fields by hand.', false],
+  ['off', 'Automatic extraction is switched off. Enter the fields by hand.', false],
+  ['budget-install', 'Automatic extraction is paused: this installation\'s AI budget is used up. Enter the fields by hand.', false],
+  ['sandbox-limit', 'This sandbox has used its 3 automatic extractions. Enter the fields by hand.', false],
+  ['failed', 'Automatic extraction failed. Enter the fields by hand, or retry later.', true]
+];
+const PERMS = [
+  ['Approve', 'Only Approvers and Admins can approve.', 'Anna, Accountant'],
+  ['Approve', 'You reviewed this invoice. Someone else must approve it.', 'Jonas, four-eyes'],
+  ['Accept anyway…', 'Only an Admin can accept an invalid invoice.', 'Anna, Accountant'],
+  ['Upload invoices', 'Viewers can’t upload invoices.', 'Viewer'],
+  ['Resolve check', 'Viewers can’t resolve checks.', 'Viewer'],
+  ['Invite member', 'Not available in the sandbox.', 'Jonas, sandbox'],
+  ['Export', 'Nothing approved to export yet.', 'Anna, nothing ready']
+];
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      heads: ['Loading', 'Empty', 'Error', 'Success'],
+      views: VIEWS.map((v, i) => Object.assign({}, v, { key: i, skel: v.skel.map((r, j) => Object.assign({ key: j }, r, { segs: r.segs.map((g, k) => Object.assign({ key: k }, g)) })), rows: v.rows.map((r, j) => ({ key: j, a: r[0], b: r[1], c: r[2], chip: CH[r[3]] })) })),
+      extract: EXTRACT.map((x, i) => ({ key: i, code: x[0], text: x[1], retry: x[2] })),
+      perms: PERMS.map((p, i) => ({ key: i, label: p[0], tip: p[1], who: p[2] }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

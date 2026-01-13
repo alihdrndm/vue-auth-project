@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inbox · Eingang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&amp;family=Familjen+Grotesk:wght@700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<script src="./eingang-ui.js"></script>
+<style>
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:#f7f2ea;color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,p,ol,dl,dd{margin:0}
+ol{padding:0}
+button,input,select{font:inherit;color:inherit}
+a{color:#2c4a8a;text-underline-offset:3px}
+a:hover{color:#1f1c18}
+:focus-visible{outline:2.5px solid #0f6e62;outline-offset:2px}
+::selection{background:#ffe53d;color:#1f1c18}
+</style>
+</helmet>
+
+<sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+<div style="height:100vh;display:grid;grid-template-rows:48px minmax(0,1fr)">
+  <header style="display:flex;align-items:center;gap:16px;padding:0 12px 0 16px;background:#f7f2ea;border-bottom:1px solid #ebe3d6">
+    <div style="display:flex;align-items:center;gap:8px"><span aria-hidden="true" style="width:1em;height:1em;font-size:24px;display:grid;place-items:center;border:0.0625em solid #2c4a8a;border-radius:0.15em;outline:0.025em solid #2c4a8a;outline-offset:-0.175em;background:#fffdf9;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1;filter:url(#eg-ink)"><span style="font-size:0.55em">E</span></span><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Eingang</span></div>
+    <span aria-hidden="true" style="color:#746c61">/</span>
+    <span style="font-size:14px;font-weight:500;color:#1f1c18;white-space:nowrap">Holzwerk Brandt GmbH</span>
+    <label style="flex:1 1 auto;max-width:440px;margin-left:24px;display:flex;align-items:center;gap:8px;height:32px;padding:0 4px 0 12px;border:1px solid #d6cbbb;border-radius:6px;background:#fffdf9;color:#746c61" style-hover="border-color:#746c61"><e-icon name="search" size="16"></e-icon><input ref="{{ searchRef }}" value="{{ q }}" onChange="{{ onQ }}" aria-label="Search invoices" placeholder="Search suppliers and numbers" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font-size:14px;color:#1f1c18"><sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearQ }}" aria-label="Clear search" style="display:inline-grid;place-items:center;width:24px;height:24px;border:0;border-radius:6px;background:transparent;color:#3f3a33;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="x" size="14"></e-icon></button></sc-if><sc-if value="{{ noQ }}" hint-placeholder-val="{{ true }}"><kbd style="display:inline-grid;place-items:center;min-width:24px;height:24px;border:1px solid #d6cbbb;border-radius:6px;background:#f7f2ea;font:12px/1 'JetBrains Mono',monospace;color:#746c61">/</kbd></sc-if></label>
+    <span style="flex:1"></span>
+    <span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500;white-space:nowrap"><e-icon name="clock" size="14"></e-icon>Sandbox, 23 h left</span>
+    <button aria-haspopup="menu" aria-label="Anna Weber, Accountant. Account menu" style="display:flex;align-items:center;gap:8px;height:40px;padding:0 8px 0 4px;border:1px solid transparent;border-radius:6px;background:transparent;cursor:pointer;color:#3f3a33" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><span style="width:28px;height:28px;border-radius:999px;background:#e8edf7;color:#2c4a8a;display:grid;place-items:center;font-size:12px;font-weight:600">AW</span><span style="display:grid;text-align:left;line-height:1.2"><span style="font-size:13px;font-weight:500;color:#1f1c18">Anna Weber</span><span style="font-size:12px;color:#746c61">Accountant</span></span><e-icon name="chevron-down" size="16"></e-icon></button>
+  </header>
+
+  <div style="display:grid;grid-template-columns:{{ railW }} minmax(0,1fr);min-height:0">
+    <nav aria-label="Main" style="background:#f7f2ea;border-right:1px solid #ebe3d6;padding:8px;display:grid;align-content:start;gap:4px">
+      <sc-for list="{{ rail }}" as="it" hint-placeholder-count="6">
+        <a href="{{ it.href }}" aria-current="{{ it.cur }}" aria-label="{{ it.label }}" title="{{ it.label }}" style="display:grid;justify-items:center;align-content:center;gap:4px;min-height:{{ it.h }};padding:8px 4px;border-radius:8px;font-size:12px;font-weight:500;text-decoration:none;color:{{ it.fg }};background:{{ it.bg }};border:{{ it.bd }};box-shadow:{{ it.sh }}" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="{{ it.icon }}" size="20"></e-icon><sc-if value="{{ it.showLabel }}" hint-placeholder-val="{{ true }}"><span>{{ it.label }}</span></sc-if></a>
+      </sc-for>
+    </nav>
+
+    <main style="min-width:0;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);gap:16px;padding:16px">
+      <div role="status" style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:32px;padding:4px 16px;border-radius:8px;background:#e8edf7;color:#2c4a8a;font-size:13px;font-weight:500"><e-icon name="clock" size="14"></e-icon>Sandbox · deleted in 23 h · sample data, nothing is real</div>
+
+      <section aria-labelledby="inbox-title" style="min-height:0;display:grid;grid-template-rows:auto auto minmax(0,1fr);background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden">
+        <div style="display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 16px 8px 20px;background:#f7f2ea;border-bottom:1px solid #ebe3d6">
+          <h1 id="inbox-title" style="font:700 21px/1.2 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Inbox</h1>
+          <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#3f3a33">{{ selText }}<button onClick="{{ clearSel }}" style="display:inline-flex;align-items:center;height:28px;padding:0 8px;border-radius:6px;font-size:13px;font-weight:500;background:transparent;color:#3f3a33;border:1px solid transparent;cursor:pointer" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Clear selection</button></span></sc-if>
+          <span style="flex:1"></span>
+          <button onClick="{{ openUpload }}" style="display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;cursor:pointer;color:#fffdf9;border:1px solid #1f1c18;background:{{ upBtnBg }}" style-hover="background:#3f3a33;border-color:#3f3a33" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="upload" size="16"></e-icon>Upload invoices</button>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 24px;padding:0 16px 0 12px;border-bottom:1px solid #ebe3d6">
+          <div role="tablist" aria-label="Inbox filters" style="display:flex;gap:4px">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="6">
+              <button role="tab" aria-selected="{{ t.sel }}" onClick="{{ t.select }}" style="display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 8px;border:0;background:transparent;cursor:pointer;font-size:14px;font-weight:500;white-space:nowrap;color:{{ t.color }};box-shadow:{{ t.line }}" style-hover="color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:-3px">{{ t.label }}<span style="min-width:20px;height:20px;padding:0 4px;border-radius:999px;display:inline-grid;place-items:center;font:500 12px/1 'JetBrains Mono',monospace;background:{{ t.bBg }};color:{{ t.bFg }}">{{ t.n }}</span></button>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 0">
+            <label style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#746c61">Supplier<span style="position:relative;display:inline-flex"><select value="{{ fs }}" onChange="{{ onFs }}" style="appearance:none;-webkit-appearance:none;height:32px;padding:0 32px 0 12px;border:1px solid #d6cbbb;border-radius:6px;background:#fffdf9;font-size:14px;color:#1f1c18;cursor:pointer" style-hover="border-color:#746c61" style-focus="border-color:#1f1c18;outline:2.5px solid #0f6e62;outline-offset:2px"><sc-for list="{{ supplierOpts }}" as="o" hint-placeholder-count="1"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select><e-icon name="chevron-down" size="16" style="position:absolute;right:8px;top:8px;pointer-events:none;color:#3f3a33"></e-icon></span></label>
+            <label style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#746c61">Format<span style="position:relative;display:inline-flex"><select value="{{ ff }}" onChange="{{ onFf }}" style="appearance:none;-webkit-appearance:none;height:32px;padding:0 32px 0 12px;border:1px solid #d6cbbb;border-radius:6px;background:#fffdf9;font-size:14px;color:#1f1c18;cursor:pointer" style-hover="border-color:#746c61" style-focus="border-color:#1f1c18;outline:2.5px solid #0f6e62;outline-offset:2px"><sc-for list="{{ formatOpts }}" as="o" hint-placeholder-count="1"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select><e-icon name="chevron-down" size="16" style="position:absolute;right:8px;top:8px;pointer-events:none;color:#3f3a33"></e-icon></span></label>
+            <sc-if value="{{ hasFilters }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearFilters }}" style="display:inline-flex;align-items:center;gap:4px;height:32px;padding:0 8px;border-radius:6px;font-size:13px;font-weight:500;background:transparent;color:#3f3a33;border:1px solid transparent;cursor:pointer" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="x" size="14"></e-icon>Clear filters</button></sc-if>
+          </div>
+        </div>
+
+        <div style="min-height:0;overflow:auto">
+          <table style="width:100%;min-width:{{ tableMin }};table-layout:fixed;border-collapse:separate;border-spacing:0;font-size:13px;color:#3f3a33">
+                        <thead>
+              <tr>
+                <th style="position:sticky;top:0;z-index:1;width:44px;background:#f7f2ea;border-bottom:1px solid #ebe3d6;height:36px;padding:0 8px 0 12px;text-align:left"><button role="checkbox" aria-checked="{{ allSel.checked }}" aria-label="Select all shown invoices" onClick="{{ toggleAll }}" style="display:grid;place-items:center;width:24px;height:24px;padding:0;border:0;border-radius:6px;background:transparent;cursor:pointer" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><span style="display:grid;place-items:center;width:18px;height:18px;border-radius:6px;color:#fffdf9;border:1.5px solid {{ allSel.bd }};background:{{ allSel.bg }}"><e-icon name="{{ allSel.icon }}" size="14"></e-icon></span></button></th>
+                <sc-for list="{{ cols }}" as="c" hint-placeholder-count="10">
+                  <th aria-sort="{{ c.aria }}" style="position:sticky;top:0;z-index:1;background:#f7f2ea;border-bottom:1px solid #ebe3d6;height:36px;padding:0 8px;font-size:12px;font-weight:500;color:#746c61;white-space:nowrap;text-align:{{ c.align }};width:{{ c.w }};left:{{ c.left }};z-index:{{ c.z }};box-shadow:{{ c.sh }}">
+                    <sc-if value="{{ c.sortable }}" hint-placeholder-val="{{ false }}"><button onClick="{{ c.sort }}" style="display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 4px;margin:0 -4px;border:0;border-radius:6px;background:transparent;font-size:12px;font-weight:500;cursor:pointer;color:{{ c.fg }}" style-hover="color:#1f1c18;background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">{{ c.label }}<e-icon name="chevron-down" size="14" style="transform:{{ c.rot }};opacity:{{ c.iconOp }}"></e-icon></button></sc-if>
+                    <sc-if value="{{ c.plain }}" hint-placeholder-val="{{ true }}"><span>{{ c.label }}</span></sc-if>
+                  </th>
+                </sc-for>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+                <tr aria-selected="{{ r.selA }}" style="background:{{ r.bg }};cursor:pointer" style-hover="background:#f6f0e6">
+                  <td style="height:48px;padding:0 8px 0 12px;border-bottom:1px solid #ebe3d6"><button role="checkbox" aria-checked="{{ r.selA }}" aria-label="{{ r.selLabel }}" onClick="{{ r.toggle }}" style="display:grid;place-items:center;width:24px;height:24px;padding:0;border:0;border-radius:6px;background:transparent;cursor:pointer" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><span style="display:grid;place-items:center;width:18px;height:18px;border-radius:6px;color:#fffdf9;border:1.5px solid {{ r.cbBd }};background:{{ r.cbBg }}"><e-icon name="{{ r.cbIcon }}" size="14"></e-icon></span></button></td>
+                  <td style="padding:0 8px;border-bottom:1px solid #ebe3d6"><span style="display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums">{{ r.rec }}</span></td>
+                  <td style="padding:4px 8px;border-bottom:1px solid #ebe3d6;line-height:1.25;font-weight:500;color:#1f1c18;left:0;background:inherit;position:{{ pinPos }};z-index:{{ pinZ }};box-shadow:{{ pinSh }}" title="{{ r.supplier }}"><sc-for list="{{ r.sp }}" as="p" hint-placeholder-count="1"><span style="background:{{ p.bg }}">{{ p.t }}</span></sc-for></td>
+                  <td style="padding:0 8px;border-bottom:1px solid #ebe3d6;white-space:nowrap;font-family:'JetBrains Mono',monospace;overflow:hidden;text-overflow:ellipsis"><sc-for list="{{ r.np }}" as="p" hint-placeholder-count="1"><span style="background:{{ p.bg }}">{{ p.t }}</span></sc-for></td>
+                  <td style="padding:0 8px;border-bottom:1px solid #ebe3d6;white-space:nowrap;text-align:right;font-family:'JetBrains Mono',monospace;color:#1f1c18">{{ r.gross }}</td>
+                  <td style="padding:0 8px;border-bottom:1px solid #ebe3d6;white-space:nowrap"><sc-if value="{{ r.overdue }}" hint-placeholder-val="{{ false }}"><span style="display:inline-grid;color:#b42318;font-weight:500;line-height:1.25"><span>{{ r.due }}</span><span style="font-size:12px">overdue</span></span></sc-if><sc-if value="{{ r.onTime }}" hint-placeholder-val="{{ true }}"><span>{{ r.due }}</span></sc-if></td>
+                  <td style="padding:4px 8px;border-bottom:1px solid #ebe3d6"><span style="display:flex;align-items:center;gap:4px"><span title="{{ r.fTitle }}" style="display:inline-flex;align-items:center;gap:4px;min-height:24px;padding:4px 8px;border-radius:6px;border:1px solid #d6cbbb;background:#fffdf9;color:#3f3a33;font-size:12px;font-weight:500;line-height:1.2"><e-icon name="{{ r.fIcon }}" size="14"></e-icon>{{ r.format }}</span><sc-if value="{{ r.einvInline }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="{{ r.e.label }}" title="{{ r.e.label }}" style="display:inline-flex;flex:none;color:{{ r.e.fg }}"><e-icon name="{{ r.e.icon2 }}" size="16"></e-icon></span></sc-if></span></td>
+                  <sc-if value="{{ showEinv }}" hint-placeholder-val="{{ true }}"><td style="padding:0 8px;border-bottom:1px solid #ebe3d6;white-space:nowrap"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;background:{{ r.e.bg }};color:{{ r.e.fg }}"><e-icon name="{{ r.e.icon }}" size="14"></e-icon>{{ r.e.label }}</span></td></sc-if>
+                  <td style="padding:0 8px;border-bottom:1px solid #ebe3d6;white-space:nowrap"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;background:{{ r.v.bg }};color:{{ r.v.fg }}"><e-icon name="{{ r.v.icon }}" size="14" style="color:{{ r.v.ic }}"></e-icon>{{ r.v.label }}</span></td>
+                  <td style="padding:0 8px;border-bottom:1px solid #ebe3d6;white-space:nowrap"><span style="display:inline-flex;align-items:center;gap:8px;font-weight:500"><sc-if value="{{ r.hasBlock }}" hint-placeholder-val="{{ false }}"><span title="{{ r.blockTitle }}" aria-label="{{ r.blockAria }}" style="display:inline-flex;align-items:center;gap:4px;color:#b42318"><e-icon name="octagon" size="16"></e-icon>{{ r.block }}</span></sc-if><sc-if value="{{ r.hasWarn }}" hint-placeholder-val="{{ false }}"><span title="{{ r.warnTitle }}" aria-label="{{ r.warnAria }}" style="display:inline-flex;align-items:center;gap:4px;color:#8a4a06"><e-icon name="triangle" size="16" style="color:#c47408"></e-icon>{{ r.warn }}</span></sc-if><sc-if value="{{ r.noChecks }}" hint-placeholder-val="{{ true }}"><span aria-label="No open checks" style="color:#746c61;font-weight:400">—</span></sc-if></span></td>
+                  <td style="padding:0 8px;border-bottom:1px solid #ebe3d6;white-space:nowrap"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;background:{{ r.s.bg }};color:{{ r.s.fg }}"><e-icon name="{{ r.s.icon }}" size="14" style="color:{{ r.s.ic }}"></e-icon>{{ r.s.label }}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+          <sc-if value="{{ empty.show }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;justify-items:center;align-content:center;text-align:center;gap:12px;min-height:320px;padding:40px 24px">
+              <span style="display:grid;place-items:center;width:48px;height:48px;border-radius:999px;background:#f6f0e6;color:#1f1c18"><e-icon name="{{ empty.icon }}" size="20"></e-icon></span>
+              <h2 style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">{{ empty.title }}</h2>
+              <p style="font-size:14px;color:#746c61;max-width:44ch">{{ empty.body }}</p>
+              <sc-if value="{{ empty.canClear }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearAll }}" style="display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Clear search and filters</button></sc-if>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+</sc-if>
+
+
+<sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+<div style="height:100vh;display:grid;grid-template-rows:56px minmax(0,1fr) 64px">
+  <header style="display:flex;align-items:center;gap:8px;padding:0 4px 0 16px;background:#f7f2ea;border-bottom:1px solid #ebe3d6">
+    <span aria-hidden="true" style="width:1em;height:1em;font-size:28px;display:grid;place-items:center;border:0.0625em solid #2c4a8a;border-radius:0.15em;outline:0.025em solid #2c4a8a;outline-offset:-0.175em;background:#fffdf9;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1;filter:url(#eg-ink)"><span style="font-size:0.55em">E</span></span>
+    <h1 style="font:700 21px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Inbox</h1>
+    <span style="flex:1"></span>
+    <button onClick="{{ openUpload }}" aria-label="Upload invoices" style="display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:6px;background:transparent;color:#1f1c18;cursor:pointer" style-active="background:#ebe3d6" style-focus="outline:2.5px solid #0f6e62;outline-offset:-3px"><e-icon name="upload" size="20"></e-icon></button>
+    <button aria-haspopup="menu" aria-label="Anna Weber, Accountant. Account menu" style="display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:6px;background:transparent;cursor:pointer" style-focus="outline:2.5px solid #0f6e62;outline-offset:-3px"><span style="width:32px;height:32px;border-radius:999px;background:#e8edf7;color:#2c4a8a;display:grid;place-items:center;font-size:12px;font-weight:600">AW</span></button>
+  </header>
+  <main style="min-height:0;overflow:auto;padding:12px 16px 24px;display:grid;gap:12px;align-content:start">
+    <div role="status" style="display:flex;align-items:flex-start;gap:8px;padding:8px 12px;border-radius:8px;background:#e8edf7;color:#2c4a8a;font-size:13px;font-weight:500"><e-icon name="clock" size="14" style="padding-top:4px"></e-icon><span>Sandbox · deleted in 23 h · sample data, nothing is real</span></div>
+    <label style="display:flex;align-items:center;gap:8px;height:44px;padding:0 4px 0 12px;border:1px solid #d6cbbb;border-radius:6px;background:#fffdf9;color:#746c61"><e-icon name="search" size="16"></e-icon><input value="{{ q }}" onChange="{{ onQ }}" aria-label="Search invoices" placeholder="Search suppliers and numbers" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font-size:16px;color:#1f1c18"><sc-if value="{{ hasQ }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearQ }}" aria-label="Clear search" style="display:grid;place-items:center;width:36px;height:36px;border:0;border-radius:6px;background:transparent;color:#3f3a33;cursor:pointer"><e-icon name="x" size="16"></e-icon></button></sc-if></label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <span style="position:relative;display:flex"><select aria-label="Supplier" value="{{ fs }}" onChange="{{ onFs }}" style="appearance:none;-webkit-appearance:none;width:100%;height:44px;padding:0 32px 0 12px;border:1px solid #d6cbbb;border-radius:6px;background:#fffdf9;font-size:16px;color:#1f1c18"><sc-for list="{{ supplierOpts }}" as="o" hint-placeholder-count="1"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select><e-icon name="chevron-down" size="16" style="position:absolute;right:12px;top:14px;pointer-events:none;color:#3f3a33"></e-icon></span>
+      <span style="position:relative;display:flex"><select aria-label="Format" value="{{ ff }}" onChange="{{ onFf }}" style="appearance:none;-webkit-appearance:none;width:100%;height:44px;padding:0 32px 0 12px;border:1px solid #d6cbbb;border-radius:6px;background:#fffdf9;font-size:16px;color:#1f1c18"><sc-for list="{{ formatOpts }}" as="o" hint-placeholder-count="1"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select><e-icon name="chevron-down" size="16" style="position:absolute;right:12px;top:14px;pointer-events:none;color:#3f3a33"></e-icon></span>
+    </div>
+    <div role="tablist" aria-label="Inbox filters" style="display:flex;gap:4px;overflow-x:auto;margin:0 -16px;padding:0 16px;border-bottom:1px solid #ebe3d6">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="6">
+        <button role="tab" aria-selected="{{ t.sel }}" onClick="{{ t.select }}" style="flex:none;display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 8px;border:0;background:transparent;cursor:pointer;font-size:14px;font-weight:500;white-space:nowrap;color:{{ t.color }};box-shadow:{{ t.line }}" style-focus="outline:2.5px solid #0f6e62;outline-offset:-3px">{{ t.label }}<span style="min-width:20px;height:20px;padding:0 4px;border-radius:999px;display:inline-grid;place-items:center;font:500 12px/1 'JetBrains Mono',monospace;background:{{ t.bBg }};color:{{ t.bFg }}">{{ t.n }}</span></button>
+      </sc-for>
+    </div>
+    <sc-for list="{{ rows }}" as="r" hint-placeholder-count="5">
+      <article style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:8px;padding:12px;display:grid;gap:8px;cursor:pointer" style-active="background:#f6f0e6">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;font-weight:600;color:#1f1c18"><sc-for list="{{ r.sp }}" as="p" hint-placeholder-count="1"><span style="background:{{ p.bg }}">{{ p.t }}</span></sc-for></span><span style="flex:none;font:500 14px/1.45 'JetBrains Mono',monospace;color:#1f1c18">{{ r.gross }}</span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><span style="font:12px/1.45 'JetBrains Mono',monospace;color:#746c61"><sc-for list="{{ r.np }}" as="p" hint-placeholder-count="1"><span style="background:{{ p.bg }}">{{ p.t }}</span></sc-for></span><span style="display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500;white-space:nowrap">{{ r.rec }}</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px 8px">
+          <span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;background:{{ r.s.bg }};color:{{ r.s.fg }}"><e-icon name="{{ r.s.icon }}" size="14" style="color:{{ r.s.ic }}"></e-icon>{{ r.s.label }}</span>
+          <span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;background:{{ r.v.bg }};color:{{ r.v.fg }}"><e-icon name="{{ r.v.icon }}" size="14" style="color:{{ r.v.ic }}"></e-icon>{{ r.v.label }}</span>
+          <span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;background:{{ r.e.bg }};color:{{ r.e.fg }}"><e-icon name="{{ r.e.icon }}" size="14"></e-icon>{{ r.e.label }}</span>
+          <span title="{{ r.fTitle }}" style="display:inline-flex;align-items:center;gap:4px;min-height:24px;padding:4px 8px;border-radius:6px;border:1px solid #d6cbbb;background:#fffdf9;color:#3f3a33;font-size:12px;font-weight:500;line-height:1.2"><e-icon name="{{ r.fIcon }}" size="14"></e-icon>{{ r.format }}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px">
+          <span style="display:inline-flex;align-items:center;gap:8px;font-weight:500"><sc-if value="{{ r.hasBlock }}" hint-placeholder-val="{{ false }}"><span aria-label="{{ r.blockAria }}" style="display:inline-flex;align-items:center;gap:4px;color:#b42318"><e-icon name="octagon" size="16"></e-icon>{{ r.blockShort }}</span></sc-if><sc-if value="{{ r.hasWarn }}" hint-placeholder-val="{{ false }}"><span aria-label="{{ r.warnAria }}" style="display:inline-flex;align-items:center;gap:4px;color:#8a4a06"><e-icon name="triangle" size="16" style="color:#c47408"></e-icon>PDF and XML differ</span></sc-if><sc-if value="{{ r.noChecks }}" hint-placeholder-val="{{ true }}"><span style="color:#746c61;font-weight:400">No open checks</span></sc-if></span>
+          <sc-if value="{{ r.overdue }}" hint-placeholder-val="{{ false }}"><span style="flex:none;color:#b42318;font-weight:500">Due {{ r.due }}, overdue</span></sc-if><sc-if value="{{ r.onTime }}" hint-placeholder-val="{{ true }}"><span style="flex:none;color:#3f3a33">Due {{ r.due }}</span></sc-if>
+        </div>
+      </article>
+    </sc-for>
+    <sc-if value="{{ empty.show }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;justify-items:center;text-align:center;gap:12px;padding:40px 8px">
+        <span style="display:grid;place-items:center;width:48px;height:48px;border-radius:999px;background:#fffdf9;color:#1f1c18"><e-icon name="{{ empty.icon }}" size="20"></e-icon></span>
+        <h2 style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">{{ empty.title }}</h2>
+        <p style="font-size:14px;color:#746c61">{{ empty.body }}</p>
+        <sc-if value="{{ empty.canClear }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearAll }}" style="height:44px;padding:0 16px;border-radius:6px;font-size:16px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb;cursor:pointer">Clear search and filters</button></sc-if>
+      </div>
+    </sc-if>
+  </main>
+  <nav aria-label="Main" style="display:grid;grid-template-columns:repeat(5,1fr);background:#f7f2ea;border-top:1px solid #ebe3d6">
+    <a href="#inbox" aria-current="page" style="display:grid;justify-items:center;align-content:center;gap:4px;color:#1f1c18;font-size:12px;font-weight:600;text-decoration:none"><span style="display:grid;place-items:center;width:48px;height:28px;border-radius:999px;background:#fffdf9;border:1px solid #ebe3d6;box-shadow:0 1px 0 #d6cbbb"><e-icon name="inbox" size="20"></e-icon></span>Inbox</a>
+    <a href="#approvals" style="display:grid;justify-items:center;align-content:center;gap:4px;color:#746c61;font-size:12px;font-weight:500;text-decoration:none"><span style="display:grid;place-items:center;width:48px;height:28px"><e-icon name="check-check" size="20"></e-icon></span>Approvals</a>
+    <a href="#suppliers" style="display:grid;justify-items:center;align-content:center;gap:4px;color:#746c61;font-size:12px;font-weight:500;text-decoration:none"><span style="display:grid;place-items:center;width:48px;height:28px"><e-icon name="building" size="20"></e-icon></span>Suppliers</a>
+    <a href="#exports" style="display:grid;justify-items:center;align-content:center;gap:4px;color:#746c61;font-size:12px;font-weight:500;text-decoration:none"><span style="display:grid;place-items:center;width:48px;height:28px"><e-icon name="archive" size="20"></e-icon></span>Exports</a>
+    <a href="#more" style="display:grid;justify-items:center;align-content:center;gap:4px;color:#746c61;font-size:12px;font-weight:500;text-decoration:none"><span style="display:grid;place-items:center;width:48px;height:28px"><e-icon name="more" size="20"></e-icon></span>More</a>
+  </nav>
+</div>
+</sc-if>
+
+<sc-if value="{{ drag }}" hint-placeholder-val="{{ false }}">
+  <div role="dialog" aria-modal="true" aria-label="Drop files to upload" style="position:fixed;inset:0;z-index:60;background:#e8edf7;display:grid;place-items:center;padding:40px">
+    <div aria-hidden="true" style="position:absolute;inset:16px;border:2px dashed #2c4a8a;border-radius:12px;pointer-events:none"></div>
+    <div style="position:relative;display:grid;justify-items:center;gap:24px;text-align:center;color:#2c4a8a;max-width:560px;pointer-events:none">
+      <div role="img" aria-label="Eingang stamp, 9 October 2026" style="display:inline-grid;justify-items:center;gap:0.09em;padding:0.27em 0.36em;border:0.07em solid #2c4a8a;border-radius:0.14em;outline:0.035em solid #2c4a8a;outline-offset:-0.18em;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:44px;text-transform:uppercase;letter-spacing:0.08em;line-height:1;transform:rotate(-3deg);filter:url(#eg-ink)"><span style="font-size:1em;padding:0.09em 0.1em 0 0.18em">Eingang</span><span style="font-size:0.45em;padding:0.2em 0.2em 0.2em 0.28em;border-top:0.1em solid #2c4a8a">09. OKT. 2026</span></div>
+      <p style="font:700 21px/1.35 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;text-wrap:balance">Drop invoices to stamp them in — PDF or XML, up to 4 MB each, 10 at a time</p>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ upload.open }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:24px 16px">
+    <div aria-hidden="true" onClick="{{ upload.close }}" style="position:absolute;inset:0;background:#1f1c18;opacity:0.32"></div>
+    <div role="dialog" aria-modal="true" aria-labelledby="up-title" style="position:relative;width:680px;max-width:100%;max-height:calc(100vh - 48px);display:grid;grid-template-rows:auto minmax(0,1fr) auto;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433">
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 12px 12px 24px;border-bottom:1px solid #ebe3d6">
+        <h2 id="up-title" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Upload invoices</h2>
+        <span style="flex:1"></span>
+        <button onClick="{{ upload.close }}" aria-label="Close" style="display:grid;place-items:center;width:40px;height:40px;border:0;border-radius:6px;background:transparent;color:#3f3a33;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="x" size="16"></e-icon></button>
+      </div>
+      <div style="min-height:0;overflow:auto;padding:20px 24px;display:grid;gap:16px;align-content:start">
+        <div style="display:grid;justify-items:center;gap:8px;padding:24px;text-align:center;border:1.5px dashed #d6cbbb;border-radius:8px">
+          <span style="display:grid;place-items:center;width:40px;height:40px;border-radius:999px;background:#f6f0e6;color:#1f1c18"><e-icon name="upload" size="20"></e-icon></span>
+          <span style="font-size:14px;font-weight:600;color:#1f1c18">Drop invoices here, or choose them</span>
+          <span style="font-size:13px;color:#746c61">PDF or XML, up to 4 MB each, 10 at a time.</span>
+          <button onClick="{{ upload.choose }}" aria-expanded="{{ upload.pickerA }}" style="display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;margin-top:4px;border-radius:6px;font-size:14px;font-weight:500;color:#1f1c18;border:1px solid #d6cbbb;cursor:pointer;outline-offset:2px;background:{{ upload.chooseBg }};outline:{{ upload.chooseRing }}" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="file-text" size="16"></e-icon>Choose files</button>
+          <sc-if value="{{ upload.picker }}" hint-placeholder-val="{{ false }}"><p role="status" style="display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#2f5d8a"><e-icon name="loader" size="14" spin="true"></e-icon>Your system’s file picker is open. It lists .pdf and .xml files only.</p></sc-if>
+        </div>
+        <sc-if value="{{ upload.over }}" hint-placeholder-val="{{ false }}"><p role="alert" style="display:flex;gap:8px;align-items:flex-start;padding:8px 12px;border-radius:6px;background:#fcefd8;color:#8a4a06;font-size:13px"><e-icon name="triangle" size="16" style="color:#c47408"></e-icon>Only the first 10 files were added. Drop the rest in a second batch.</p></sc-if>
+        <sc-if value="{{ upload.hasFiles }}" hint-placeholder-val="{{ false }}">
+          <div role="list" aria-label="Uploads" style="display:grid">
+            <sc-for list="{{ upload.files }}" as="f" hint-placeholder-count="0">
+              <div role="listitem" style="display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:12px;align-items:start;padding:16px 0;border-top:1px solid #ebe3d6">
+                <e-icon name="{{ f.icon }}" size="20" style="color:#746c61"></e-icon>
+                <div style="display:grid;gap:12px;min-width:0">
+                  <div style="display:grid;gap:4px"><span style="font:13px/1.45 'JetBrains Mono',monospace;color:#1f1c18;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ f.name }}</span><span style="font-size:12px;color:{{ f.sc }}">{{ f.status }}</span></div>
+                  <sc-if value="{{ f.ok }}" hint-placeholder-val="{{ false }}">
+                    <ol aria-label="Processing steps" style="list-style:none;display:flex;align-items:flex-start;gap:8px">
+                      <sc-for list="{{ f.steps }}" as="st" hint-placeholder-count="4">
+                        <sc-if value="{{ st.notFirst }}" hint-placeholder-val="{{ false }}"><li aria-hidden="true" style="flex:none;width:16px;height:1px;margin-top:8px;background:{{ st.line }}"></li></sc-if>
+                        <li style="flex:1 1 0;min-width:0;display:flex;align-items:flex-start;gap:4px"><e-icon name="{{ st.icon }}" size="16" spin="{{ st.spin }}" style="color:{{ st.c }}"></e-icon><span style="display:grid;min-width:0"><span style="font-size:12px;font-weight:{{ st.w }};color:{{ st.c }}">{{ st.label }}</span><span style="font-size:12px;color:#746c61">{{ st.tip }}</span></span></li>
+                      </sc-for>
+                    </ol>
+                  </sc-if>
+                  <sc-if value="{{ f.bad }}" hint-placeholder-val="{{ false }}"><p role="alert" style="display:flex;gap:4px;align-items:flex-start;font-size:13px;color:#b42318"><e-icon name="octagon" size="16"></e-icon>{{ f.msg }}</p></sc-if>
+                </div>
+                <sc-if value="{{ f.bad }}" hint-placeholder-val="{{ false }}"><button onClick="{{ f.remove }}" style="display:inline-flex;align-items:center;height:28px;padding:0 8px;border-radius:6px;font-size:13px;font-weight:500;background:transparent;color:#3f3a33;border:1px solid transparent;cursor:pointer" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Remove</button></sc-if>
+                <sc-if value="{{ f.done }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#fcefd8;color:#8a4a06;font-size:12px;font-weight:500"><e-icon name="eye" size="14" style="color:#c47408"></e-icon>Needs review</span></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 24px;background:#f7f2ea;border-top:1px solid #ebe3d6;border-radius:0 0 12px 12px">
+        <span style="font-size:13px;color:#746c61">Processing carries on if you close this.</span>
+        <button onClick="{{ upload.close }}" style="display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Close</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;screen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Live&quot;,&quot;Drag overlay&quot;,&quot;File picker&quot;,&quot;Processing&quot;],&quot;default&quot;:&quot;Live&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Review states&quot;}}">
+const RAW = [
+  [1, '07 Oct, 14:30', '2026-10-07T14:30', 'Elektro Kessler GmbH', 'RE-2026-0412', '1.190,00 €', 1190, '23 Oct 2026', '2026-10-23', 'XRechnung · UBL', 'x', 1, 'valid', 0, 0, 'awaiting'],
+  [2, '09 Oct, 07:58', '2026-10-09T07:58', 'Bürobedarf Nord KG', 'BN-88213', '412,34 €', 412.34, '30 Oct 2026', '2026-10-30', 'XRechnung · CII', 'x', 1, 'valid', 0, 0, 'awaiting'],
+  [3, '08 Oct, 16:40', '2026-10-08T16:40', 'Spedition Albers GmbH', 'SA/26/1187', '2.856,00 €', 2856, '22 Oct 2026', '2026-10-22', 'ZUGFeRD · EN 16931', 'z', 1, 'valid', 0, 0, 'awaiting'],
+  [4, '08 Oct, 11:02', '2026-10-08T11:02', 'Atelier Moreau SARL', 'F-2026-118', '640,00 €', 640, '07 Nov 2026', '2026-11-07', 'ZUGFeRD · BASIC WL', 'z', 0, 'na', 0, 0, 'needs'],
+  [5, '08 Oct, 09:15', '2026-10-08T09:15', 'Elektro Kessler GmbH', 'RE-2026-0413', '238,00 €', 238, '22 Oct 2026', '2026-10-22', 'XRechnung · UBL', 'x', 1, 'invalid', 0, 0, 'needs'],
+  [6, '09 Oct, 08:12', '2026-10-09T08:12', 'Elektro Kessler GmbH', 'RE-2026-0412', '1.190,00 €', 1190, '23 Oct 2026', '2026-10-23', 'XRechnung · UBL', 'x', 1, 'valid', 1, 0, 'needs'],
+  [7, '07 Oct, 10:05', '2026-10-07T10:05', 'Bürobedarf Nord KG', 'BN-88290', '97,58 €', 97.58, '06 Nov 2026', '2026-11-06', 'XRechnung · CII', 'x', 1, 'valid', 1, 0, 'needs'],
+  [8, '06 Oct, 17:44', '2026-10-06T17:44', 'Druckerei Sommer GmbH', '2026-1043', '1.547,00 €', 1547, '20 Oct 2026', '2026-10-20', 'Plain PDF', 'p', 0, 'na', 0, 0, 'needs'],
+  [9, '06 Oct, 09:30', '2026-10-06T09:30', 'Hausmeisterservice Pohl', '—', '—', null, '—', null, 'Scanned PDF', 'p', 0, 'na', 1, 0, 'needs'],
+  [10, '05 Oct, 13:12', '2026-10-05T13:12', 'Spedition Albers GmbH', 'SA/26/1160', '1.200,00 €', 1200, '19 Oct 2026', '2026-10-19', 'ZUGFeRD · EN 16931', 'z', 1, 'valid', 0, 1, 'needs'],
+  [11, '02 Oct, 08:55', '2026-10-02T08:55', 'Bürobedarf Nord KG', 'BN-88102-G', '−58,31 €', -58.31, '—', null, 'XRechnung · UBL · credit note', 'x', 1, 'valid', 0, 0, 'approved'],
+  [12, '15 Sep, 10:20', '2026-09-15T10:20', 'Stadtwerke Leipzig GmbH', 'SW-2026-77812', '389,40 €', 389.4, '29 Sep 2026', '2026-09-29', 'XRechnung · CII', 'x', 1, 'valid', 0, 0, 'rejected']
+];
+const BLOCK_TITLE = { 6: 'Same invoice number as RE-2026-0412, received 07 Oct 2026', 7: 'Bank account differs from earlier invoices', 9: 'No text layer, enter by hand' };
+const BLOCK_SHORT = { 6: 'Duplicate', 7: 'Bank account differs', 9: 'Enter by hand' };
+const WARN_TITLE = { 10: 'PDF shows 1.190,00 €, XML says 1.200,00 €' };
+const DATA = RAW.map(a => ({ id: a[0], rec: a[1], recK: a[2], supplier: a[3], number: a[4], gross: a[5], g: a[6], due: a[7], dueK: a[8], format: a[9], f: a[10], einv: a[11], val: a[12], block: a[13], warn: a[14], status: a[15] }));
+const TODAY = '2026-10-09';
+const ST = {
+  needs: { label: 'Needs review', icon: 'eye', bg: '#fcefd8', fg: '#8a4a06', ic: '#c47408', o: 0 },
+  awaiting: { label: 'Awaiting approval', icon: 'hourglass', bg: '#e8edf7', fg: '#2c4a8a', ic: '#2c4a8a', o: 1 },
+  approved: { label: 'Approved', icon: 'circle-check', bg: '#e4f1ed', fg: '#0f6e62', ic: '#0f6e62', o: 2 },
+  exported: { label: 'Exported', icon: 'check', bg: '#f6f0e6', fg: '#746c61', ic: '#746c61', o: 3 },
+  failed: { label: 'Failed', icon: 'circle-alert', bg: '#fbe9e6', fg: '#b42318', ic: '#b42318', o: 4 },
+  rejected: { label: 'Rejected', icon: 'ban', bg: '#fbe9e6', fg: '#b42318', ic: '#b42318', o: 5 }
+};
+const VAL = {
+  valid: { label: 'Valid', icon: 'circle-check', bg: '#e4f1ed', fg: '#0f6e62', ic: '#0f6e62' },
+  invalid: { label: 'Invalid · 1 error', icon: 'octagon', bg: '#fbe9e6', fg: '#b42318', ic: '#b42318' },
+  na: { label: 'Not applicable', icon: 'minus', bg: '#f6f0e6', fg: '#746c61', ic: '#746c61' }
+};
+const EIN = [{ label: 'Not an e-invoice', icon: 'info', icon2: 'info', bg: '#f6f0e6', fg: '#746c61' }, { label: 'E-invoice', icon: 'check', icon2: 'circle-check', bg: '#e4f1ed', fg: '#0f6e62' }];
+const FICON = { x: 'file-code', z: 'paperclip', p: 'file-text' };
+const TABS = [['needs', 'Needs review'], ['awaiting', 'Awaiting approval'], ['approved', 'Approved'], ['exported', 'Exported'], ['failed', 'Failed'], ['all', 'All']];
+const EMPTY = {
+  needs: ['inbox', 'Nothing needs review', 'New invoices land here once their checks have run.'],
+  awaiting: ['hourglass', 'Nothing is waiting for approval', 'Invoices arrive here once someone marks them reviewed.'],
+  approved: ['circle-check', 'Nothing approved yet', 'Approved invoices wait here until you export them.'],
+  exported: ['archive', 'Nothing exported yet', 'Approved invoices move here once you export them for the tax advisor.'],
+  failed: ['circle-alert', 'No failed files', 'Files that can’t be read at all show up here, with the reason.'],
+  all: ['inbox', 'No invoices yet', 'Upload invoices or drop them anywhere on this page.']
+};
+const COLS = [['received', 'Received', 'left', '112px'], ['supplier', 'Supplier', 'left', 'auto'], ['number', 'Number', 'left', '124px'], ['gross', 'Gross', 'right', '104px'], ['due', 'Due', 'left', '112px'], [null, 'Format', 'left', '164px'], [null, 'E-invoice', 'left', '144px'], [null, 'Validation', 'left', '144px'], [null, 'Checks', 'left', '72px'], ['status', 'Status', 'left', '156px']];
+const RAIL = [['inbox', 'Inbox', '#inbox'], ['check-check', 'Approvals', '#approvals'], ['building', 'Suppliers', '#suppliers'], ['archive', 'Exports', '#exports'], ['gauge', 'Accuracy', '#accuracy'], ['sliders', 'Settings', '#settings']];
+const PLAN = {
+  xml: [['Detect', 'XRechnung · UBL'], ['Validate', 'Valid'], ['Extract', null], ['Check', 'Checks done']],
+  zug: [['Detect', 'ZUGFeRD · EN 16931'], ['Validate', 'Valid'], ['Extract', null], ['Check', 'Checks done']],
+  pdf: [['Detect', 'Plain PDF'], ['Validate', null], ['Extract', 'Read by AI'], ['Check', 'Checks done']]
+};
+const NOW = { Detect: 'detecting the format', Validate: 'checking the e-invoice rules', Extract: 'reading with AI', Check: 'running checks' };
+const SKIP = { Validate: 'Not applicable', Extract: 'Not needed' };
+const SAMPLE_FILES = [{ name: 'Sommer_2026-1043.pdf', size: 1 }, { name: 'Albers_SA-26-1160.pdf', size: 1 }, { name: 'Kessler_RE-2026-0412.xml', size: 1 }, { name: 'Angebot_Moreau.docx', size: 1 }];
+const MAX = 4 * 1024 * 1024;
+
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    const qs = new URLSearchParams(window.location.search);
+    this.screen = qs.get('screen') || ({ 'Drag overlay': 'drag', 'File picker': 'picker', 'Processing': 'processing' })[this.props.screen] || 'live';
+    const t = qs.get('tab');
+    this.state = { tab: TABS.some(x => x[0] === t) ? t : 'needs', q: '', fs: '', ff: '', sort: { k: 'received', d: -1 }, sel: {}, vw: window.innerWidth, drag: this.screen === 'drag', up: { open: false, picker: false, files: [] } };
+    if (this.screen === 'picker') this.state.up = { open: true, picker: true, files: [] };
+    if (this.screen === 'processing') this.state.up = { open: true, picker: false, files: [this.file('Sommer_2026-1043.pdf', 1, 2), this.file('Albers_SA-26-1160.pdf', 1, 1), this.file('Kessler_RE-2026-0412.xml', 1, 3), this.file('Angebot_Moreau.docx', 1, 0)] };
+  }
+  searchRef = React.createRef();
+  timers = [];
+  dragDepth = 0;
+  uid = 0;
+  file(name, size, p) {
+    const ext = (name.split('.').pop() || '').toLowerCase();
+    const kind = ext === 'xml' ? 'xml' : ext === 'pdf' ? (/albers/i.test(name) ? 'zug' : 'pdf') : 'bad';
+    const bad = kind === 'bad' ? 'type' : size > MAX ? 'size' : null;
+    return { id: ++this.uid, name, kind: bad ? 'bad' : kind, bad, p: bad ? 0 : p };
+  }
+  componentDidMount() {
+    this.onResize = () => this.setState({ vw: window.innerWidth });
+    window.addEventListener('resize', this.onResize);
+    this.onKey = e => {
+      if (e.key === 'Escape') { if (this.state.up.open && this.screen === 'live') this.closeUpload(); if (this.state.drag && this.screen === 'live') this.setState({ drag: false }); }
+      const tag = (e.target.tagName || '').toLowerCase();
+      if (e.key === '/' && tag !== 'input' && tag !== 'textarea' && tag !== 'select') { e.preventDefault(); if (this.searchRef.current) this.searchRef.current.focus(); }
+    };
+    window.addEventListener('keydown', this.onKey);
+    const hasFiles = e => e.dataTransfer && Array.from(e.dataTransfer.types || []).indexOf('Files') !== -1;
+    this.dEnter = e => { if (!hasFiles(e)) return; e.preventDefault(); this.dragDepth++; if (!this.state.drag) this.setState({ drag: true }); };
+    this.dOver = e => { if (hasFiles(e)) e.preventDefault(); };
+    this.dLeave = e => { if (!hasFiles(e)) return; this.dragDepth = Math.max(0, this.dragDepth - 1); if (!this.dragDepth && this.screen !== 'drag') this.setState({ drag: false }); };
+    this.dDrop = e => { if (!hasFiles(e)) return; e.preventDefault(); this.dragDepth = 0; if (this.screen !== 'drag') this.setState({ drag: false }); this.start(Array.from(e.dataTransfer.files).map(f => ({ name: f.name, size: f.size }))); };
+    window.addEventListener('dragenter', this.dEnter); window.addEventListener('dragover', this.dOver); window.addEventListener('dragleave', this.dLeave); window.addEventListener('drop', this.dDrop);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize); window.removeEventListener('keydown', this.onKey);
+    window.removeEventListener('dragenter', this.dEnter); window.removeEventListener('dragover', this.dOver); window.removeEventListener('dragleave', this.dLeave); window.removeEventListener('drop', this.dDrop);
+    this.timers.forEach(clearTimeout);
+  }
+  later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
+  start(list) {
+    if (!list.length) return;
+    const over = list.length > 10;
+    const files = list.slice(0, 10).map(f => this.file(f.name, f.size, 0));
+    this.setState(s => ({ up: { open: true, picker: false, files: s.up.files.concat(files), over } }));
+    files.forEach((f, i) => { if (!f.bad) this.tick(f.id, 500 + i * 450); });
+  }
+  tick(id, ms) {
+    this.later(() => {
+      let next = null;
+      this.setState(s => ({ up: Object.assign({}, s.up, { files: s.up.files.map(f => { if (f.id !== id) return f; let p = f.p + 1; while (p < 4 && PLAN[f.kind][p][1] === null) p++; next = p; return Object.assign({}, f, { p }); }) }) }), () => { if (next !== null && next < 4) this.tick(id, 900); });
+    }, ms);
+  }
+  openUpload = () => this.setState(s => ({ up: Object.assign({}, s.up, { open: true }) }));
+  closeUpload = () => this.setState(s => ({ up: Object.assign({}, s.up, { open: false, picker: false }) }));
+  choose = () => {
+    if (this.screen !== 'live') return;
+    this.setState(s => ({ up: Object.assign({}, s.up, { picker: true }) }));
+    this.later(() => { this.setState(s => ({ up: Object.assign({}, s.up, { picker: false }) })); this.start(SAMPLE_FILES); }, 900);
+  };
+  removeFile = id => () => this.setState(s => ({ up: Object.assign({}, s.up, { files: s.up.files.filter(f => f.id !== id) }) }));
+  onQ = e => this.setState({ q: e.target.value });
+  clearQ = () => this.setState({ q: '' });
+  onFs = e => this.setState({ fs: e.target.value });
+  onFf = e => this.setState({ ff: e.target.value });
+  clearFilters = () => this.setState({ fs: '', ff: '' });
+  clearAll = () => this.setState({ q: '', fs: '', ff: '' });
+  clearSel = () => this.setState({ sel: {} });
+
+  renderVals() {
+    const s = this.state, w = s.vw;
+    const narrow = w <= 767, tablet = w > 767 && w < 1280;
+    const q = s.q.trim().toLowerCase();
+    const parts = (text) => {
+      if (!q) return [{ t: text, bg: 'transparent' }];
+      const i = text.toLowerCase().indexOf(q);
+      if (i < 0) return [{ t: text, bg: 'transparent' }];
+      return [{ t: text.slice(0, i), bg: 'transparent' }, { t: text.slice(i, i + q.length), bg: '#ffe53d' }, { t: text.slice(i + q.length), bg: 'transparent' }].filter(p => p.t);
+    };
+    const base = DATA.filter(r => (!q || r.supplier.toLowerCase().includes(q) || r.number.toLowerCase().includes(q)) && (!s.fs || r.supplier === s.fs) && (!s.ff || r.format === s.ff));
+    const inTab = (r, t) => t === 'all' || r.status === t;
+    const tabs = TABS.map(([k, label]) => {
+      const on = k === s.tab, n = base.filter(r => inTab(r, k)).length;
+      return { label, n, sel: on ? 'true' : 'false', color: on ? '#1f1c18' : '#746c61', line: on ? 'inset 0 -2px 0 #1f1c18' : 'none', bBg: on ? '#1f1c18' : '#f6f0e6', bFg: on ? '#fffdf9' : (n ? '#3f3a33' : '#746c61'), select: () => this.setState({ tab: k }) };
+    });
+    const { k, d } = s.sort;
+    const key = r => k === 'received' ? r.recK : k === 'supplier' ? r.supplier : k === 'number' ? r.number : k === 'gross' ? r.g : k === 'due' ? r.dueK : ST[r.status].o;
+    const list = base.filter(r => inTab(r, s.tab)).slice().sort((a, b) => {
+      const x = key(a), y = key(b);
+      if (x === null && y === null) return 0; if (x === null) return 1; if (y === null) return -1;
+      return (typeof x === 'number' ? x - y : String(x).localeCompare(String(y), 'de')) * d;
+    });
+    const rows = list.map(r => {
+      const sel = !!s.sel[r.id], st = ST[r.status];
+      const overdue = !!r.dueK && r.dueK < TODAY && (r.status === 'needs' || r.status === 'awaiting');
+      return {
+        key: r.id, rec: r.rec, supplier: r.supplier, sp: parts(r.supplier), np: parts(r.number), gross: r.gross, due: r.due, overdue, onTime: !overdue,
+        format: r.format, fIcon: FICON[r.f], fTitle: r.f === 'z' ? 'ZUGFeRD and Factur-X are the same standard' : r.format,
+        e: EIN[r.einv], einvInline: tablet, v: VAL[r.val], s: st,
+        block: r.block, warn: r.warn, hasBlock: r.block > 0, hasWarn: r.warn > 0, noChecks: !r.block && !r.warn,
+        blockTitle: BLOCK_TITLE[r.id] || '', blockShort: BLOCK_SHORT[r.id] || '', warnTitle: WARN_TITLE[r.id] || '', blockAria: r.block + ' block: ' + (BLOCK_TITLE[r.id] || ''), warnAria: r.warn + ' warning: ' + (WARN_TITLE[r.id] || ''),
+        sel, selA: sel ? 'true' : 'false', selLabel: 'Select ' + r.supplier + ' ' + r.number, bg: sel ? '#f6f0e6' : '#fffdf9',
+        cbBd: sel ? '#1f1c18' : '#746c61', cbBg: sel ? '#1f1c18' : '#fffdf9', cbIcon: sel ? 'check' : '',
+        toggle: e => { e.stopPropagation(); this.setState(p => { const n = Object.assign({}, p.sel); if (n[r.id]) delete n[r.id]; else n[r.id] = true; return { sel: n }; }); }
+      };
+    });
+    const nSel = list.filter(r => s.sel[r.id]).length, all = list.length > 0 && nSel === list.length;
+    const allSel = { checked: all ? 'true' : nSel ? 'mixed' : 'false', bd: nSel ? '#1f1c18' : '#746c61', bg: nSel ? '#1f1c18' : '#fffdf9', icon: all ? 'check' : nSel ? 'minus' : '' };
+    const toggleAll = () => this.setState(p => { const n = Object.assign({}, p.sel); list.forEach(r => { if (all) delete n[r.id]; else n[r.id] = true; }); return { sel: n }; });
+    const cols = COLS.filter(c => !(tablet && c[1] === 'E-invoice')).map(([ck, label, align, cw]) => {
+      const on = ck && ck === k, pin = tablet && ck === 'supplier';
+      return { label, align, w: cw, left: pin ? '0' : 'auto', z: pin ? 3 : 1, sh: pin ? 'inset -1px 0 0 #ebe3d6' : 'none', sortable: !!ck, plain: !ck, aria: on ? (d > 0 ? 'ascending' : 'descending') : 'none', fg: on ? '#1f1c18' : '#746c61', rot: on && d > 0 ? 'rotate(180deg)' : 'none', iconOp: on ? 1 : 0, sort: () => this.setState(p => ({ sort: { k: ck, d: p.sort.k === ck ? -p.sort.d : (ck === 'received' || ck === 'gross' ? -1 : 1) } })) };
+    });
+    const filtered = !!(q || s.fs || s.ff);
+    const em = EMPTY[s.tab];
+    const empty = { show: rows.length === 0, icon: filtered ? 'search' : em[0], title: filtered ? 'No invoices match' : em[1], body: filtered ? 'Nothing in this tab matches your search and filters.' : em[2], canClear: filtered };
+    const suppliers = Array.from(new Set(DATA.map(r => r.supplier))).sort((a, b) => a.localeCompare(b, 'de'));
+    const formats = Array.from(new Set(DATA.map(r => r.format)));
+    const rail = RAIL.map(([icon, label, href], i) => ({ icon, label, href, cur: i === 0 ? 'page' : 'false', showLabel: !tablet, h: tablet ? '44px' : '56px', fg: i === 0 ? '#1f1c18' : '#746c61', bg: i === 0 ? '#fffdf9' : 'transparent', bd: i === 0 ? '1px solid #ebe3d6' : '1px solid transparent', sh: i === 0 ? '0 1px 0 #d6cbbb' : 'none' }));
+
+    const up = s.up;
+    const files = (up.files || []).map(f => {
+      if (f.bad) return { key: f.id, name: f.name, icon: 'file-text', ok: false, bad: true, done: false, status: 'Rejected', sc: '#b42318', msg: f.bad === 'size' ? 'This file is larger than 4 MB. Eingang takes files up to 4 MB.' : 'This file is not a PDF or XML. Eingang reads PDF and XML only.', remove: this.removeFile(f.id), steps: [] };
+      const plan = PLAN[f.kind], done = f.p >= 4;
+      const steps = plan.map(([label, sub], i) => {
+        const skip = sub === null, past = i < f.p, now = i === f.p && !done;
+        const icon = skip ? 'minus' : (past || done) ? 'circle-check' : now ? 'loader' : 'circle';
+        const c = skip ? '#746c61' : (past || done) ? '#0f6e62' : now ? '#2f5d8a' : '#746c61';
+        return { key: label, label, icon, spin: now ? 'true' : 'false', c, w: now ? 600 : 500, tip: skip ? SKIP[label] : (past || done) ? sub : now ? NOW[label] : 'Waiting', first: i === 0, notFirst: i > 0, line: (past || done) ? '#0f6e62' : '#d6cbbb' };
+      });
+      return { key: f.id, name: f.name, icon: f.kind === 'xml' ? 'file-code' : f.kind === 'zug' ? 'paperclip' : 'file-text', ok: true, bad: false, done, status: done ? 'Done. In Needs review.' : 'Step ' + (f.p + 1) + ' of 4: ' + NOW[plan[f.p][0]], sc: done ? '#0f6e62' : '#2f5d8a', steps, remove: this.removeFile(f.id) };
+    });
+    const upload = { open: !!up.open, picker: !!up.picker, pickerA: up.picker ? 'true' : 'false', idle: !up.picker, hasFiles: files.length > 0, noFiles: files.length === 0, over: !!up.over, files, close: this.closeUpload, choose: this.choose, chooseBg: up.picker ? '#ebe3d6' : '#fffdf9', chooseRing: up.picker ? '2.5px solid #0f6e62' : 'none' };
+
+    return {
+      wide: !narrow, narrow, railW: tablet ? '64px' : '88px', rail, tableMin: tablet ? '1212px' : '0', showEinv: !tablet, pinPos: tablet ? 'sticky' : 'static', pinZ: tablet ? 2 : 'auto', pinSh: tablet ? 'inset -1px 0 0 #ebe3d6' : 'none',
+      q: s.q, onQ: this.onQ, clearQ: this.clearQ, hasQ: !!s.q, noQ: !s.q, searchRef: this.searchRef,
+      tabs, cols, rows, allSel, toggleAll, empty, clearAll: this.clearAll,
+      fs: s.fs, ff: s.ff, onFs: this.onFs, onFf: this.onFf, clearFilters: this.clearFilters, hasFilters: !!(s.fs || s.ff),
+      supplierOpts: [{ v: '', l: 'All suppliers' }].concat(suppliers.map(x => ({ v: x, l: x }))),
+      formatOpts: [{ v: '', l: 'All formats' }].concat(formats.map(x => ({ v: x, l: x }))),
+      hasSel: nSel > 0, selText: nSel + ' selected', clearSel: this.clearSel,
+      openUpload: this.openUpload, upBtnBg: up.open ? '#3f3a33' : '#1f1c18', upload, drag: s.drag
+    };
+  }
+}
+
+</script>
+</body>
+</html>

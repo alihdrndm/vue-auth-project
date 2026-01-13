@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#ebe4d6;color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,p,figure{margin:0}
+a{color:#2c4a8a;text-underline-offset:3px}
+a:hover{color:#1f1c18}
+:focus-visible{outline:2.5px solid #0f6e62;outline-offset:2px}
+</style>
+</helmet>
+
+<section data-screen-label="Review board" style="padding:72px;display:grid;gap:56px;width:max-content">
+  <div style="display:grid;gap:8px;max-width:860px">
+    <h1 style="font:700 42px/1.1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Invoice review</h1>
+    <p style="font-size:14px;color:#5f574d">One screen, live in every frame. Press j or k inside a frame to step through the three invoices. A is seen by Jonas Brandt (Admin); B and C by Anna Weber (Accountant). The C dialog frame is Jonas, because only an Admin can accept an invalid invoice.</p>
+  </div>
+
+  <div style="display:flex;gap:56px;align-items:flex-start">
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">A. Valid XRechnung, awaiting approval</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">#1, Jonas, 1440 × 900</span><a href="Eingang App Review.dc.html?inv=1" style="font-size:13px">Open</a></figcaption><iframe title="Review A" src="Eingang App Review.dc.html?inv=1" style="display:block;width:1440px;height:900px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">A. XML tab</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">#1, Jonas, 1440 × 900</span></figcaption><iframe title="Review A, XML tab" src="Eingang App Review.dc.html?inv=1&amp;tab=xml" style="display:block;width:1440px;height:900px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+  </div>
+
+  <div style="display:flex;gap:56px;align-items:flex-start">
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">B. Plain PDF, needs review, evidence open</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">#8, Anna, 1440 × 900</span><a href="Eingang App Review.dc.html?inv=8" style="font-size:13px">Open</a></figcaption><iframe title="Review B" src="Eingang App Review.dc.html?inv=8&amp;ev=iban" style="display:block;width:1440px;height:900px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">B. Text tab</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">#8, Anna, 1440 × 900</span></figcaption><iframe title="Review B, text tab" src="Eingang App Review.dc.html?inv=8&amp;tab=text&amp;ev=gross" style="display:block;width:1440px;height:900px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+  </div>
+
+  <div style="display:flex;gap:56px;align-items:flex-start">
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">C. Invalid XRechnung, official message open</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">#5, Anna, 1440 × 900</span><a href="Eingang App Review.dc.html?inv=5" style="font-size:13px">Open</a></figcaption><iframe title="Review C" src="Eingang App Review.dc.html?inv=5&amp;issue=open" style="display:block;width:1440px;height:900px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">C. Accept anyway, resolve dialog</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">#5, Jonas, 1440 × 900</span></figcaption><iframe title="Review C, accept dialog" src="Eingang App Review.dc.html?inv=5&amp;as=jonas&amp;dialog=accept" style="display:block;width:1440px;height:900px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+  </div>
+
+  <div style="display:flex;gap:56px;align-items:flex-start">
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">B on a phone, Data</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">390 × 844</span></figcaption><iframe title="Review B on a phone" src="Eingang App Review.dc.html?inv=8" style="display:block;width:392px;height:846px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">B on a phone, Document</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">390 × 844</span></figcaption><iframe title="Review B on a phone, document" src="Eingang App Review.dc.html?inv=8&amp;mtab=document" style="display:block;width:392px;height:846px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">B on a phone, Activity</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">390 × 844</span></figcaption><iframe title="Review B on a phone, activity" src="Eingang App Review.dc.html?inv=8&amp;mtab=activity" style="display:block;width:392px;height:846px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">B on a tablet, stacked</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">1024 × 768</span></figcaption><iframe title="Review B on a tablet" src="Eingang App Review.dc.html?inv=8" style="display:block;width:1026px;height:770px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">PDF/XML mismatch</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">#10, DiffView, 900 × 460</span></figcaption><iframe title="PDF and XML mismatch check" src="Eingang App Review.dc.html?inv=10" style="display:block;width:900px;height:460px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+  </div>
+</section>
+
+</x-dc>
+</body>
+</html>

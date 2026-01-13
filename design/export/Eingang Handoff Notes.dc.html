@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Handoff notes · Eingang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f7f2ea;color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,p,ol,ul{margin:0}
+a{color:#2c4a8a;text-underline-offset:3px}
+a:hover{color:#1f1c18}
+:focus-visible{outline:2.5px solid #0f6e62;outline-offset:2px}
+</style>
+</helmet>
+<main style="max-width:1040px;margin:0 auto;padding:56px 24px 72px;display:grid;gap:40px">
+  <header style="display:grid;gap:12px">
+    <h1 style="font:700 clamp(38px,4.6vw,66px)/1.05 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Handoff notes</h1>
+    <p style="font-size:17px;line-height:1.6;max-width:68ch">For the developer building Eingang. Every page listed here is live: open it, click it, resize it. Where this page and a design disagree, this page wins; tell the designer.</p>
+    <nav aria-label="Contents" style="display:flex;flex-wrap:wrap;gap:8px 20px;font-size:14px;padding-top:8px">
+      <sc-for list="{{ toc }}" as="t" hint-placeholder-count="12"><a href="{{ t.href }}">{{ t.title }}</a></sc-for>
+    </nav>
+  </header>
+
+  <sc-for list="{{ sections }}" as="s" hint-placeholder-count="12">
+    <section id="{{ s.id }}" style="display:grid;gap:16px;padding-top:32px;border-top:1px solid #d6cbbb">
+      <h2 style="font:700 clamp(28px,2.6vw,42px)/1.1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">{{ s.title }}</h2>
+      <sc-if value="{{ s.intro }}" hint-placeholder-val="{{ false }}"><p style="font-size:15px;line-height:1.6;max-width:72ch">{{ s.intro }}</p></sc-if>
+      <sc-if value="{{ s.isList }}" hint-placeholder-val="{{ false }}">
+        <ol style="display:grid;gap:8px;padding:0;list-style:none;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;padding:16px 20px">
+          <sc-for list="{{ s.items }}" as="it" hint-placeholder-count="6"><li style="display:grid;grid-template-columns:32px minmax(0,1fr);gap:8px;font-size:14px;line-height:1.5"><span style="font:500 13px/1.6 'JetBrains Mono',monospace;color:#746c61">{{ it.n }}</span><span>{{ it.t }}</span></li></sc-for>
+        </ol>
+      </sc-if>
+      <sc-if value="{{ s.isTable }}" hint-placeholder-val="{{ false }}">
+        <div style="overflow-x:auto;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px">
+          <table style="width:100%;border-collapse:separate;border-spacing:0;font-size:13px">
+            <thead><tr><sc-for list="{{ s.cols }}" as="c" hint-placeholder-count="3"><th style="position:sticky;top:0;background:#f7f2ea;border-bottom:1px solid #ebe3d6;padding:8px 12px;text-align:left;font-size:12px;font-weight:500;color:#746c61;white-space:nowrap">{{ c }}</th></sc-for></tr></thead>
+            <tbody>
+              <sc-for list="{{ s.rows }}" as="r" hint-placeholder-count="6">
+                <tr><sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="3"><td style="padding:8px 12px;border-bottom:1px solid #ebe3d6;vertical-align:top;line-height:1.45;font-family:{{ c.ff }};color:{{ c.fg }};min-width:{{ c.mw }}"><sc-if value="{{ c.sw }}" hint-placeholder-val="{{ false }}"><span style="display:inline-block;width:12px;height:12px;margin-right:8px;vertical-align:-1px;border:1px solid #d6cbbb;border-radius:999px;background:{{ c.sw }}"></span></sc-if>{{ c.t }}</td></sc-for></tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </sc-if>
+    </section>
+  </sc-for>
+</main>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const M = "'JetBrains Mono',monospace", SN = "'Instrument Sans',sans-serif";
+const T = (id, title, intro, cols, rows, opt) => Object.assign({ id, title, intro, cols, rows, isTable: true, isList: false }, opt || {});
+const Ls = (id, title, intro, items) => ({ id, title, intro, items, isList: true, isTable: false });
+const SECTIONS = [
+  T('files', 'Files', 'Pages are the live designs. Boards show pages in frames at their real sizes and add nothing of their own except the motion spec.', ['File', 'Type', 'What it shows'], [
+    ['Eingang Design System.dc.html', 'Page', 'Tokens, type, spacing, radii, shadows, icons, every component and its states, status labels, stamp, mark, favicon, drawing style.'],
+    ['Eingang Homepage.dc.html', 'Page', 'Public homepage at 1440 px with both interactive acts.'],
+    ['Eingang Homepage Phone.dc.html', 'Page', 'Public homepage at 390 px; also the layout below 1100 px, content at most 680 px.'],
+    ['Eingang Homepage Board.dc.html', 'Board', 'Homepage desktop, phone and 900 px fallback side by side, plus the motion spec panel.'],
+    ['Eingang App Sign in.dc.html', 'Page', 'Sign-in screen.'],
+    ['Eingang App Inbox.dc.html', 'Page', 'Inbox, responsive (1440, tablet, 390). ?tab=all; ?screen=drag | picker | processing hold the upload states.'],
+    ['Eingang App Board.dc.html', 'Board', 'Sign in, inbox, the three upload states, inbox on phone and tablet.'],
+    ['Eingang App Review.dc.html', 'Page', 'Invoice review, responsive. ?inv=1 | 8 | 5 | 10, ?tab=xml | text, ?ev=<field>, ?issue=open, ?as=jonas, ?dialog=accept | resolve | reject, ?mtab=document | activity.'],
+    ['Eingang App Review Board.dc.html', 'Board', 'Review variants A, B and C with their tabs and dialog, B on phone and tablet, and the #10 DiffView frame.'],
+    ['Eingang App Screens.dc.html', 'Page', 'Approvals (desktop and phone), suppliers, supplier detail and its confirmed state example, exports, settings, accuracy (app and public), not found. ?screen=…'],
+    ['Eingang App Screens Board.dc.html', 'Board', 'All screens of App Screens in frames.'],
+    ['Eingang States Board.dc.html', 'Board', 'Loading, empty, error and success for six data views, plus the special states.'],
+    ['Eingang Handoff Notes.dc.html', 'Page', 'This page.'],
+    ['eingang-ui.js', 'Script', 'The icon set (e-icon, 1.5 px strokes), the confidence bars (e-bars) and the shared ink filter. Loaded by every page.'],
+    ['support.js', 'Script', 'Runtime for the design pages. Not part of the product.'],
+    ['uploads/kiln-*.png', 'Reference', 'Screenshots of the Kiln reference pages. Approach only; do not ship or copy.']
+  ], { mono0: true }),
+  Ls('decisions', 'Decisions made during design', '', [
+    'Headline: option 1 (“Some of our invoices are e-invoices. We couldn’t tell you which.”) ships. The headline options in Tweaks are for review only, not a feature.',
+    'Illustration sizes outside the tokens: the homepage phone frame has 40 px corners; stamp and square-mark lettering is pinned per component (see “Stamp, mark and favicon”).',
+    'Favicon: a separate small mark, a filled --stamp square with one --win “E” in Barlow Condensed 700, at 16, 32 and 180 px.',
+    'Homepage stamp: the design shows 09. OKT. 2026; the live site shows the visitor’s today.',
+    'Received chip: app date format (“07 Oct, 14:30”) in stamp colours (--stamp on --stamp-soft), never the stamp lettering.',
+    'The overdue marker appears only on Needs review and Awaiting approval rows.',
+    'IBAN tags map to the API’s iban_status: “Known account” = known, “Confirmed change” = confirmed, “New account” = new.',
+    'Inbox table: at 1440 px supplier names wrap; at 768–1279 px the table scrolls inside its container with Supplier pinned, and the e-invoice yes/no shows as an icon in the Format cell.',
+    'Review screen: on tablet the data panel comes first with “Show document” collapsed below; on phone the bottom tab bar is hidden and the header has a back arrow to the Inbox.',
+    'The footer has no imprint link.',
+    'Drag and drop is the browser’s native drag and drop; on touch screens the “Stamp it” buttons are the primary control.',
+    'Error states show the API’s problem title and detail. The wording on the states board is an example only.',
+    'Design-only content that must NOT become seed data: the Malerbetrieb Krause approvals row, the past export row (01 Oct 2026), the confirmed-IBAN state example, the homepage’s phone-call note on #7.',
+    'Invented sample content (fine for the design): #8 invoice date 05 Oct 2026; single line items for #1 and #5; buyer reference HB-4100-EK; masked IBANs •••• 4417 and •••• 8803; Krause due date 04 Nov 2026.',
+    'Settings defaults: duplicate window 30 days, reminder after 3 days.',
+    'Homepage below 1100 px: the phone layout, centred, with content at most 680 px wide.',
+    'Credit notes show amounts with a minus sign (“−58,31 €”, U+2212).'
+  ]),
+  Ls('donotchange', 'Do not change', '', [
+    'Stamp proportions: every measure is a fraction of the stamp’s lettering size; rotate only within ±5°; keep the shared ink filter.',
+    'Status vocabulary: the exact labels, colours and icons of B6. Status never by colour alone: always text plus icon.',
+    'Honesty rules: no testimonials, logos, user counts, “trusted by” or improvement percentages. Every illustrative number says “sample”. Legal facts only with their source link. The homepage only links to accuracy; it never shows a number. Never claim that Eingang reads scans or images.',
+    'Evidence highlight: every AI-read value shows the exact text it came from, with the value marked in --hl. Selecting a field highlights the same line on the page and in the Text tab. No AI value without its evidence and confidence; XML values carry “From the XML” and no confidence chip.',
+    'Four-eyes: when it is on, the reviewer of an invoice can never approve it, Admins included.',
+    'The homepage phone-call note on #7 never appears in the app; in the app #7’s check stays unresolved.'
+  ]),
+  T('tokens', 'Tokens', 'Use these names and values exactly. Shadows and the desk grid carry their own colours. Nothing else is a colour.', ['Token', 'Value', 'Use'], [
+    ['--desk', '#ebe4d6', 'Homepage background, 32 px grid of #3a2a140b lines.'], ['--paper', '#fdfaf4', 'Printed sheets on the homepage.'], ['--win', '#fffdf9', 'App surfaces: panes, cards, inputs.'], ['--bar', '#f7f2ea', 'Top bar, pane headers, table header, rail, app background.'], ['--line', '#ebe3d6', 'Borders and dividers; skeleton bars; tape.'], ['--line-strong', '#d6cbbb', 'Input and button borders; crop marks.'], ['--soft', '#f6f0e6', 'Hover and selected backgrounds.'], ['--ink', '#1f1c18', 'Headings, primary buttons; dialog backdrop at 32 % opacity.'], ['--text', '#3f3a33', 'Body text; primary hover.'], ['--muted', '#746c61', 'Secondary text on win, paper, bar, soft. Checkbox and switch borders.'], ['--muted-strong', '#5f574d', 'Secondary text on desk.'], ['--ok / --ok-soft', '#0f6e62 / #e4f1ed', 'Valid, approved, high confidence.'], ['--warn / --warn-text / --warn-soft', '#c47408 / #8a4a06 / #fcefd8', '--warn for icons and borders only.'], ['--block / --block-soft', '#b42318 / #fbe9e6', 'Errors, blocking checks, rejected, low confidence.'], ['--info / --info-soft', '#2f5d8a / #e6eef7', 'Information, processing.'], ['--stamp / --stamp-soft', '#2c4a8a / #e8edf7', 'Stamp, received chip, links, sandbox banner.'], ['--pen', '#d3241b', 'Homepage red pen only, notes 24 px+.'], ['--hl', '#ffe53d', 'Highlighter, search match, evidence highlight.'], ['--focus', '#0f6e62', '2.5 px outline, 2 px offset; −3 px inside scroll containers.'], ['--r-sm / md / lg / pill', '6 / 8 / 12 / 999 px', 'Buttons and inputs / cards, popovers, toasts / windows, sheets, dialogs / chips, switches.'], ['--shadow-window', '0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433', 'Homepage windows; dialogs, menus, popovers, toasts.'], ['--shadow-sheet', '0 1px 0 #3a2a140f, 0 30px 60px -34px #3a2a1470, 0 2px 6px -2px #3a2a1426', 'Paper sheets.'], ['Spacing', '4, 8, 12, 16, 20, 24, 32, 40, 56, 72 px', 'Padding, margin, gap. Control heights 28/32/44 are sizes. Absolute offsets of homepage drawings are illustration layout.']
+  ], { swatch: true, mono0: true, mono1: true }),
+  T('type', 'Type', 'Line height 1.45 in the app, 1.6 for homepage body. Smallest size anywhere: 12 px.', ['Role', 'Font', 'Size'], [
+    ['Hero', 'Familjen Grotesk 700, −0.025em', 'clamp(38px, 4.6vw, 66px)'], ['Homepage section heading', 'Familjen Grotesk 700', 'clamp(28px, 2.6vw, 42px); 28 px on phone'], ['Homepage body', 'Instrument Sans 400', '17 px'], ['Page title', 'Familjen Grotesk 700', '21 px'], ['Section title', 'Familjen Grotesk 700', '16 px'], ['Default UI', 'Instrument Sans 400/500/600', '14 px; 16 px in phone inputs and 44 px buttons'], ['Table, secondary', 'Instrument Sans', '13 px'], ['Captions', 'Instrument Sans', '12 px'], ['Numbers, IBANs, VAT IDs, rule IDs, XML', 'JetBrains Mono 400/500', '12–13 px; 21 px for headline amounts'], ['Red-pen notes', 'Caveat 600', '24 px or more'], ['Stamp', 'Barlow Condensed 700, uppercase, 0.08em', 'See the next section']
+  ]),
+  T('stamp', 'Stamp, mark and favicon', 'Artwork, not text: outside the type scale, proportions fixed. W = stamp lettering size, S = side of the mark.', ['Element', 'Measure', 'Sizes in use'], [
+    ['Stamp: “EINGANG”', 'W', 'lg 44 px (design system), 36 px (homepage window), md 22 px, 20 px (stamped sheets), 18 px (phone envelope)'], ['Stamp: date', '0.45 W', 'German stamp format, e.g. 09. OKT. 2026'], ['Stamp: frame', '0.07 W, corners 0.14 W', ''], ['Stamp: inner rule', '0.035 W, 0.18 W inside the outer edge', ''], ['Stamp: date rule', '0.045 W', ''], ['Stamp: padding', '0.27 W top and bottom, 0.36 W sides, 0.09 W word to date', ''], ['Mark: “E”', '0.55 S', 'S = 40, 28, 24 px; never below 24'], ['Mark: frame / inner rule', '0.0625 S, corners 0.15 S / 0.025 S, 0.175 S inside', ''], ['Favicon', 'Filled --stamp square, --win E, pixel-snapped', '16 px: E 6 × 10, stem and arms 2 px. 32 px: E 12 × 20, 4 px. 180 px: square corners'], ['Phone frame (homepage)', '8 px --ink border, 40 px corners', 'Illustration, outside the radius tokens']
+  ]),
+  T('components', 'Components', 'Names map one-to-one to code. Every interactive component has default, hover, focus, active and disabled states as shown in the design system.', ['Component', 'Variants', 'States and rules'], [
+    ['AppShell', 'Desktop, tablet, phone', 'TopBar + Rail + content on --bar; panes on --win.'], ['TopBar', '—', 'Mark, organisation, search with “/” hint, sandbox countdown (sandbox only), user menu with name and role.'], ['Rail', 'Labels (≥1280), icons only (768–1279), bottom tab bar (≤767)', 'Active item raised (--win, --line border, 0 1px 0 --line-strong). Tab bar: Inbox, Approvals, Suppliers, Exports, More.'], ['PaneHeader', 'Title, count, back link, actions', '—'], ['Button', 'primary, secondary, ghost, danger; sm 28, md 32, lg 44', 'Hover, focus ring, active 1 px down, disabled (--soft, --muted, not-allowed, real disabled attribute), loading (spinner + “…ing”). No wrapping.'], ['IconButton', 'ghost, secondary; 28 / 32 / 44', 'Always aria-label and tooltip. 44 px on phone.'], ['Input, Textarea, Select', '—', 'Hover --muted border, focus --ink border + ring, error --block border + message with octagon, disabled. Notes 5–500 characters with counter.'], ['Checkbox, Switch', '—', 'Off, on, mixed (checkbox), hover, focus, disabled. Borders in --muted.'], ['SearchField', '—', '“/” focuses, Esc clears focus; matches marked in --hl.'], ['Tabs', 'Underline, segmented', 'Selected, hover, focus, empty count, disabled with lock and reason.'], ['Badge', 'Count, selected count, label, Sample, overdue', '“Sample” and “Design-only example” use a dashed --muted border.'], ['StatusChip, FormatChip, ValidationChip, ConfidenceChip, SeverityIcon, IBAN tag', 'B6 vocabulary', 'Format chips: squared corners; ZUGFeRD tooltip “ZUGFeRD and Factur-X are the same standard”. Long format chips wrap.'], ['DataTable', '—', 'Sticky header, 48 px rows, hover, selected, sortable headers with aria-sort, mono numbers right-aligned.'], ['DropZone', 'Default, drag-over, error, disabled by role', 'Plus the full-window drag overlay.'], ['UploadProgressRow', 'Uploading, processing, received, done, failed, rejected, limit reached', 'Rejected rows say why and offer Remove.'], ['StepProgress', 'Detect, validate, extract, check', 'Done, current (spinner), pending, skipped (“Not needed” / “Not applicable”), failed.'], ['DocumentViewer', 'Document, XML, Text', 'Tabs disabled with a reason when they don’t apply. Evidence highlight in --hl with a --stamp ring.'], ['CodeView', '—', 'Line numbers; colours from tokens only; issues inline as an annotation row without a number.'], ['DiffView', '—', '“PDF shows” vs “XML says”; the XML side is marked Used.'], ['IssueList', 'Collapsed, expanded', 'Rule ID in mono, plain explanation, official message verbatim on expand, location, Show in XML.'], ['CheckList', 'Open, resolving, resolved, info, disabled by role', 'Block checks need a note to resolve.'], ['FieldRow, EvidencePopover', 'From XML, AI-read (high, medium, low), edited, editing', 'Low rows tinted --block-soft with a hint. Popover: snippet, line, confidence, Show in document.'], ['LinesTable, TaxBreakdown, Timeline', '—', '—'], ['ApprovalCard', 'Default, approving, approved, four-eyes blocked', '44 px buttons on phone.'], ['Dialog', '—', 'Focus moves in, Esc and Cancel close, focus returns. Backdrop --ink at 32 %.'], ['Toast', 'Success, info, error, rate limit', 'Bottom right; success and info leave after 4–5 s, errors stay until dismissed.'], ['EmptyState, ErrorState, Skeleton', '—', 'Skeletons appear after 300 ms and match the layout.'], ['Stamp', 'lg, md, chip, mark, favicon', 'Takes a date.'], ['SandboxBanner', 'Desktop one line, phone wraps', 'Inbox and Settings only, sandbox only, not dismissible.'], ['MeterBar', 'Under, near limit, reached', 'Every number marked Sample in the design.']
+  ], { mono0: true }),
+  T('screens', 'Screens and their states', '', ['Screen', 'Viewer', 'States'], [
+    ['Homepage', 'Public', 'Hero; Act 1 empty → stamped rows → all four done; Act 2 steps 1–4 → Do it again. Reduced motion end states.'], ['Sign in', 'Public', 'Empty, field errors, signing in.'], ['Inbox', 'Anna', '6 tabs, search, supplier/format filters, sort, selection, empty per tab, no results, loading, error. Upload: drag overlay, file picker open, processing, rejected, limits.'], ['Review A, #1', 'Jonas', 'Awaiting approval; approving; approved; rejected; XML tab.'], ['Review B, #8', 'Anna', 'Needs review; evidence open; editing; VAT ID edited or check resolved → Mark reviewed → awaiting; Text tab; phone tabs.'], ['Review C, #5', 'Anna (dialog: Jonas)', 'Official message open; Accept anyway disabled for Anna; accept dialog for Admins.'], ['#10 mismatch', '—', 'DiffView check.'], ['Approvals', 'Jonas', '3 rows + design-only four-eyes row; approve, reject dialog, empty.'], ['Suppliers / supplier detail', 'Anna', 'List; Bürobedarf Nord with New account (unconfirmed) and the confirmed state example.'], ['Exports', 'Anna', '1 ready; exporting; exported row; nothing ready.'], ['Settings', 'Jonas', 'Sandbox: banner on, members disabled; unsaved changes → Save.'], ['Accuracy (app and public)', 'Anna / public', 'All numbers sample; no-results and error states.'], ['Not found', '—', 'One action: Go to the Inbox.'], ['Expired sandbox', '—', '“This sandbox has expired. Open a new one.”']
+  ], { mono0: false }),
+  Ls('interactions', 'Click and keyboard behaviour', '', [
+    'Everything clickable is a button or link, reachable with Tab, with a visible --focus ring. Icon-only buttons carry aria-label and the same text as tooltip.',
+    '“/” focuses search anywhere outside a text field. Esc closes the open popover, dialog or drag overlay.',
+    'Review: j = next invoice, k = previous; ignored while typing. Inbox rows open the review.',
+    'Tabs: arrow keys move between tabs; the selected tab has aria-selected. Sortable headers toggle ascending and descending and set aria-sort.',
+    'Homepage Act 1: drag a document onto the stamp (native drag and drop) or press its “Stamp it” button; each document stamps once. Act 2: type a note or use the example, Resolve check, Mark reviewed, Approve on the phone; Reject… explains it works in the sandbox.',
+    'Inbox upload: dragging files anywhere over the window shows the overlay; dropping uploads up to 10 files of PDF or XML, 4 MB each; others are rejected inline.',
+    'Review B: the pencil edits a field (Save / Cancel); the eye opens the evidence popover; picking a field highlights it in the document. Typing a full VAT ID resolves the low-confidence check.',
+    'Dialogs that resolve, accept or reject need a note of 5–500 characters; the confirm button validates and shows an inline error.',
+    'Disabled actions are real disabled buttons with the reason as visible text or tooltip, never only greyed out.'
+  ]),
+  T('motion', 'Animations', 'Every motion finishes within 1.2 s. With prefers-reduced-motion nothing moves; each element shows its end state as soon as its trigger fires. Full spec: Homepage Board.', ['Motion', 'Trigger', 'Duration, easing', 'Reduced motion'], [
+    ['Stamp press', 'Drop on stamp or Stamp it', '140 ms down, 20 ms hold, 140 ms back; ease-out', 'Impression appears at once'], ['Document to row', 'Stamp press', '240 ms entry; Received → Processing at 400 ms → verdict at 1,100 ms; ease-out', 'Row with verdict at once'], ['Red-pen draw-on', 'Hero +600 ms; Act 1 first verdict; Act 2 sheet 30 % in view', 'Circle 600, arrow 350–400, note 400, folder 800 ms; cubic-bezier(.65,0,.35,1)', 'Drawn from the start'], ['Highlighter swipe', 'With the hero pen', '450 ms; same curve', 'Full swipe'], ['Check resolve', 'Resolve check with a note', '200 ms fade; ease-out', 'Resolved at once'], ['Hand-off to phone', 'Mark reviewed', '320 ms rise 24 px; cubic-bezier(.2,.8,.2,1)', 'Card in place'], ['Approve', 'Approve', 'Spinner while the request runs (700 ms in the demo), 900 ms per turn', 'No spin; result on return'], ['Export slide', '500 ms after approval', '700 ms, −48 → +26 px; draw curve', 'Row resting in the folder'], ['Spinners (app)', 'Any pending request', '900 ms per turn, linear', 'Static icon']
+  ]),
+  T('responsive', 'Responsive rules', '', ['Screen', '≥ 1280 px', '768–1279 px', '≤ 767 px'], [
+    ['Homepage', 'Two-column acts, pile composition', 'Below 1100 px: the phone layout, centred, content at most 680 px wide; hero art, phone frame (max 358 px) and folder keep their phone sizes', 'Single column; simplified hero art; Act 1 vertical with Stamp it; full-width phone frame'], ['App shell', 'Rail with labels', 'Rail icons only, tooltips', 'Bottom tab bar, 5 items'], ['Inbox', 'Full table, no sideways scroll, Supplier wraps', 'Table scrolls in its container, Supplier pinned, E-invoice as icon in Format', 'Cards; search and filters 44 px; tabs scroll'], ['Review', 'Document | panel', 'Panel first, “Show document” collapsed below', 'Data / Document / Activity tabs; action bar; no bottom tab bar; back arrow'], ['Approvals', 'Compact rows, inline actions', 'Same, scrolls', 'Stacked ApprovalCards, 44 px buttons'], ['Dialogs', '480–680 px', 'Same', 'Full width minus 16 px margins'], ['Tap targets', '—', '—', '44 px minimum everywhere']
+  ]),
+  Ls('a11y', 'Accessibility', '', [
+    'Only the token text pairs listed in the design system; all are AA. --pen notes 24 px or larger; --muted never on --desk.',
+    'Focus: 2.5 px --focus outline, 2 px offset; inside scrolling or clipped containers use −3 px so the ring stays visible.',
+    'Status always as text plus icon; severity icons used alone carry aria-label.',
+    'Every drag has a button alternative (Stamp it, Choose files).',
+    'Live regions: toasts role=status (errors role=alert); upload progress and resolved checks announce; the counter in note fields is polite.',
+    'Dialogs: aria-modal, labelled by their title; focus trapped and returned.',
+    'German content (invoice text, official rule messages) carries lang="de"; French invoice lang="fr".',
+    'Tables use real table markup with header cells; sortable headers expose aria-sort; selected rows aria-selected.'
+  ]),
+  T('content', 'Placeholder and required content', '', ['Content', 'Status'], [
+    ['B9 invoices, suppliers, users, amounts, dates', 'Required sample data for the sandbox'], ['Status vocabulary, rule IDs, the official BR-DE-15 message', 'Required, exact'], ['Legal facts and their two source links', 'Required, exact, always with the link'], ['Homepage copy, empty-state copy, success copy', 'Required as designed'], ['Error titles and details on the states board', 'Example only; the app shows the API’s problem title and detail'], ['Accuracy figures, AI budget figures, MeterBar values', 'Placeholder, always labelled Sample until measured'], ['#8 invoice date, line items of #1 and #5, HB-4100-EK, •••• 4417, •••• 8803', 'Invented sample content, fine for the design'], ['Krause row, past export row, confirmed-IBAN example, homepage phone-call note', 'Design-only; never seed data'], ['GitHub, sandbox and sign-in links', 'Placeholder hrefs'], ['Upload filenames and timestamps in demos', 'Placeholder']
+  ])
+];
+class Component extends DCLogic {
+  renderVals() {
+    const sections = SECTIONS.map(s => {
+      const o = Object.assign({}, s, { key: s.id, intro: s.intro || '' });
+      if (s.isList) o.items = s.items.map((t, i) => ({ key: i, n: String(i + 1).padStart(2, '0'), t }));
+      if (s.isTable) o.rows = s.rows.map((r, i) => ({ key: i, cells: r.map((t, j) => ({ key: j, t, ff: (j === 0 && s.mono0) || (j === 1 && s.mono1) ? M : SN, fg: j === 0 ? '#1f1c18' : '#3f3a33', mw: j === 0 ? '180px' : '0', sw: s.swatch && j === 1 && /^#[0-9a-f]{6}/.test(t) ? t.slice(0, 7) : '' })) }));
+      return o;
+    });
+    return { sections, toc: SECTIONS.map(s => ({ key: s.id, href: '#' + s.id, title: s.title })) };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#ebe4d6;color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,p,figure{margin:0}
+a{color:#2c4a8a;text-underline-offset:3px}
+a:hover{color:#1f1c18}
+:focus-visible{outline:2.5px solid #0f6e62;outline-offset:2px}
+</style>
+</helmet>
+
+<section data-screen-label="App board: shell, sign-in, inbox, upload" style="padding:72px;display:grid;gap:56px;width:max-content">
+  <div style="display:grid;gap:8px;max-width:820px">
+    <h1 style="font:700 42px/1.1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">App: sign-in, inbox and upload</h1>
+    <p style="font-size:14px;color:#5f574d">Every frame is the live screen at its real size, logged in as Anna Weber (Accountant). The inbox is one responsive screen; the upload frames are the same screen held in one state.</p>
+  </div>
+
+  <div style="display:flex;gap:56px;align-items:flex-start">
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Sign in</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">1440 × 900</span><a href="Eingang App Sign in.dc.html" style="font-size:13px">Open</a></figcaption><iframe title="Sign in" src="Eingang App Sign in.dc.html" style="display:block;width:1440px;height:900px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Inbox, All tab</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">1440 × 900</span><a href="Eingang App Inbox.dc.html?tab=all" style="font-size:13px">Open</a></figcaption><iframe title="Inbox, all invoices" src="Eingang App Inbox.dc.html?tab=all" style="display:block;width:1440px;height:900px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+  </div>
+
+  <div style="display:flex;gap:56px;align-items:flex-start">
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Upload: dragging files over the window</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">1440 × 900</span></figcaption><iframe title="Upload, drag overlay" src="Eingang App Inbox.dc.html?screen=drag" style="display:block;width:1440px;height:900px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Upload: file picker open</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">1440 × 900</span></figcaption><iframe title="Upload, file picker open" src="Eingang App Inbox.dc.html?screen=picker" style="display:block;width:1440px;height:900px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Upload: processing, one file rejected</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">1440 × 900</span></figcaption><iframe title="Upload, processing" src="Eingang App Inbox.dc.html?screen=processing" style="display:block;width:1440px;height:900px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+  </div>
+
+  <div style="display:flex;gap:56px;align-items:flex-start">
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Inbox, phone</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">390 × 844</span></figcaption><iframe title="Inbox on a phone, all invoices" src="Eingang App Inbox.dc.html?tab=all" style="display:block;width:392px;height:846px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Inbox, phone, Needs review</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">390 × 844</span></figcaption><iframe title="Inbox on a phone, needs review" src="Eingang App Inbox.dc.html" style="display:block;width:392px;height:846px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+    <figure style="display:grid;gap:12px"><figcaption style="display:flex;align-items:baseline;gap:12px"><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Inbox, tablet</span><span style="font:12px/1 'JetBrains Mono',monospace;color:#5f574d">1024 × 768, rail collapses to icons</span></figcaption><iframe title="Inbox on a tablet" src="Eingang App Inbox.dc.html?tab=all" style="display:block;width:1026px;height:770px;border:1px solid #d6cbbb;border-radius:12px;background:#f7f2ea"></iframe></figure>
+  </div>
+</section>
+
+</x-dc>
+</body>
+</html>

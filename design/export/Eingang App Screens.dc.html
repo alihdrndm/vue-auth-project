@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eingang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&amp;family=Familjen+Grotesk:wght@700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<script src="./eingang-ui.js"></script>
+<style>
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:#f7f2ea;color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,ol,ul,dl,dd,blockquote,fieldset{margin:0}
+ol,ul{padding:0;list-style:none}
+fieldset{border:0;padding:0}
+button,input,textarea{font:inherit;color:inherit}
+a{color:#2c4a8a;text-underline-offset:3px}
+a:hover{color:#1f1c18}
+:focus-visible{outline:2.5px solid #0f6e62;outline-offset:2px}
+</style>
+</helmet>
+
+<sc-if value="{{ deskShell }}" hint-placeholder-val="{{ true }}">
+<div style="height:100vh;display:grid;grid-template-rows:48px minmax(0,1fr)">
+  <header style="display:flex;align-items:center;gap:16px;padding:0 12px 0 16px;background:#f7f2ea;border-bottom:1px solid #ebe3d6">
+    <div style="display:flex;align-items:center;gap:8px"><span aria-hidden="true" style="width:1em;height:1em;font-size:24px;display:grid;place-items:center;border:0.0625em solid #2c4a8a;border-radius:0.15em;outline:0.025em solid #2c4a8a;outline-offset:-0.175em;background:#fffdf9;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1;filter:url(#eg-ink)"><span style="font-size:0.55em">E</span></span><span style="font:700 16px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Eingang</span></div>
+    <span aria-hidden="true" style="color:#746c61">/</span>
+    <span style="font-size:14px;font-weight:500;color:#1f1c18;white-space:nowrap">Holzwerk Brandt GmbH</span>
+    <label style="flex:1 1 auto;max-width:440px;margin-left:24px;display:flex;align-items:center;gap:8px;height:32px;padding:0 4px 0 12px;border:1px solid #d6cbbb;border-radius:6px;background:#fffdf9;color:#746c61"><e-icon name="search" size="16"></e-icon><input aria-label="Search" placeholder="Search invoices, suppliers, numbers" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font-size:14px;color:#1f1c18"><kbd style="display:inline-grid;place-items:center;min-width:24px;height:24px;border:1px solid #d6cbbb;border-radius:6px;background:#f7f2ea;font:12px/1 'JetBrains Mono',monospace;color:#746c61">/</kbd></label>
+    <span style="flex:1"></span>
+    <sc-if value="{{ sandbox }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500;white-space:nowrap"><e-icon name="clock" size="14"></e-icon>Sandbox, 23 h left</span></sc-if>
+    <button aria-haspopup="menu" aria-label="{{ u.aria }}" style="display:flex;align-items:center;gap:8px;height:40px;padding:0 8px 0 4px;border:1px solid transparent;border-radius:6px;background:transparent;cursor:pointer;color:#3f3a33" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><span style="width:28px;height:28px;border-radius:999px;background:#e8edf7;color:#2c4a8a;display:grid;place-items:center;font-size:12px;font-weight:600">{{ u.initials }}</span><span style="display:grid;text-align:left;line-height:1.2"><span style="font-size:13px;font-weight:500;color:#1f1c18">{{ u.name }}</span><span style="font-size:12px;color:#746c61">{{ u.role }}</span></span><e-icon name="chevron-down" size="16"></e-icon></button>
+  </header>
+  <div style="display:grid;grid-template-columns:88px minmax(0,1fr);min-height:0">
+    <nav aria-label="Main" style="background:#f7f2ea;border-right:1px solid #ebe3d6;padding:8px;display:grid;align-content:start;gap:4px">
+      <sc-for list="{{ rail }}" as="it" hint-placeholder-count="6">
+        <a href="{{ it.href }}" aria-current="{{ it.cur }}" style="display:grid;justify-items:center;gap:4px;padding:8px 4px;border-radius:8px;font-size:12px;font-weight:500;text-decoration:none;color:{{ it.fg }};background:{{ it.bg }};border:{{ it.bd }};box-shadow:{{ it.sh }}" style-hover="background:#f6f0e6;color:#1f1c18" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="{{ it.icon }}" size="20"></e-icon>{{ it.label }}</a>
+      </sc-for>
+    </nav>
+    <main style="min-width:0;min-height:0;overflow:auto;padding:16px;display:grid;gap:16px;align-content:start">
+      <sc-if value="{{ sandbox }}" hint-placeholder-val="{{ false }}"><div role="status" style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:32px;padding:4px 16px;border-radius:8px;background:#e8edf7;color:#2c4a8a;font-size:13px;font-weight:500"><e-icon name="clock" size="14"></e-icon>Sandbox · deleted in 23 h · sample data, nothing is real</div></sc-if>
+
+      <sc-if value="{{ is.approvals }}" hint-placeholder-val="{{ false }}">
+        <section aria-labelledby="ap-h" style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;min-height:56px;padding:8px 20px;background:#f7f2ea;border-bottom:1px solid #ebe3d6"><h1 id="ap-h" style="font:700 21px/1.2 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Approvals</h1><span style="min-width:20px;height:20px;padding:0 4px;border-radius:999px;display:inline-grid;place-items:center;font:500 12px/1 'JetBrains Mono',monospace;background:#f6f0e6;color:#3f3a33;border:1px solid #ebe3d6">{{ apCount }}</span><span style="flex:1"></span><span style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#3f3a33"><e-icon name="lock" size="16" style="color:#746c61"></e-icon>Four-eyes is on: nobody approves an invoice they reviewed themselves.</span></div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 112px 112px 248px 120px 200px 220px;gap:12px;align-items:center;height:36px;padding:0 20px;border-bottom:1px solid #ebe3d6;background:#f7f2ea;font-size:12px;font-weight:500;color:#746c61"><span>Supplier</span><span style="text-align:right">Gross</span><span>Due</span><span>Bank account</span><span>Open warnings</span><span>Reviewed by</span><span></span></div>
+          <sc-for list="{{ ap }}" as="r" hint-placeholder-count="4">
+            <div style="border-bottom:1px solid #ebe3d6;background:{{ r.bg }}">
+              <div style="display:grid;grid-template-columns:minmax(0,1fr) 112px 112px 248px 120px 200px 220px;gap:12px;align-items:center;min-height:56px;padding:8px 20px;font-size:13px">
+                <span style="display:grid;min-width:0"><span style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px"><span style="font-size:14px;font-weight:500;color:#1f1c18">{{ r.supplier }}</span><sc-if value="{{ r.demo }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;color:#746c61;border:1px dashed #746c61">Design-only example</span></sc-if></span><span style="font:12px/1.45 'JetBrains Mono',monospace;color:#746c61">{{ r.number }}</span></span>
+                <span style="text-align:right;font-family:'JetBrains Mono',monospace;color:#1f1c18">{{ r.gross }}</span>
+                <span>{{ r.due }}</span>
+                <span style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px"><span style="font-family:'JetBrains Mono',monospace;color:#1f1c18">{{ r.iban }}</span><span title="{{ r.tag.title }}" style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap;background:{{ r.tag.bg }};color:{{ r.tag.fg }}"><e-icon name="{{ r.tag.icon }}" size="14"></e-icon>{{ r.tag.label }}</span></span>
+                <span style="color:{{ r.wColor }}">{{ r.warn }}</span>
+                <span>{{ r.reviewer }}</span>
+                <span style="display:flex;justify-content:flex-end;gap:8px">
+                  <sc-if value="{{ r.can }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.reject }}" aria-label="Reject {{ r.number }}" style="display:inline-flex;align-items:center;white-space:nowrap;height:28px;padding:0 12px;border-radius:6px;font-size:13px;font-weight:500;background:#fbe9e6;color:#b42318;border:1px solid #b42318;cursor:pointer" style-hover="background:#b42318;color:#fffdf9" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Reject…</button><button onClick="{{ r.approve }}" aria-label="Approve {{ r.number }}" style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;height:28px;padding:0 12px;border-radius:6px;font-size:13px;font-weight:500;background:#1f1c18;color:#fffdf9;border:1px solid #1f1c18;cursor:pointer" style-hover="background:#3f3a33" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="check" size="14"></e-icon>Approve</button></sc-if>
+                  <sc-if value="{{ r.blocked }}" hint-placeholder-val="{{ false }}"><button onClick="{{ r.reject }}" style="display:inline-flex;align-items:center;white-space:nowrap;height:28px;padding:0 12px;border-radius:6px;font-size:13px;font-weight:500;background:#fbe9e6;color:#b42318;border:1px solid #b42318;cursor:pointer" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Reject…</button><button disabled="{{ true }}" aria-describedby="fe-why" style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;height:28px;padding:0 12px;border-radius:6px;font-size:13px;font-weight:500;background:#f6f0e6;color:#746c61;border:1px solid #ebe3d6;cursor:not-allowed"><e-icon name="lock" size="14"></e-icon>Approve</button></sc-if>
+                </span>
+              </div>
+              <sc-if value="{{ r.blocked }}" hint-placeholder-val="{{ false }}"><p id="fe-why" style="display:flex;align-items:center;gap:8px;padding:0 20px 12px;font-size:13px;color:#3f3a33"><e-icon name="info" size="16" style="color:#2f5d8a"></e-icon>Entered by hand and marked reviewed by you. You reviewed this invoice. Someone else must approve it.</p></sc-if>
+            </div>
+          </sc-for>
+          <sc-if value="{{ apEmpty }}" hint-placeholder-val="{{ false }}"><div style="display:grid;justify-items:center;gap:8px;padding:56px 24px;text-align:center"><e-icon name="circle-check" size="20" style="color:#0f6e62"></e-icon><h2 style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;color:#1f1c18">Nothing waiting for you</h2><p style="font-size:14px;color:#746c61">Invoices arrive here once someone else marks them reviewed.</p></div></sc-if>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ is.suppliers }}" hint-placeholder-val="{{ false }}">
+        <section aria-labelledby="su-h" style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden">
+          <div style="display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 20px;background:#f7f2ea;border-bottom:1px solid #ebe3d6"><h1 id="su-h" style="font:700 21px/1.2 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Suppliers</h1><span style="font-size:13px;color:#746c61">7 suppliers, 12 invoices</span></div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 96px 136px 260px 240px;gap:12px;align-items:center;height:36px;padding:0 20px;border-bottom:1px solid #ebe3d6;background:#f7f2ea;font-size:12px;font-weight:500;color:#746c61"><span>Supplier</span><span style="text-align:right">Invoices</span><span>Last invoice</span><span>Open</span><span>Bank account</span></div>
+          <sc-for list="{{ suppliers }}" as="r" hint-placeholder-count="7">
+            <a href="{{ r.href }}" style="display:grid;grid-template-columns:minmax(0,1fr) 96px 136px 260px 240px;gap:12px;align-items:center;min-height:48px;padding:8px 20px;border-bottom:1px solid #ebe3d6;font-size:13px;color:#3f3a33;text-decoration:none" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:-3px"><span style="font-size:14px;font-weight:500;color:#1f1c18">{{ r.name }}</span><span style="text-align:right;font-family:'JetBrains Mono',monospace">{{ r.n }}</span><span>{{ r.last }}</span><span>{{ r.open }}</span><span><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;background:{{ r.tag.bg }};color:{{ r.tag.fg }}"><e-icon name="{{ r.tag.icon }}" size="14"></e-icon>{{ r.tag.label }}</span></span></a>
+          </sc-for>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ is.supplier }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;gap:16px">
+          <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px">
+            <div style="display:grid;gap:4px"><a href="?screen=suppliers" style="display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:500;text-decoration:none;color:#3f3a33"><e-icon name="chevron-left" size="16"></e-icon>Suppliers</a><h1 style="font:700 21px/1.2 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Bürobedarf Nord KG</h1><span style="font-size:13px;color:#746c61">3 invoices since 02 Oct 2026</span></div>
+            <sc-if value="{{ confirmed }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;height:24px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:500;color:#746c61;border:1px dashed #746c61;background:#fffdf9">State example: after the change was confirmed</span></sc-if>
+          </div>
+          <section aria-labelledby="ib-h" style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden">
+            <div style="padding:12px 20px;background:#f7f2ea;border-bottom:1px solid #ebe3d6"><h2 id="ib-h" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">IBAN history</h2></div>
+            <sc-if value="{{ unconfirmed }}" hint-placeholder-val="{{ true }}">
+              <div style="display:grid;gap:8px;padding:16px 20px;background:#fbe9e6;border-bottom:1px solid #ebe3d6">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px"><span style="font:500 14px 'JetBrains Mono',monospace;color:#1f1c18">DE02 1203 0000 0000 2020 51</span><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#fffdf9;color:#b42318;border:1px solid #b42318;font-size:12px;font-weight:500"><e-icon name="circle-alert" size="14"></e-icon>New account</span></div>
+                <p style="font-size:13px;color:#1f1c18">First seen on <span style="font-family:'JetBrains Mono',monospace">BN-88290</span>, 07 Oct 2026 · Not confirmed yet</p>
+                <a href="Eingang App Review.dc.html" style="justify-self:start;display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:500"><e-icon name="octagon" size="14" style="color:#b42318"></e-icon>Open the check on BN-88290</a>
+              </div>
+            </sc-if>
+            <sc-if value="{{ confirmed }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;gap:8px;padding:16px 20px;background:#e4f1ed;border-bottom:1px solid #ebe3d6">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px"><span style="font:500 14px 'JetBrains Mono',monospace;color:#1f1c18">DE02 1203 0000 0000 2020 51</span><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#fffdf9;color:#0f6e62;border:1px solid #0f6e62;font-size:12px;font-weight:500"><e-icon name="circle-check" size="14"></e-icon>Confirmed change</span></div>
+                <p style="font-size:13px;color:#1f1c18">Confirmed by Anna Weber, 09 Oct 2026 · ‘Called on the number we already had; the change is real.’</p>
+              </div>
+            </sc-if>
+            <div style="display:grid;gap:8px;padding:16px 20px">
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px"><span style="font:14px 'JetBrains Mono',monospace;color:#1f1c18">DE89 3704 0044 0532 0130 00</span><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#f6f0e6;color:#746c61;font-size:12px;font-weight:500"><e-icon name="check" size="14"></e-icon>Known account</span></div>
+              <p style="font-size:13px">Known account · first seen 02 Oct 2026 on <span style="font-family:'JetBrains Mono',monospace">BN-88102-G</span>. Also on <span style="font-family:'JetBrains Mono',monospace">BN-88213</span>.</p>
+            </div>
+          </section>
+          <section aria-labelledby="si-h" style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden">
+            <div style="padding:12px 20px;background:#f7f2ea;border-bottom:1px solid #ebe3d6"><h2 id="si-h" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Invoices</h2></div>
+            <div style="display:grid;grid-template-columns:120px 140px minmax(0,1fr) 120px 200px 180px;gap:12px;align-items:center;height:36px;padding:0 20px;border-bottom:1px solid #ebe3d6;font-size:12px;font-weight:500;color:#746c61"><span>Received</span><span>Number</span><span>Format</span><span style="text-align:right">Gross</span><span>Bank account</span><span>Status</span></div>
+            <sc-for list="{{ supInv }}" as="r" hint-placeholder-count="3">
+              <div style="display:grid;grid-template-columns:120px 140px minmax(0,1fr) 120px 200px 180px;gap:12px;align-items:center;min-height:48px;padding:8px 20px;border-bottom:1px solid #ebe3d6;font-size:13px"><span><span style="display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500;white-space:nowrap">{{ r.rec }}</span></span><span style="font-family:'JetBrains Mono',monospace;color:#1f1c18">{{ r.number }}</span><span><span style="display:inline-flex;align-items:center;gap:4px;min-height:24px;padding:4px 8px;border-radius:6px;border:1px solid #d6cbbb;font-size:12px;font-weight:500;line-height:1.2"><e-icon name="file-code" size="14"></e-icon>{{ r.format }}</span></span><span style="text-align:right;font-family:'JetBrains Mono',monospace;color:#1f1c18">{{ r.gross }}</span><span><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap;background:{{ r.tag.bg }};color:{{ r.tag.fg }}"><e-icon name="{{ r.tag.icon }}" size="14"></e-icon>{{ r.tag.label }}</span></span><span><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap;background:{{ r.st.bg }};color:{{ r.st.fg }}"><e-icon name="{{ r.st.icon }}" size="14" style="color:{{ r.st.ic }}"></e-icon>{{ r.st.label }}</span></span></div>
+            </sc-for>
+          </section>
+        </div>
+      </sc-if>
+
+
+      <sc-if value="{{ is.exports }}" hint-placeholder-val="{{ false }}">
+        <h1 style="font:700 21px/1.2 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Exports</h1>
+        <div style="display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:16px;align-items:start">
+          <section aria-labelledby="ex-h" style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden">
+            <div style="display:grid;gap:4px;padding:12px 20px;background:#f7f2ea;border-bottom:1px solid #ebe3d6"><h2 id="ex-h" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Export approved invoices</h2><span style="font-size:13px;color:#3f3a33">{{ readyText }}</span></div>
+            <fieldset style="display:grid;gap:8px;padding:16px 20px">
+              <legend style="padding:0 0 8px;font-size:13px;font-weight:500;color:#1f1c18">Format</legend>
+              <div role="radiogroup" aria-label="Format" style="display:grid;gap:8px">
+                <sc-for list="{{ fmts }}" as="f" hint-placeholder-count="3">
+                  <button role="radio" aria-checked="{{ f.aria }}" onClick="{{ f.pick }}" style="display:grid;grid-template-columns:20px minmax(0,1fr);gap:12px;align-items:start;padding:12px;border-radius:8px;text-align:left;cursor:pointer;border:1px solid {{ f.bd }};background:{{ f.bg }}" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><span style="display:grid;place-items:center;width:18px;height:18px;border-radius:999px;border:1.5px solid {{ f.bd }}"><span style="width:8px;height:8px;border-radius:999px;background:{{ f.dot }}"></span></span><span style="display:grid;gap:4px"><span style="font-size:14px;font-weight:500;color:#1f1c18">{{ f.label }}</span><span style="font-size:12px;color:#746c61">{{ f.help }}</span></span></button>
+                </sc-for>
+              </div>
+            </fieldset>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;background:#f7f2ea;border-top:1px solid #ebe3d6">
+              <span style="font-size:12px;color:#746c61">Exported invoices move to the Exported tab.</span>
+              <sc-if value="{{ canExport }}" hint-placeholder-val="{{ true }}"><button onClick="{{ doExport }}" style="display:inline-flex;align-items:center;gap:8px;white-space:nowrap;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#1f1c18;color:#fffdf9;border:1px solid #1f1c18;cursor:pointer" style-hover="background:#3f3a33" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="download" size="16"></e-icon>Export 1 invoice</button></sc-if>
+              <sc-if value="{{ exporting }}" hint-placeholder-val="{{ false }}"><span aria-busy="true" style="display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#1f1c18;color:#fffdf9"><e-icon name="loader" size="16" spin="true"></e-icon>Exporting…</span></sc-if>
+              <sc-if value="{{ noExport }}" hint-placeholder-val="{{ false }}"><button disabled="{{ true }}" style="height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#f6f0e6;color:#746c61;border:1px solid #ebe3d6;cursor:not-allowed">Export</button></sc-if>
+            </div>
+          </section>
+          <section aria-labelledby="px-h" style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden">
+            <div style="padding:12px 20px;background:#f7f2ea;border-bottom:1px solid #ebe3d6"><h2 id="px-h" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Past exports</h2></div>
+            <div style="display:grid;grid-template-columns:152px minmax(0,1fr) 100px 120px 120px;gap:12px;align-items:center;height:36px;padding:0 20px;border-bottom:1px solid #ebe3d6;font-size:12px;font-weight:500;color:#746c61"><span>Created</span><span>Format</span><span>Invoices</span><span>By</span><span></span></div>
+            <sc-for list="{{ exportsList }}" as="x" hint-placeholder-count="0">
+              <div style="display:grid;grid-template-columns:152px minmax(0,1fr) 100px 120px 120px;gap:12px;align-items:center;min-height:48px;padding:8px 20px;border-bottom:1px solid #ebe3d6;font-size:13px"><span>{{ x.when }}</span><span style="color:#1f1c18">{{ x.fmt }}</span><span>{{ x.n }}</span><span>{{ x.by }}</span><a href="#download" style="justify-self:end;display:inline-flex;align-items:center;gap:4px;font-weight:500"><e-icon name="download" size="16"></e-icon>Download</a></div>
+            </sc-for>
+            <sc-if value="{{ noExports }}" hint-placeholder-val="{{ true }}"><p style="padding:16px 20px;font-size:13px;color:#746c61;border-bottom:1px solid #ebe3d6">No exports yet. Your first export appears here.</p></sc-if>
+            <div style="display:grid;grid-template-columns:152px minmax(0,1fr) 100px 120px 120px;gap:12px;align-items:center;min-height:48px;padding:8px 20px;font-size:13px;background:#f6f0e6"><span style="display:grid;gap:4px"><span>01 Oct 2026, 09:14</span><span style="justify-self:start;display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;color:#746c61;border:1px dashed #746c61">Design-only example</span></span><span style="color:#1f1c18">ZIP bundle with originals</span><span>14 invoices</span><span>Anna Weber</span><a href="#download" style="justify-self:end;display:inline-flex;align-items:center;gap:4px;font-weight:500"><e-icon name="download" size="16"></e-icon>Download</a></div>
+          </section>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ is.settings }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;gap:16px;max-width:880px">
+          <h1 style="font:700 21px/1.2 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Settings</h1>
+          <section aria-labelledby="org-h" style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px">
+            <h2 id="org-h" style="padding:12px 20px;border-bottom:1px solid #ebe3d6;font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Organisation</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:16px 20px">
+              <label style="display:grid;gap:4px"><span style="font-size:13px;font-weight:500;color:#1f1c18">Name</span><input value="Holzwerk Brandt GmbH" readOnly="{{ true }}" onChange="{{ noop }}" style="height:32px;padding:0 12px;border:1px solid #d6cbbb;border-radius:6px;background:#fffdf9;font-size:14px;color:#1f1c18" style-focus="border-color:#1f1c18;outline:2.5px solid #0f6e62;outline-offset:2px"></label>
+              <label style="display:grid;gap:4px"><span style="font-size:13px;font-weight:500;color:#1f1c18">VAT ID</span><input value="DE143826055" readOnly="{{ true }}" onChange="{{ noop }}" style="height:32px;padding:0 12px;border:1px solid #d6cbbb;border-radius:6px;background:#fffdf9;font:14px 'JetBrains Mono',monospace;color:#1f1c18" style-focus="border-color:#1f1c18;outline:2.5px solid #0f6e62;outline-offset:2px"><span style="font-size:12px;color:#746c61">Used to match the buyer on incoming invoices.</span></label>
+            </div>
+          </section>
+          <section aria-labelledby="rules-h" style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px">
+            <h2 id="rules-h" style="padding:12px 20px;border-bottom:1px solid #ebe3d6;font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Review and approval</h2>
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:16px 20px;border-bottom:1px solid #ebe3d6"><div style="display:grid;gap:4px"><span id="fe-l" style="font-size:14px;font-weight:500;color:#1f1c18">Four-eyes approval</span><span style="font-size:13px;color:#746c61">Whoever reviews an invoice can’t also approve it.</span></div><button role="switch" aria-checked="{{ four.checked }}" aria-labelledby="fe-l" onClick="{{ toggleFour }}" style="display:inline-flex;align-items:center;gap:8px;min-height:32px;padding:0 4px;border:0;border-radius:6px;background:transparent;cursor:pointer;font-size:13px;color:#3f3a33;flex:none" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><span style="width:40px;height:24px;border-radius:999px;padding:4px;background:{{ four.bg }};box-shadow:{{ four.ring }}"><span style="display:block;width:16px;height:16px;border-radius:999px;background:#fffdf9;transition:transform 160ms ease;transform:{{ four.x }}"></span></span>{{ four.label }}</button></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:16px 20px">
+              <label style="display:grid;gap:4px"><span style="font-size:13px;font-weight:500;color:#1f1c18">Duplicate window</span><span style="display:flex;align-items:center;gap:8px"><input value="{{ dup }}" onChange="{{ onDup }}" inputmode="numeric" style="width:96px;height:32px;padding:0 12px;border:1px solid #d6cbbb;border-radius:6px;background:#fffdf9;font:14px 'JetBrains Mono',monospace;color:#1f1c18;text-align:right" style-focus="border-color:#1f1c18;outline:2.5px solid #0f6e62;outline-offset:2px"><span style="font-size:14px">days</span></span><span style="font-size:12px;color:#746c61">Flag an invoice when the same supplier sends the same number within this many days.</span></label>
+              <label style="display:grid;gap:4px"><span style="font-size:13px;font-weight:500;color:#1f1c18">Reminder after</span><span style="display:flex;align-items:center;gap:8px"><input value="{{ rem }}" onChange="{{ onRem }}" inputmode="numeric" style="width:96px;height:32px;padding:0 12px;border:1px solid #d6cbbb;border-radius:6px;background:#fffdf9;font:14px 'JetBrains Mono',monospace;color:#1f1c18;text-align:right" style-focus="border-color:#1f1c18;outline:2.5px solid #0f6e62;outline-offset:2px"><span style="font-size:14px">days</span></span><span style="font-size:12px;color:#746c61">Remind the approver when an invoice has waited this long.</span></label>
+            </div>
+          </section>
+          <section aria-labelledby="mem-h" style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid #ebe3d6"><h2 id="mem-h" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Members</h2><span style="font-size:12px;color:#746c61">Admins only</span><span style="flex:1"></span><button disabled="{{ true }}" style="display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 12px;border-radius:6px;font-size:13px;font-weight:500;background:#f6f0e6;color:#746c61;border:1px solid #ebe3d6;cursor:not-allowed"><e-icon name="plus" size="14"></e-icon>Invite member</button></div>
+            <p role="note" style="display:flex;align-items:center;gap:8px;padding:12px 20px;background:#f6f0e6;border-bottom:1px solid #ebe3d6;font-size:13px;color:#3f3a33"><e-icon name="lock" size="16" style="color:#746c61"></e-icon>Not available in the sandbox. The two people below are inactive sample users.</p>
+            <div aria-disabled="true" style="display:grid">
+              <div style="display:grid;grid-template-columns:minmax(0,1fr) 160px 120px;gap:12px;align-items:center;min-height:48px;padding:8px 20px;border-bottom:1px solid #ebe3d6;font-size:13px;color:#746c61"><span>Anna Weber</span><span>Accountant</span><span>Inactive</span></div>
+              <div style="display:grid;grid-template-columns:minmax(0,1fr) 160px 120px;gap:12px;align-items:center;min-height:48px;padding:8px 20px;font-size:13px;color:#746c61"><span>Jonas Brandt (you)</span><span>Admin</span><span>Inactive</span></div>
+            </div>
+          </section>
+          <section aria-labelledby="ai-h" style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid #ebe3d6"><h2 id="ai-h" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">AI budget</h2><span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;color:#746c61;border:1px dashed #746c61">Sample</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:16px 20px">
+              <div style="display:grid;gap:8px"><span style="font-size:13px;font-weight:500;color:#1f1c18">Spent so far</span><div role="meter" aria-label="AI budget spent so far" aria-valuenow="21" aria-valuemin="0" aria-valuemax="100" style="height:8px;border-radius:999px;background:#ebe3d6;overflow:hidden"><div style="width:21%;height:100%;border-radius:999px;background:#0f6e62"></div></div><span style="font:12px 'JetBrains Mono',monospace;color:#746c61">$0.42 of $2.00</span></div>
+              <div style="display:grid;gap:8px"><span style="font-size:13px;font-weight:500;color:#1f1c18">This month</span><div role="meter" aria-label="AI budget this month" aria-valuenow="8" aria-valuemin="0" aria-valuemax="100" style="height:8px;border-radius:999px;background:#ebe3d6;overflow:hidden"><div style="width:8%;height:100%;border-radius:999px;background:#0f6e62"></div></div><span style="font:12px 'JetBrains Mono',monospace;color:#746c61">$0.12 of $1.50</span></div>
+            </div>
+          </section>
+          <div style="display:flex;justify-content:flex-end">
+            <sc-if value="{{ dirty }}" hint-placeholder-val="{{ false }}"><button onClick="{{ save }}" style="height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#1f1c18;color:#fffdf9;border:1px solid #1f1c18;cursor:pointer" style-hover="background:#3f3a33" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Save changes</button></sc-if>
+            <sc-if value="{{ clean }}" hint-placeholder-val="{{ true }}"><button disabled="{{ true }}" style="height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#f6f0e6;color:#746c61;border:1px solid #ebe3d6;cursor:not-allowed">Save changes</button></sc-if>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ is.accuracy }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;gap:16px;max-width:1040px">
+          <h1 style="font:700 21px/1.2 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">How accurately does Eingang read invoices?</h1>
+          <p role="note" style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px dashed #746c61;border-radius:8px;background:#fffdf9;font-size:13px;color:#3f3a33"><e-icon name="info" size="16" style="color:#746c61"></e-icon>Every number on this page is a sample. Real results replace them after the first published test run.</p>
+          <div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;align-items:start">
+            <section aria-labelledby="m-h" style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;padding:20px;display:grid;gap:12px">
+              <h2 id="m-h" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Method</h2>
+              <ol style="display:grid;gap:12px;font-size:14px">
+                <li style="display:grid;grid-template-columns:20px 1fr;gap:8px"><span style="font:500 13px 'JetBrains Mono',monospace;color:#746c61">1</span><span><b style="font-weight:600;color:#1f1c18">Corpus.</b> Public sample invoices, each a PDF with the XML inside (ZUGFeRD and Factur-X).</span></li>
+                <li style="display:grid;grid-template-columns:20px 1fr;gap:8px"><span style="font:500 13px 'JetBrains Mono',monospace;color:#746c61">2</span><span><b style="font-weight:600;color:#1f1c18">Ground truth.</b> The AI reads only the PDF; every value is compared with the XML inside the same file.</span></li>
+                <li style="display:grid;grid-template-columns:20px 1fr;gap:8px"><span style="font:500 13px 'JetBrains Mono',monospace;color:#746c61">3</span><span><b style="font-weight:600;color:#1f1c18">Baseline.</b> A regex reader runs on the same files, so the AI has something to beat.</span></li>
+              </ol>
+              <a href="#github" style="justify-self:start;font-size:14px">Full method on GitHub</a>
+            </section>
+            <section aria-labelledby="hm-h" style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;padding:20px;display:grid;gap:8px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><h2 id="hm-h" style="font-size:13px;font-weight:600;color:#1f1c18">Critical fields correct</h2><span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;color:#746c61;border:1px dashed #746c61">Sample</span></div>
+              <span style="font:500 42px/1.1 'JetBrains Mono',monospace;color:#1f1c18">0.00</span>
+              <span style="font-size:13px">95 % confidence interval 0.00–0.00 (sample)</span>
+              <span style="font-size:12px;color:#746c61">Critical fields: invoice number, invoice date, gross, IBAN, VAT ID.</span>
+            </section>
+          </div>
+          <section aria-labelledby="pf-h" style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 20px;background:#f7f2ea;border-bottom:1px solid #ebe3d6"><h2 id="pf-h" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Per field</h2><span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;color:#746c61;border:1px dashed #746c61;background:#fffdf9">Sample values</span></div>
+            <div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 120px 120px 160px;gap:12px;align-items:center;height:36px;padding:0 20px;border-bottom:1px solid #ebe3d6;font-size:12px;font-weight:500;color:#746c61"><span>Field</span><span style="text-align:right">Correct</span><span style="text-align:right">Invented</span><span style="text-align:right">Missing</span><span style="text-align:right">Regex baseline, correct</span></div>
+            <sc-for list="{{ fields }}" as="r" hint-placeholder-count="9">
+              <div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 120px 120px 160px;gap:12px;align-items:center;min-height:40px;padding:4px 20px;border-bottom:1px solid #ebe3d6;font-size:13px"><span style="color:#1f1c18">{{ r.f }}</span><span style="text-align:right;font-family:'JetBrains Mono',monospace">0.00</span><span style="text-align:right;font-family:'JetBrains Mono',monospace">0.00</span><span style="text-align:right;font-family:'JetBrains Mono',monospace">0.00</span><span style="text-align:right;font-family:'JetBrains Mono',monospace">0.00</span></div>
+            </sc-for>
+            <dl style="display:grid;grid-template-columns:max-content 1fr;gap:4px 16px;padding:16px 20px;font-size:13px"><dt style="font-weight:600;color:#1f1c18">Correct</dt><dd>The value matches the XML.</dd><dt style="font-weight:600;color:#1f1c18">Invented</dt><dd>A value where none is printed.</dd><dt style="font-weight:600;color:#1f1c18">Missing</dt><dd>Nothing returned where a value is printed.</dd></dl>
+          </section>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <section style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;padding:20px;display:grid;gap:8px"><h2 style="font-size:13px;font-weight:600;color:#1f1c18">Agreement with the official KoSIT validator</h2><span style="font:500 21px 'JetBrains Mono',monospace;color:#1f1c18">— <span style="font:12px 'Instrument Sans',sans-serif;color:#746c61">(sample)</span></span></section>
+            <section style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;padding:20px;display:grid;gap:8px"><h2 style="font-size:13px;font-weight:600;color:#1f1c18">AI cost per invoice</h2><span style="font:500 21px 'JetBrains Mono',monospace;color:#1f1c18">$0.000 <span style="font:12px 'Instrument Sans',sans-serif;color:#746c61">(sample)</span></span></section>
+          </div>
+        </div>
+      </sc-if>
+    </main>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ publicAcc }}" hint-placeholder-val="{{ false }}">
+  <header style="display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1120px;margin:0 auto;padding:20px 40px">
+    <a href="Eingang Homepage.dc.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:#1f1c18"><span aria-hidden="true" style="width:1em;height:1em;font-size:28px;display:grid;place-items:center;border:0.0625em solid #2c4a8a;border-radius:0.15em;outline:0.025em solid #2c4a8a;outline-offset:-0.175em;background:#fffdf9;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1;filter:url(#eg-ink)"><span style="font-size:0.55em">E</span></span><span style="font:700 21px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em">Eingang</span></a>
+    <a href="#sandbox" style="display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:6px;font-size:16px;font-weight:500;text-decoration:none;background:#1f1c18;color:#fffdf9" style-hover="background:#3f3a33;color:#fffdf9" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Open the sandbox</a>
+  </header>
+  <main style="max-width:1120px;margin:0 auto;padding:16px 40px 56px;display:grid;gap:16px">
+    <h1 style="font:700 clamp(28px,2.6vw,42px)/1.1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">How accurately does Eingang read invoices?</h1>
+    <p role="note" style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px dashed #746c61;border-radius:8px;background:#fffdf9;font-size:13px;color:#3f3a33"><e-icon name="info" size="16" style="color:#746c61"></e-icon>Every number on this page is a sample. Real results replace them after the first published test run.</p>
+    <div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;align-items:start">
+      <section style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;padding:20px;display:grid;gap:12px"><h2 style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;color:#1f1c18">Method</h2><p style="font-size:14px">Public sample invoices, each a PDF with the XML inside. The AI reads only the PDF and is scored against the XML. A regex reader on the same files is the baseline.</p><a href="#github" style="justify-self:start;font-size:14px">Full method on GitHub</a></section>
+      <section style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;padding:20px;display:grid;gap:8px"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><h2 style="font-size:13px;font-weight:600;color:#1f1c18">Critical fields correct</h2><span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;color:#746c61;border:1px dashed #746c61">Sample</span></div><span style="font:500 42px/1.1 'JetBrains Mono',monospace;color:#1f1c18">0.00</span><span style="font-size:13px">95 % confidence interval 0.00–0.00 (sample)</span></section>
+    </div>
+    <section style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;overflow:hidden">
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 120px 120px;gap:12px;align-items:center;height:36px;padding:0 20px;background:#f7f2ea;border-bottom:1px solid #ebe3d6;font-size:12px;font-weight:500;color:#746c61"><span>Field (sample values)</span><span style="text-align:right">Correct</span><span style="text-align:right">Invented</span><span style="text-align:right">Missing</span></div>
+      <sc-for list="{{ fields }}" as="r" hint-placeholder-count="9"><div style="display:grid;grid-template-columns:minmax(0,1fr) 120px 120px 120px;gap:12px;align-items:center;min-height:40px;padding:4px 20px;border-bottom:1px solid #ebe3d6;font-size:13px"><span style="color:#1f1c18">{{ r.f }}</span><span style="text-align:right;font-family:'JetBrains Mono',monospace">0.00</span><span style="text-align:right;font-family:'JetBrains Mono',monospace">0.00</span><span style="text-align:right;font-family:'JetBrains Mono',monospace">0.00</span></div></sc-for>
+      <p style="padding:12px 20px;font-size:12px;color:#746c61">Agreement with the official KoSIT validator: — (sample). AI cost per invoice: $0.000 (sample).</p>
+    </section>
+  </main>
+</sc-if>
+
+<sc-if value="{{ phoneAp }}" hint-placeholder-val="{{ false }}">
+<div style="height:100vh;display:grid;grid-template-rows:56px minmax(0,1fr) 64px">
+  <header style="display:flex;align-items:center;gap:8px;padding:0 4px 0 16px;background:#f7f2ea;border-bottom:1px solid #ebe3d6"><span aria-hidden="true" style="width:1em;height:1em;font-size:28px;display:grid;place-items:center;border:0.0625em solid #2c4a8a;border-radius:0.15em;outline:0.025em solid #2c4a8a;outline-offset:-0.175em;background:#fffdf9;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1;filter:url(#eg-ink)"><span style="font-size:0.55em">E</span></span><h1 style="font:700 21px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Approvals</h1><span style="min-width:20px;height:20px;padding:0 4px;border-radius:999px;display:inline-grid;place-items:center;font:500 12px/1 'JetBrains Mono',monospace;background:#f6f0e6;color:#3f3a33;border:1px solid #ebe3d6">{{ apCount }}</span><span style="flex:1"></span><button aria-label="Jonas Brandt, Admin. Account menu" style="display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:6px;background:transparent;cursor:pointer" style-focus="outline:2.5px solid #0f6e62;outline-offset:-3px"><span style="width:32px;height:32px;border-radius:999px;background:#e8edf7;color:#2c4a8a;display:grid;place-items:center;font-size:12px;font-weight:600">JB</span></button></header>
+  <main style="min-height:0;overflow:auto;padding:12px 16px 24px;display:grid;gap:12px;align-content:start">
+    <p style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#3f3a33"><e-icon name="lock" size="16" style="color:#746c61"></e-icon>Four-eyes is on: nobody approves an invoice they reviewed themselves.</p>
+    <sc-for list="{{ ap }}" as="r" hint-placeholder-count="4">
+      <article style="display:grid;gap:12px;padding:16px;border:1px solid #ebe3d6;border-radius:8px;background:{{ r.bg }}">
+        <div style="display:grid;gap:4px"><span style="display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px"><span style="font-size:16px;font-weight:600;color:#1f1c18">{{ r.supplier }}</span><sc-if value="{{ r.demo }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;color:#746c61;border:1px dashed #746c61">Design-only example</span></sc-if></span><span style="font:12px/1.45 'JetBrains Mono',monospace;color:#746c61">{{ r.number }}</span></div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px"><span style="font:500 21px/1.2 'JetBrains Mono',monospace;color:#1f1c18">{{ r.gross }}</span><span style="font-size:13px">Due {{ r.due }}</span></div>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px"><span style="font:13px 'JetBrains Mono',monospace;color:#1f1c18">{{ r.iban }}</span><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;font-size:12px;font-weight:500;background:{{ r.tag.bg }};color:{{ r.tag.fg }}"><e-icon name="{{ r.tag.icon }}" size="14"></e-icon>{{ r.tag.label }}</span></div>
+        <span style="font-size:13px;color:#746c61">Reviewed by {{ r.reviewer }}. Open warnings: {{ r.warn }}.</span>
+        <sc-if value="{{ r.can }}" hint-placeholder-val="{{ true }}"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button onClick="{{ r.reject }}" style="height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#fbe9e6;color:#b42318;border:1px solid #b42318;cursor:pointer" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Reject…</button><button onClick="{{ r.approve }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#1f1c18;color:#fffdf9;border:1px solid #1f1c18;cursor:pointer" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px"><e-icon name="check" size="16"></e-icon>Approve</button></div></sc-if>
+        <sc-if value="{{ r.blocked }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button onClick="{{ r.reject }}" style="height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#fbe9e6;color:#b42318;border:1px solid #b42318;cursor:pointer">Reject…</button><button disabled="{{ true }}" aria-describedby="fe-why-m" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;border-radius:6px;font-size:16px;font-weight:500;background:#f6f0e6;color:#746c61;border:1px solid #ebe3d6;cursor:not-allowed"><e-icon name="lock" size="16"></e-icon>Approve</button></div><p id="fe-why-m" style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:#3f3a33"><e-icon name="info" size="16" style="color:#2f5d8a"></e-icon>Entered by hand and marked reviewed by you. You reviewed this invoice. Someone else must approve it.</p></sc-if>
+      </article>
+    </sc-for>
+  </main>
+  <nav aria-label="Main" style="display:grid;grid-template-columns:repeat(5,1fr);background:#f7f2ea;border-top:1px solid #ebe3d6">
+    <a href="Eingang App Inbox.dc.html" style="display:grid;justify-items:center;align-content:center;gap:4px;color:#746c61;font-size:12px;font-weight:500;text-decoration:none"><span style="display:grid;place-items:center;width:48px;height:28px"><e-icon name="inbox" size="20"></e-icon></span>Inbox</a>
+    <a href="?screen=approvals" aria-current="page" style="display:grid;justify-items:center;align-content:center;gap:4px;color:#1f1c18;font-size:12px;font-weight:600;text-decoration:none"><span style="display:grid;place-items:center;width:48px;height:28px;border-radius:999px;background:#fffdf9;border:1px solid #ebe3d6;box-shadow:0 1px 0 #d6cbbb"><e-icon name="check-check" size="20"></e-icon></span>Approvals</a>
+    <a href="?screen=suppliers" style="display:grid;justify-items:center;align-content:center;gap:4px;color:#746c61;font-size:12px;font-weight:500;text-decoration:none"><span style="display:grid;place-items:center;width:48px;height:28px"><e-icon name="building" size="20"></e-icon></span>Suppliers</a>
+    <a href="?screen=exports" style="display:grid;justify-items:center;align-content:center;gap:4px;color:#746c61;font-size:12px;font-weight:500;text-decoration:none"><span style="display:grid;place-items:center;width:48px;height:28px"><e-icon name="archive" size="20"></e-icon></span>Exports</a>
+    <a href="#more" style="display:grid;justify-items:center;align-content:center;gap:4px;color:#746c61;font-size:12px;font-weight:500;text-decoration:none"><span style="display:grid;place-items:center;width:48px;height:28px"><e-icon name="more" size="20"></e-icon></span>More</a>
+  </nav>
+</div>
+</sc-if>
+
+<sc-if value="{{ notFound }}" hint-placeholder-val="{{ false }}">
+  <main style="min-height:100vh;display:grid;place-items:center;padding:40px 16px">
+    <div style="display:grid;justify-items:center;gap:16px;text-align:center;max-width:440px">
+      <span aria-hidden="true" style="width:1em;height:1em;font-size:40px;display:grid;place-items:center;border:0.0625em solid #2c4a8a;border-radius:0.15em;outline:0.025em solid #2c4a8a;outline-offset:-0.175em;background:#fffdf9;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1;filter:url(#eg-ink)"><span style="font-size:0.55em">E</span></span>
+      <span style="font:500 13px 'JetBrains Mono',monospace;color:#746c61">404</span>
+      <h1 style="font:700 21px/1.2 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Nothing at this address</h1>
+      <p style="font-size:14px;color:#746c61">The link may be old, or the sandbox it pointed to has been deleted.</p>
+      <a href="Eingang App Inbox.dc.html" style="display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:6px;font-size:16px;font-weight:500;text-decoration:none;background:#1f1c18;color:#fffdf9" style-hover="background:#3f3a33;color:#fffdf9" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Go to the Inbox</a>
+    </div>
+  </main>
+</sc-if>
+
+<sc-if value="{{ dlg.open }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:24px 16px">
+    <div aria-hidden="true" onClick="{{ dlg.close }}" style="position:absolute;inset:0;background:#1f1c18;opacity:0.32"></div>
+    <div role="dialog" aria-modal="true" aria-labelledby="rj-title" style="position:relative;width:520px;max-width:100%;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;overflow:hidden">
+      <div style="display:grid;gap:4px;padding:20px 24px 0"><h2 id="rj-title" style="font:700 16px/1.45 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">{{ dlg.title }}</h2><p style="font-size:13px;color:#746c61">{{ dlg.body }}</p></div>
+      <label style="display:grid;gap:4px;padding:20px 24px"><span style="display:flex;justify-content:space-between;gap:8px"><span style="font-size:13px;font-weight:500;color:#1f1c18">Reason (required)</span><span style="font:12px 'JetBrains Mono',monospace;color:#746c61">{{ dlg.count }}</span></span><textarea value="{{ dlg.note }}" onChange="{{ dlg.onNote }}" maxlength="500" placeholder="What should the supplier correct?" style="min-height:96px;padding:8px 12px;border-radius:6px;background:#fffdf9;font-size:14px;color:#1f1c18;resize:vertical;width:100%;border:1px solid {{ dlg.bd }}" style-focus="border-color:#1f1c18;outline:2.5px solid #0f6e62;outline-offset:2px"></textarea><sc-if value="{{ dlg.err }}" hint-placeholder-val="{{ false }}"><span role="alert" style="display:flex;gap:4px;align-items:center;font-size:12px;color:#b42318"><e-icon name="octagon" size="14"></e-icon>Write at least 5 characters.</span></sc-if></label>
+      <div style="display:flex;justify-content:flex-end;gap:8px;padding:16px 24px;background:#f7f2ea;border-top:1px solid #ebe3d6"><button onClick="{{ dlg.close }}" style="height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:transparent;color:#3f3a33;border:1px solid transparent;cursor:pointer" style-hover="background:#f6f0e6" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Cancel</button><sc-if value="{{ dlg.idle }}" hint-placeholder-val="{{ true }}"><button onClick="{{ dlg.confirm }}" style="height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#fbe9e6;color:#b42318;border:1px solid #b42318;cursor:pointer" style-hover="background:#b42318;color:#fffdf9" style-focus="outline:2.5px solid #0f6e62;outline-offset:2px">Reject invoice</button></sc-if><sc-if value="{{ dlg.busy }}" hint-placeholder-val="{{ false }}"><span aria-busy="true" style="display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:6px;font-size:14px;font-weight:500;background:#1f1c18;color:#fffdf9"><e-icon name="loader" size="16" spin="true"></e-icon>Rejecting…</span></sc-if></div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+  <div role="status" style="position:fixed;right:24px;bottom:24px;z-index:40;display:flex;align-items:center;gap:12px;max-width:calc(100vw - 48px);min-height:48px;padding:8px 16px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:8px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;font-size:14px;color:#1f1c18"><e-icon name="circle-check" size="16" style="color:#0f6e62"></e-icon>{{ toast }}</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;screen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Approvals&quot;,&quot;Suppliers&quot;,&quot;Supplier detail&quot;,&quot;Supplier detail, confirmed&quot;,&quot;Exports&quot;,&quot;Settings&quot;,&quot;Accuracy&quot;,&quot;Accuracy, public&quot;,&quot;Not found&quot;],&quot;default&quot;:&quot;Approvals&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Screen&quot;}}">
+const U = { anna: { initials: 'AW', name: 'Anna Weber', role: 'Accountant' }, jonas: { initials: 'JB', name: 'Jonas Brandt', role: 'Admin' } };
+const TAG = {
+  same: { label: 'Known account', icon: 'check', bg: '#f6f0e6', fg: '#746c61', title: '' },
+  newer: { label: 'New', icon: 'circle-alert', bg: '#fbe9e6', fg: '#b42318', title: 'First invoice from this supplier, so there is no earlier IBAN to compare with' },
+  notconf: { label: 'New account', icon: 'circle-alert', bg: '#fbe9e6', fg: '#b42318', title: '' },
+  conf: { label: 'Confirmed change', icon: 'circle-check', bg: '#e4f1ed', fg: '#0f6e62', title: '' },
+  none: { label: 'No changes', icon: 'minus', bg: '#f6f0e6', fg: '#746c61', title: '' },
+  unread: { label: 'Not read yet', icon: 'minus', bg: '#f6f0e6', fg: '#746c61', title: '' }
+};
+const ST = {
+  needs: { label: 'Needs review', icon: 'eye', bg: '#fcefd8', fg: '#8a4a06', ic: '#c47408' },
+  awaiting: { label: 'Awaiting approval', icon: 'hourglass', bg: '#e8edf7', fg: '#2c4a8a', ic: '#2c4a8a' },
+  approved: { label: 'Approved', icon: 'circle-check', bg: '#e4f1ed', fg: '#0f6e62', ic: '#0f6e62' }
+};
+const AP = [
+  { id: 1, supplier: 'Elektro Kessler GmbH', number: 'RE-2026-0412', gross: '1.190,00 €', due: '23 Oct 2026', iban: '•••• 4417', tag: 'same', warn: '1 info', reviewer: 'Anna Weber' },
+  { id: 2, supplier: 'Bürobedarf Nord KG', number: 'BN-88213', gross: '412,34 €', due: '30 Oct 2026', iban: '•••• 3000', tag: 'same', warn: 'None', reviewer: 'Anna Weber' },
+  { id: 3, supplier: 'Spedition Albers GmbH', number: 'SA/26/1187', gross: '2.856,00 €', due: '22 Oct 2026', iban: '•••• 8803', tag: 'same', warn: 'None', reviewer: 'Anna Weber' },
+  { id: 99, supplier: 'Malerbetrieb Krause', number: 'MK-2026-311', gross: '1.428,00 €', due: '04 Nov 2026', iban: '•••• 5512', tag: 'same', warn: 'None', reviewer: 'You', demo: true }
+];
+const SUP = [
+  ['Bürobedarf Nord KG', 3, '09 Oct 2026', '1 needs review, 1 awaiting approval', 'notconf', '?screen=supplier'],
+  ['Elektro Kessler GmbH', 3, '09 Oct 2026', '2 need review, 1 awaiting approval', 'none', '#'],
+  ['Spedition Albers GmbH', 2, '08 Oct 2026', '1 needs review, 1 awaiting approval', 'none', '#'],
+  ['Atelier Moreau SARL', 1, '08 Oct 2026', '1 needs review', 'none', '#'],
+  ['Druckerei Sommer GmbH', 1, '06 Oct 2026', '1 needs review', 'none', '#'],
+  ['Hausmeisterservice Pohl', 1, '06 Oct 2026', '1 needs review', 'unread', '#'],
+  ['Stadtwerke Leipzig GmbH', 1, '15 Sep 2026', 'None', 'none', '#']
+];
+const RAIL = [['inbox', 'Inbox', 'Eingang App Inbox.dc.html'], ['check-check', 'Approvals', '?screen=approvals'], ['building', 'Suppliers', '?screen=suppliers'], ['archive', 'Exports', '?screen=exports'], ['gauge', 'Accuracy', '?screen=accuracy'], ['sliders', 'Settings', '?screen=settings']];
+const SCREEN_RAIL = { approvals: 1, suppliers: 2, supplier: 2, 'supplier-confirmed': 2, exports: 3, accuracy: 4, settings: 5 };
+const VIEWER = { approvals: 'jonas', settings: 'jonas' };
+const FORMATS = [['inv', 'CSV, one row per invoice', 'For the tax advisor’s import.'], ['lines', 'CSV, one row per invoice line', 'With net, VAT rate and VAT per line.'], ['zip', 'ZIP bundle with originals', 'The CSV plus every original XML and PDF.']];
+const FIELDS = ['Invoice number', 'Invoice date', 'Due date', 'Supplier name', 'Net', 'VAT', 'Gross', 'IBAN', 'VAT ID'];
+
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    const qs = new URLSearchParams(window.location.search);
+    const fromProp = ({ 'Approvals': 'approvals', 'Suppliers': 'suppliers', 'Supplier detail': 'supplier', 'Supplier detail, confirmed': 'supplier-confirmed', 'Exports': 'exports', 'Settings': 'settings', 'Accuracy': 'accuracy', 'Accuracy, public': 'accuracy-public', 'Not found': 'notfound' })[this.props.screen];
+    this.state = { screen: qs.get('screen') || fromProp || 'approvals', vw: window.innerWidth, done: {}, dialog: null, note: '', tried: false, busy: false, toast: null, fmt: 'inv', exports: [], exporting: false, four: true, dup: '30', rem: '3', dirty: false };
+  }
+  timers = [];
+  later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
+  componentDidMount() {
+    this.onResize = () => this.setState({ vw: window.innerWidth });
+    window.addEventListener('resize', this.onResize);
+    this.onKey = e => { if (e.key === 'Escape' && this.state.dialog) this.setState({ dialog: null }); };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); window.removeEventListener('keydown', this.onKey); this.timers.forEach(clearTimeout); }
+  toast(t) { this.setState({ toast: t }); this.later(() => this.setState({ toast: null }), 4000); }
+  approve = r => () => { this.setState(s => ({ done: Object.assign({}, s.done, { [r.id]: 'approved' }) })); this.toast('You approved ' + r.number + '.'); };
+  reject = r => () => this.setState({ dialog: r, note: '', tried: false, busy: false });
+  onNote = e => this.setState({ note: e.target.value });
+  closeDialog = () => this.setState({ dialog: null });
+  confirmReject = () => {
+    if (this.state.note.trim().length < 5) return this.setState({ tried: true });
+    const r = this.state.dialog;
+    this.setState({ busy: true });
+    this.later(() => { this.setState(s => ({ busy: false, dialog: null, done: Object.assign({}, s.done, { [r.id]: 'rejected' }) })); this.toast('You rejected ' + r.number + '.'); }, 500);
+  };
+  pickFmt = k => () => this.setState({ fmt: k });
+  doExport = () => {
+    if (this.state.exporting || this.state.exports.length) return;
+    this.setState({ exporting: true });
+    this.later(() => { const f = FORMATS.find(x => x[0] === this.state.fmt); this.setState(s => ({ exporting: false, exports: [{ key: 1, when: '09 Oct 2026, 10:52', fmt: f[1], n: '1 invoice', by: 'Anna Weber' }].concat(s.exports) })); this.toast('Export ready. 1 invoice moved to Exported.'); }, 900);
+  };
+  toggleFour = () => this.setState(s => ({ four: !s.four, dirty: true }));
+  onDup = e => this.setState({ dup: e.target.value.replace(/\D/g, '').slice(0, 3), dirty: true });
+  onRem = e => this.setState({ rem: e.target.value.replace(/\D/g, '').slice(0, 2), dirty: true });
+  save = () => { this.setState({ dirty: false }); this.toast('Settings saved.'); };
+
+  renderVals() {
+    const s = this.state, sc = s.screen, phone = s.vw <= 767;
+    const shell = sc !== 'accuracy-public' && sc !== 'notfound';
+    const u = U[VIEWER[sc] || 'anna'];
+    const ri = SCREEN_RAIL[sc];
+    const rail = RAIL.map(([icon, label, href], i) => ({ icon, label, href, cur: i === ri ? 'page' : 'false', fg: i === ri ? '#1f1c18' : '#746c61', bg: i === ri ? '#fffdf9' : 'transparent', bd: i === ri ? '1px solid #ebe3d6' : '1px solid transparent', sh: i === ri ? '0 1px 0 #d6cbbb' : 'none' }));
+    const ap = AP.filter(r => !s.done[r.id]).map(r => Object.assign({}, r, { key: r.id, tag: TAG[r.tag], can: !r.demo, blocked: !!r.demo, demo: !!r.demo, bg: r.demo ? '#f6f0e6' : '#fffdf9', wColor: r.warn === 'None' ? '#746c61' : '#2f5d8a', approve: this.approve(r), reject: this.reject(r) }));
+    const confirmed = sc === 'supplier-confirmed';
+    const supInv = [
+      { key: 2, rec: '09 Oct, 07:58', number: 'BN-88213', format: 'XRechnung · CII', gross: '412,34 €', tag: TAG.same, st: ST.awaiting },
+      { key: 7, rec: '07 Oct, 10:05', number: 'BN-88290', format: 'XRechnung · CII', gross: '97,58 €', tag: confirmed ? TAG.conf : TAG.notconf, st: ST.needs },
+      { key: 11, rec: '02 Oct, 08:55', number: 'BN-88102-G', format: 'XRechnung · UBL · credit note', gross: '−58,31 €', tag: TAG.same, st: ST.approved }
+    ];
+    const suppliers = SUP.map((r, i) => ({ key: i, name: r[0], n: r[1], last: r[2], open: r[3], tag: confirmed && i === 0 ? TAG.conf : TAG[r[4]], href: r[5] }));
+    const ready = s.exports.length ? 0 : 1;
+    const fmts = FORMATS.map(([k, label, help]) => ({ key: k, label, help, on: s.fmt === k, aria: s.fmt === k ? 'true' : 'false', bd: s.fmt === k ? '#1f1c18' : '#d6cbbb', dot: s.fmt === k ? '#1f1c18' : 'transparent', bg: s.fmt === k ? '#f6f0e6' : '#fffdf9', pick: this.pickFmt(k) }));
+    const d = s.dialog;
+    return {
+      deskShell: shell && !(phone && sc === 'approvals'), phoneAp: phone && sc === 'approvals', publicAcc: sc === 'accuracy-public', notFound: sc === 'notfound',
+      sandbox: sc === 'settings', u: Object.assign({}, u, { aria: u.name + ', ' + u.role + '. Account menu' }), rail,
+      is: { approvals: sc === 'approvals', suppliers: sc === 'suppliers', supplier: sc === 'supplier' || confirmed, exports: sc === 'exports', settings: sc === 'settings', accuracy: sc === 'accuracy' || sc === 'accuracy-public' },
+      ap, apCount: ap.filter(r => !r.demo).length, apEmpty: ap.length === 0,
+      suppliers, supInv, confirmed, unconfirmed: !confirmed,
+      fmts, ready, readyText: ready ? '1 invoice ready' : 'Nothing ready to export', canExport: ready > 0 && !s.exporting, exporting: s.exporting, noExport: ready === 0 && !s.exporting, doExport: this.doExport,
+      exportsList: s.exports, hasExports: s.exports.length > 0, noExports: s.exports.length === 0,
+      four: { checked: s.four ? 'true' : 'false', bg: s.four ? '#1f1c18' : '#d6cbbb', ring: s.four ? 'none' : 'inset 0 0 0 1px #746c61', x: s.four ? 'translateX(16px)' : 'none', label: s.four ? 'On' : 'Off' }, toggleFour: this.toggleFour,
+      dup: s.dup, rem: s.rem, onDup: this.onDup, onRem: this.onRem, dirty: s.dirty, clean: !s.dirty, save: this.save,
+      fields: FIELDS.map((f, i) => ({ key: i, f })),
+      dlg: { open: !!d, title: d ? 'Reject invoice ' + d.number + '?' : '', body: d ? d.supplier + ', ' + d.gross + '. Anna sees your reason in the invoice’s activity.' : '', note: s.note, count: s.note.length + ' / 500', err: s.tried && s.note.trim().length < 5, bd: s.tried && s.note.trim().length < 5 ? '#b42318' : '#d6cbbb', onNote: this.onNote, close: this.closeDialog, confirm: this.confirmReject, busy: s.busy, idle: !s.busy },
+      toast: s.toast, hasToast: !!s.toast, noop: () => {}
+    };
+  }
+}
+
+</script>
+</body>
+</html>
