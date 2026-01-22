@@ -1,0 +1,47 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: eingang
+      POSTGRES_USER: eingang
+      POSTGRES_PASSWORD: eingang
+    ports:
+      - "5452:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eingang -d eingang"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  temporal:
+    image: temporalio/temporal:1.9.1
+    command:
+      - server
+      - start-dev
+      - --ip
+      - 0.0.0.0
+      - --port
+      - "7233"
+      - --ui-port
+      - "8233"
+      - --namespace
+      - eingang
+      - --db-filename
+      - /data/temporal.db
+    ports:
+      - "7233:7233"
+      - "8233:8233"
+    volumes:
+      - temporal-data:/data
+    healthcheck:
+      test: ["CMD", "temporal", "operator", "cluster", "health", "--address", "127.0.0.1:7233"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+volumes:
+  db-data:
+  temporal-data:
