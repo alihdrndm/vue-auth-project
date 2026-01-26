@@ -1,0 +1,75 @@
+[project]
+name = "eingang-backend"
+version = "0.1.0"
+description = "Eingang backend: Django API, Temporal worker and the einvoice library."
+authors = [{ name = "Ali Haider Nadeem" }]
+license = "MIT"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "django>=6,<7",
+    "djangorestframework>=3.18.3",
+    "drf-spectacular>=0.30.0",
+    "gunicorn>=26.2.0",
+    "psycopg[binary]>=3.3.6",
+    "pydantic>=2.14.0",
+    "pydantic-settings>=2.15.0",
+    "python-json-logger>=4.2.0",
+    "temporalio>=1.34.0",
+    "uuid-utils>=1.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "django-stubs>=6.1.2",
+    "djangorestframework-stubs>=3.18.1",
+    "hypothesis>=6.168.5",
+    "import-linter>=2.15",
+    "mypy>=2.4.0",
+    "poethepoet>=0.48.0",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "pytest-django>=4.14.0",
+    "respx>=0.23.1",
+    "ruff>=0.16.10",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "S", "ASYNC", "DTZ", "PT", "N", "DJ"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]
+
+[tool.mypy]
+strict = true
+mypy_path = "src"
+files = ["src", "tests", "tools"]
+plugins = ["mypy_django_plugin.main", "pydantic.mypy"]
+
+[tool.django-stubs]
+django_settings_module = "eingang.settings"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+DJANGO_SETTINGS_MODULE = "eingang.settings"
+addopts = "--cov=src --cov-branch --cov-report=term-missing --cov-fail-under=75"
+
+[tool.poe.tasks]
+lint = ["_ruff-check", "_ruff-format-check", "_lint-imports"]
+format = ["_ruff-format", "_ruff-fix"]
+typecheck = "mypy"
+test = "pytest"
+api = "python manage.py runserver 127.0.0.1:8010"
+openapi = "python tools/export_openapi.py"
+openapi-check = "python tools/export_openapi.py --check"
+worker = { cmd = "python -m eingang.worker", env = { PYTHONPATH = "src" } }
+_ruff-check = "ruff check ."
+_ruff-format-check = "ruff format --check ."
+_lint-imports = { cmd = "lint-imports", env = { PYTHONPATH = "src" } }
+_ruff-format = "ruff format ."
+_ruff-fix = "ruff check --fix ."
