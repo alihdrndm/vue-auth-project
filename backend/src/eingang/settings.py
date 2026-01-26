@@ -1,0 +1,104 @@
+"""Django settings. Every value comes from `eingang.config`, never from os.environ."""
+
+import logging.config
+from pathlib import Path
+from urllib.parse import unquote, urlsplit
+
+from eingang.config import get_settings
+from eingang.log import logging_config
+
+config = get_settings()
+
+BASE_DIR = Path(__file__).resolve().parents[2]  # backend/
+
+SECRET_KEY = config.DJANGO_SECRET_KEY
+DEBUG = config.DJANGO_DEBUG
+ALLOWED_HOSTS = config.allowed_hosts
+CSRF_TRUSTED_ORIGINS = [config.FRONTEND_ORIGIN]
+
+INSTALLED_APPS = [
+    "django.contrib.contenttypes",
+    "django.contrib.auth",
+    "django.contrib.sessions",
+    "rest_framework",
+    "drf_spectacular",
+]
+
+MIDDLEWARE = [
+    "eingang.middleware.RequestContextMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+ROOT_URLCONF = "eingang.urls"
+WSGI_APPLICATION = "eingang.wsgi.application"
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {"context_processors": ["django.template.context_processors.request"]},
+    }
+]
+
+
+def _database_from_url(url: str) -> dict[str, object]:
+    parts = urlsplit(url)
+    return {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": parts.path.lstrip("/"),
+        "USER": unquote(parts.username or ""),
+        "PASSWORD": unquote(parts.password or ""),
+        "HOST": parts.hostname or "",
+        "PORT": str(parts.port or 5432),
+        # Bounds a hung connection attempt; /readyz gives up after 2 s on its own.
+        "OPTIONS": {"connect_timeout": 5},
+        "TEST": {"NAME": "eingang_test"},
+    }
+
+
+DATABASES = {"default": _database_from_url(config.DATABASE_URL)}
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LANGUAGE_CODE = "en"
+TIME_ZONE = "UTC"
+USE_I18N = False
+USE_TZ = True
+
+STATIC_URL = "static/"
+
+# Security headers (HTTP API conventions).
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "same-origin"
+X_FRAME_OPTIONS = "DENY"
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_AGE = 12 * 60 * 60
+CSRF_COOKIE_SECURE = not DEBUG
+
+REST_FRAMEWORK = {
+    "EXCEPTION_HANDLER": "eingang.problem.exception_handler",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
+    "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],
+    "DEFAULT_AUTHENTICATION_CLASSES": [],
+    "DEFAULT_PERMISSION_CLASSES": [],
+    "UNAUTHENTICATED_USER": None,
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Eingang API",
+    "DESCRIPTION": "Inbox for supplier invoices: validation, extraction, checks and approval.",
+    "VERSION": "0.1.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+}
+
+LOGGING_CONFIG = None
+logging.config.dictConfig(logging_config(json_logs=not DEBUG))
