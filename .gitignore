@@ -21,3 +21,28 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Environment files (the example file is committed)
+.env
+.env.*
+!.env.example
+
+# Python
+.venv
+__pycache__
+*.pyc
+.mypy_cache
+.ruff_cache
+.pytest_cache
+.coverage
+htmlcov/
+
+# Node and frontend build output
+dist
+coverage/
+playwright-report/
+test-results/
+
+# Local storage and downloaded data
+backend/.local-media/
+data/
