@@ -1,0 +1,81 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Eingang API",
+        "version": "0.1.0",
+        "description": "Inbox for supplier invoices: validation, extraction, checks and approval."
+    },
+    "paths": {
+        "/healthz": {
+            "get": {
+                "operationId": "healthz_retrieve",
+                "tags": [
+                    "health"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HealthStatus"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/readyz": {
+            "get": {
+                "operationId": "readyz_retrieve",
+                "tags": [
+                    "health"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReadyStatus"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "HealthStatus": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            },
+            "ReadyStatus": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string"
+                    },
+                    "checks": {
+                        "type": "object",
+                        "additionalProperties": {}
+                    }
+                },
+                "required": [
+                    "checks",
+                    "status"
+                ]
+            }
+        }
+    }
+}
