@@ -1,0 +1,30 @@
+Eingang
+Copyright (c) 2026 Ali Haider Nadeem
+
+Eingang itself is licensed under the MIT License (see LICENSE).
+
+This file lists every vendored or bundled artefact in this repository that
+is not covered by that statement alone, or that carries its own licence.
+Each entry gives what the artefact is, where it lives in the repository,
+its licence, its source and its version. Entries are grouped by kind.
+
+
+Design
+======
+
+Eingang design export
+  What:     Screen designs, design system board and UI support scripts
+            exported from the design tool
+  Where:    design/export/
+  Licence:  MIT (the owner's own work, same licence as the rest of Eingang)
+  Source:   Created by Ali Haider Nadeem for this project
+  Version:  As committed in design/export/
+
+
+Validation and visualisation rules (backend/vendor/)
+====================================================
+
+Entries for the vendored KoSIT XRechnung validator configuration
+(backend/vendor/xrechnung-config/) and the KoSIT XRechnung visualisation
+stylesheets (backend/vendor/xrechnung-visualization/) are added here when
+those files are vendored, in the same format as the entry above.
