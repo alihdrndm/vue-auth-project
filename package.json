@@ -1,0 +1,20 @@
+{
+  "name": "eingang",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.9.1",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "verify": "node scripts/verify.mjs",
+    "test:e2e": "node scripts/e2e.mjs",
+    "gen:api": "node scripts/gen-api.mjs",
+    "db:reset": "node scripts/db-reset.mjs",
+    "seed": "node scripts/seed.mjs"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.6"
+  }
+}
