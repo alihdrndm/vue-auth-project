@@ -1,4 +1,4 @@
-"""Write the OpenAPI schema to backend/openapi.json, or with --check fail if it is stale.
+"""Write the OpenAPI schema (default backend/openapi.json), or with --check fail if it is stale.
 
 Run as `uv run poe openapi` / `uv run poe openapi-check`.
 """
@@ -30,10 +30,11 @@ def generate(target: Path) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="fail if openapi.json is stale")
+    parser.add_argument("--file", type=Path, default=SCHEMA_PATH, help="where to write the schema")
     args = parser.parse_args()
     if not args.check:
-        generate(SCHEMA_PATH)
-        print(f"Wrote {SCHEMA_PATH.relative_to(BACKEND_DIR)}")
+        generate(args.file)
+        print(f"Wrote {args.file}")
         return 0
     with tempfile.TemporaryDirectory() as directory:
         fresh = Path(directory) / "openapi.json"
