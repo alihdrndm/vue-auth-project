@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  LLM_ENABLED: "false"
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: eingang
+          POSTGRES_USER: eingang
+          POSTGRES_PASSWORD: eingang
+        ports:
+          - 5452:5432
+        options: >-
+          --health-cmd "pg_isready -U eingang -d eingang"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://eingang:eingang@localhost:5452/eingang
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+      - name: Install dependencies
+        run: uv sync --frozen
+      - name: Lint
+        run: uv run poe lint
+      - name: Typecheck
+        run: uv run poe typecheck
+      - name: Test
+        run: uv run poe test
+      - name: OpenAPI freshness
+        run: uv run poe openapi-check
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install backend dependencies (for the OpenAPI export)
+        working-directory: backend
+        run: uv sync --frozen
+      - name: Lint
+        run: pnpm --filter frontend lint
+      - name: Typecheck
+        run: pnpm --filter frontend typecheck
+      - name: Unit tests
+        run: pnpm --filter frontend test
+      - name: Generated API types freshness
+        run: node scripts/gen-api.mjs --check
+      - name: Build
+        run: pnpm --filter frontend build
+
+  e2e:
+    needs: [backend, frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      # The e2e stack and the smoke test arrive together; until then this job only checks out.
+      - uses: pnpm/action-setup@v4
+        if: hashFiles('frontend/e2e/smoke.spec.ts') != ''
+      - uses: actions/setup-node@v5
+        if: hashFiles('frontend/e2e/smoke.spec.ts') != ''
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Install dependencies
+        if: hashFiles('frontend/e2e/smoke.spec.ts') != ''
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright Chromium
+        if: hashFiles('frontend/e2e/smoke.spec.ts') != ''
+        run: pnpm --filter frontend exec playwright install --with-deps chromium
+      - name: Smoke tests
+        if: hashFiles('frontend/e2e/smoke.spec.ts') != ''
+        run: pnpm test:e2e
