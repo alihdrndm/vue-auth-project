@@ -78,6 +78,17 @@ function manage(command, ...args) {
   });
 }
 
+// Check the seed commands exist before anything is dropped, so a reset never stops halfway.
+for (const command of ["seed_rules", "seed_dev"]) {
+  const probe = spawnCommand("uv", ["run", "python", "manage.py", "help", command], {
+    cwd: backendDir,
+    stdio: "ignore",
+  });
+  if (probe.status !== 0) {
+    fail(`manage.py ${command} does not exist yet (it arrives with M3/M4); nothing was changed.`, 1);
+  }
+}
+
 run("Start db", "docker", ["compose", "up", "-d", "--wait", "db"]);
 
 // 1. Dump the preserved tables, if the database and the tables exist yet.
