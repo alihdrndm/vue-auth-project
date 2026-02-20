@@ -61,3 +61,8 @@ Dated record of every place the implementation differs from, or fills a gap in, 
 ### e2e job and `test:e2e` wait for the e2e stack (M8)
 - **Did:** the frontend's `test:e2e` script is not added yet. The CI `e2e` job runs, but every step after checkout is guarded with `if: hashFiles('frontend/e2e/smoke.spec.ts') != ''`.
 - **Why:** the e2e Compose profile, the Dockerfiles and the Playwright smoke test arrive in M8. GitHub does not allow `hashFiles()` in a job-level `if`, so the guard sits on the steps.
+
+### Temporal container runs as root
+- **Spec:** the `temporal` service mounts the named volume `temporal-data` at `/data` and uses `--db-filename /data/temporal.db`.
+- **Did:** added `user: "0:0"` to the service.
+- **Why:** the `temporalio/temporal:1.9.1` image runs as uid 1000 and does not create `/data`, so a new named volume is owned by root. The server then failed with "unable to open database file (14)". The container has no published ports beyond 7233 and 8233 and is used locally only. Railway volumes are root-owned as well, so the same applies at deploy time (M9).

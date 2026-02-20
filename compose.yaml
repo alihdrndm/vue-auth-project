@@ -17,6 +17,9 @@ services:
 
   temporal:
     image: temporalio/temporal:1.9.1
+    # The image runs as uid 1000 and has no /data directory, so a fresh named volume is
+    # root-owned and not writable. See docs/DECISIONS.md.
+    user: "0:0"
     command:
       - server
       - start-dev
