@@ -94,6 +94,13 @@ export interface operations {
                     "application/json": components["schemas"]["ReadyStatus"];
                 };
             };
+            /** @description NOT_READY problem+json; `checks` names what is unreachable. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
     };
 }

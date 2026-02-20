@@ -42,6 +42,9 @@
                             }
                         },
                         "description": ""
+                    },
+                    "503": {
+                        "description": "NOT_READY problem+json; `checks` names what is unreachable."
                     }
                 }
             }
