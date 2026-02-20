@@ -82,6 +82,9 @@ SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_SECURE = not DEBUG
 SESSION_COOKIE_AGE = 12 * 60 * 60
 CSRF_COOKIE_SECURE = not DEBUG
+CSRF_FAILURE_VIEW = "eingang.problem.csrf_failure"
+# A trailing-slash redirect would be a non-2xx response that is not problem+json.
+APPEND_SLASH = False
 
 REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "eingang.problem.exception_handler",
@@ -93,11 +96,17 @@ REST_FRAMEWORK = {
     "UNAUTHENTICATED_USER": None,
 }
 
+SWAGGER_UI_VERSION = "5.33.1"
 SPECTACULAR_SETTINGS = {
     "TITLE": "Eingang API",
     "DESCRIPTION": "Inbox for supplier invoices: validation, extraction, checks and approval.",
     "VERSION": "0.1.0",
     "SERVE_INCLUDE_SCHEMA": False,
+    # Pinned instead of the default "@latest", so /docs loads a known build.
+    "SWAGGER_UI_DIST": f"https://cdn.jsdelivr.net/npm/swagger-ui-dist@{SWAGGER_UI_VERSION}",
+    "SWAGGER_UI_FAVICON_HREF": (
+        f"https://cdn.jsdelivr.net/npm/swagger-ui-dist@{SWAGGER_UI_VERSION}/favicon-32x32.png"
+    ),
 }
 
 LOGGING_CONFIG = None

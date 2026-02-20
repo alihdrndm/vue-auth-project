@@ -4,7 +4,13 @@ from django.core.exceptions import PermissionDenied as DjangoPermissionDenied
 from django.http import Http404
 from rest_framework import exceptions
 
-from eingang.problem import ERRORS_DOC_URL, PROBLEM_CONTENT_TYPE, ProblemError, exception_handler
+from eingang.problem import (
+    ERRORS_DOC_URL,
+    PROBLEM_CONTENT_TYPE,
+    ProblemError,
+    exception_handler,
+    for_status,
+)
 
 
 def handle(exc: Exception) -> dict[str, object]:
@@ -38,6 +44,22 @@ def test_non_field_errors_use_the_parent_path() -> None:
 
 def test_not_authenticated_is_401() -> None:
     assert handle(exceptions.NotAuthenticated())["code"] == "NOT_AUTHENTICATED"
+
+
+def test_401_carries_the_authenticate_header_drf_provides() -> None:
+    exc = exceptions.NotAuthenticated()
+    exc.auth_header = "Session"  # type: ignore[attr-defined]  # set by DRF's APIView
+    response = exception_handler(exc, {})
+    assert response is not None
+    assert response["WWW-Authenticate"] == "Session"
+
+
+def test_errors_django_produces_map_to_documented_codes() -> None:
+    assert json.loads(for_status(400).content)["code"] == "MALFORMED_REQUEST"
+    assert json.loads(for_status(403).content)["code"] == "FORBIDDEN_ROLE"
+    assert json.loads(for_status(404).content)["code"] == "NOT_FOUND"
+    assert json.loads(for_status(405).content)["code"] == "METHOD_NOT_ALLOWED"
+    assert json.loads(for_status(502).content)["code"] == "INTERNAL"
 
 
 def test_permission_denied_is_forbidden_role() -> None:

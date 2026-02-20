@@ -24,7 +24,7 @@ Each code has its own section, so `type` links straight to it.
 `422`. The request body or query parameters failed validation. `errors` has one entry per field problem; `path` uses dots for nesting and `[n]` for list positions.
 
 ### MALFORMED_REQUEST
-`400`. The request body could not be parsed (for example invalid JSON).
+`400`. The request could not be processed: the body could not be parsed (for example invalid JSON), or the request was rejected before it reached the API (for example a `Host` header the server does not answer to).
 
 ### NOT_FOUND
 `404`. No resource exists at this path, or it belongs to another organisation (the API does not reveal which).
@@ -54,6 +54,9 @@ Each code has its own section, so `type` links straight to it.
 
 ### INVALID_CREDENTIALS
 `400`, from `POST /api/v1/auth/login`. The email and password do not match an active user.
+
+### CSRF_FAILED
+`403`. An unsafe request (POST, PATCH, DELETE) from a session arrived without a valid CSRF token. Call `GET /api/v1/auth/csrf` once, then send the `csrftoken` cookie's value in the `X-CSRFToken` header.
 
 ### SANDBOX_EXPIRED
 `401`. The sandbox this session belongs to has expired and been signed out. Open a new sandbox.

@@ -14,6 +14,8 @@ from eingang.log import request_id_var
 logger = logging.getLogger("eingang.request")
 
 REQUEST_ID_HEADER = "x-request-id"
+# Any HTML the API serves gets this unless its view sets a policy of its own.
+DEFAULT_HTML_CSP = "default-src 'none'; frame-ancestors 'none'"
 # A client-supplied id is echoed and logged, so only accept a short, harmless token.
 _VALID_REQUEST_ID = re.compile(r"[A-Za-z0-9._-]{1,128}")
 
@@ -35,9 +37,12 @@ class RequestContextMiddleware:
         started = time.perf_counter()
         try:
             response = self.get_response(request)
-            if response.status_code == 404 and not _is_problem(response):
-                # Unknown routes: Django's own 404 page (HTML, or the debug page) is replaced.
-                response = problem.not_found()
+            if response.status_code >= 400 and not _is_problem(response):
+                # Errors produced by Django itself (unknown route, disallowed Host, debug
+                # pages) are HTML; every error the API sends must be problem+json.
+                response = problem.for_status(response.status_code)
+            if _is_html(response) and "Content-Security-Policy" not in response:
+                response["Content-Security-Policy"] = DEFAULT_HTML_CSP
             response[REQUEST_ID_HEADER] = request_id
             duration_ms = round((time.perf_counter() - started) * 1000)
             # request.path never includes the query string, which can contain names.
@@ -59,3 +64,7 @@ class RequestContextMiddleware:
 
 def _is_problem(response: HttpResponse) -> bool:
     return response.get("Content-Type", "").startswith(problem.PROBLEM_CONTENT_TYPE)
+
+
+def _is_html(response: HttpResponse) -> bool:
+    return response.get("Content-Type", "").startswith("text/html")

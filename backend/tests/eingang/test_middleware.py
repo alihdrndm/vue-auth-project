@@ -3,9 +3,10 @@ import uuid
 
 import pytest
 from django.http import HttpRequest, HttpResponse
-from django.test import Client
+from django.test import Client, RequestFactory
 from django.urls import path
 
+from eingang.middleware import DEFAULT_HTML_CSP, RequestContextMiddleware
 from eingang.problem import PROBLEM_CONTENT_TYPE
 
 
@@ -13,7 +14,11 @@ def raising_view(request: HttpRequest) -> HttpResponse:
     raise RuntimeError("internal detail that must not leak")
 
 
-urlpatterns = [path("boom", raising_view)]
+def plain_form_view(request: HttpRequest) -> HttpResponse:
+    return HttpResponse(status=204)
+
+
+urlpatterns = [path("boom", raising_view), path("form", plain_form_view)]
 
 
 def test_request_id_is_echoed_when_supplied(client: Client) -> None:
@@ -67,3 +72,35 @@ def test_security_headers(client: Client) -> None:
     assert response["X-Content-Type-Options"] == "nosniff"
     assert response["Referrer-Policy"] == "same-origin"
     assert response["X-Frame-Options"] == "DENY"
+
+
+def test_disallowed_host_is_problem_malformed_request(client: Client) -> None:
+    response = client.get("/healthz", headers={"host": "evil.example"})
+    assert response.status_code == 400
+    assert response["Content-Type"] == PROBLEM_CONTENT_TYPE
+    assert response.json()["code"] == "MALFORMED_REQUEST"
+
+
+@pytest.mark.urls("tests.eingang.test_middleware")
+def test_csrf_failure_is_problem_csrf_failed() -> None:
+    client = Client(enforce_csrf_checks=True)
+    response = client.post("/form")
+    assert response.status_code == 403
+    assert response["Content-Type"] == PROBLEM_CONTENT_TYPE
+    assert response.json()["code"] == "CSRF_FAILED"
+
+
+def test_html_responses_get_a_restrictive_csp_by_default() -> None:
+    response = HttpResponse("<p>hi</p>", content_type="text/html")
+    wrapped = RequestContextMiddleware(lambda request: response)
+    result = wrapped(RequestFactory().get("/somewhere"))
+    assert result["Content-Security-Policy"] == DEFAULT_HTML_CSP
+
+
+def test_docs_page_sends_its_own_csp_without_inline_script(client: Client) -> None:
+    response = client.get("/docs")
+    assert response.status_code == 200
+    policy = response["Content-Security-Policy"]
+    assert policy.startswith("default-src 'none'")
+    assert "unsafe-inline" not in policy.split("script-src", 1)[1].split(";", 1)[0]
+    assert "swagger-ui-dist@5.33.1" in response.content.decode()

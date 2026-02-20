@@ -9,7 +9,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from django.core.exceptions import PermissionDenied as DjangoPermissionDenied
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpRequest, JsonResponse
 from rest_framework import exceptions
 
 from eingang.log import request_id_var
@@ -84,6 +84,36 @@ def not_found() -> JsonResponse:
     return problem_response(404, "NOT_FOUND", "Not found", "No resource exists at this path.")
 
 
+def for_status(status: int) -> JsonResponse:
+    """Problem for an error response that Django produced outside our views."""
+    if status >= 500:
+        return internal_error()
+    if status == 404:
+        return not_found()
+    if status == 403:
+        return problem_response(403, "FORBIDDEN_ROLE", "Not allowed", "You can't do this.")
+    if status == 405:
+        return problem_response(
+            405,
+            "METHOD_NOT_ALLOWED",
+            "Method not allowed",
+            "This path does not accept this method.",
+        )
+    return problem_response(
+        400, "MALFORMED_REQUEST", "Malformed request", "The request could not be processed."
+    )
+
+
+def csrf_failure(request: HttpRequest, reason: str = "") -> JsonResponse:
+    """Django's CSRF_FAILURE_VIEW. The reason is not echoed; it can name cookie details."""
+    return problem_response(
+        403,
+        "CSRF_FAILED",
+        "CSRF check failed",
+        "Fetch GET /api/v1/auth/csrf first, then send its token in the X-CSRFToken header.",
+    )
+
+
 def internal_error() -> JsonResponse:
     return problem_response(
         500, "INTERNAL", "Internal error", "Something went wrong on our side. Try again later."
@@ -148,6 +178,10 @@ def exception_handler(exc: Exception, context: Mapping[str, object]) -> JsonResp
     for exc_class, status, code, title in _DRF_CODES:
         if isinstance(exc, exc_class):
             headers: dict[str, str] = {}
+            # DRF sets this for 401s so clients learn the scheme (Session, from M3 on).
+            auth_header: str | None = getattr(exc, "auth_header", None)
+            if auth_header:
+                headers["WWW-Authenticate"] = auth_header
             # The stubs omit Throttled.wait (seconds until the next request is allowed).
             wait: float | None = getattr(exc, "wait", None)
             if wait is not None:
