@@ -46,3 +46,4 @@ test-results/
 # Local storage and downloaded data
 backend/.local-media/
 data/
+.next
