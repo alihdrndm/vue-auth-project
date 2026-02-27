@@ -66,3 +66,19 @@ Dated record of every place the implementation differs from, or fills a gap in, 
 - **Spec:** the `temporal` service mounts the named volume `temporal-data` at `/data` and uses `--db-filename /data/temporal.db`.
 - **Did:** added `user: "0:0"` to the service.
 - **Why:** the `temporalio/temporal:1.9.1` image runs as uid 1000 and does not create `/data`, so a new named volume is owned by root. The server then failed with "unable to open database file (14)". The container has no published ports beyond 7233 and 8233 and is used locally only. Railway volumes are root-owned as well, so the same applies at deploy time (M9).
+
+### Entry points name their settings module
+- **Spec:** nothing except `config.py` reads `os.environ`.
+- **Did:** `manage.py`, `eingang/wsgi.py`, `eingang/worker.py` and `tools/export_openapi.py` call `os.environ.setdefault("DJANGO_SETTINGS_MODULE", "eingang.settings")`.
+- **Why:** this is how Django finds its settings module. It writes a fixed value and reads no configuration, and every configuration value is still read only by `config.py`.
+
+### Every error Django produces itself becomes problem+json
+- **Did:** the request middleware replaces any error response (status 400 or higher) that is not already problem+json, for example a disallowed `Host` or an unknown route. Mapping: 404 `NOT_FOUND`, 403 `FORBIDDEN_ROLE`, 405 `METHOD_NOT_ALLOWED`, 5xx `INTERNAL`, anything else 400 `MALFORMED_REQUEST`. CSRF failures get their own documented code, `CSRF_FAILED`, through `CSRF_FAILURE_VIEW`. `APPEND_SLASH` is off, so no redirect is issued in place of a 404.
+- **Why:** "every non-2xx response is problem+json", including responses that never reach a DRF view.
+
+### `/docs` loads a pinned Swagger UI with its own CSP
+- **Did:** Swagger UI `5.33.1` is loaded from jsdelivr, through drf-spectacular's split view, which serves the init script from the same URL instead of inline. The page's CSP allows scripts only from `'self'` and jsdelivr, and inline styles, which Swagger UI sets at runtime. Every other HTML response from the API gets `default-src 'none'; frame-ancestors 'none'` unless its view sets a policy.
+- **Why:** "a restrictive Content-Security-Policy on any HTML the API serves". The browser loads the jsdelivr files only on the developer-facing `/docs` page, never in the app.
+
+### `pnpm seed` and `pnpm db:reset` wait for their commands
+- **Did:** both scripts call `manage.py seed_rules` and `manage.py seed_dev` (section "Sandbox" › "Local seed"). Those commands arrive in M3/M4. Until then `pnpm seed` fails with Django's "Unknown command", and `pnpm db:reset` checks that both commands exist before it drops anything, then stops with a message and changes nothing.
