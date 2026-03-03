@@ -39,7 +39,7 @@ jobs:
           enable-cache: true
           cache-dependency-glob: backend/uv.lock
       - name: Install dependencies
-        run: uv sync --frozen
+        run: uv sync --frozen --extra worker
       - name: Lint
         run: uv run poe lint
       - name: Typecheck
@@ -66,7 +66,7 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Install backend dependencies (for the OpenAPI export)
         working-directory: backend
-        run: uv sync --frozen
+        run: uv sync --frozen --extra worker
       - name: Lint
         run: pnpm --filter frontend lint
       - name: Typecheck

@@ -82,3 +82,13 @@ Dated record of every place the implementation differs from, or fills a gap in, 
 
 ### `pnpm seed` and `pnpm db:reset` wait for their commands
 - **Did:** both scripts call `manage.py seed_rules` and `manage.py seed_dev` (section "Sandbox" › "Local seed"). Those commands arrive in M3/M4. Until then `pnpm seed` fails with Django's "Unknown command", and `pnpm db:reset` checks that both commands exist before it drops anything, then stops with a message and changes nothing.
+
+## 2026-10-09 — M1
+
+### Worker libraries installed in development with `--extra worker`
+- **Spec:** `saxonche`, `pdfplumber`, `pypdf` and `factur-x` are the optional dependency group `worker`.
+- **Did:** `pypdf`, `pdfplumber` and `factur-x` are in `[project.optional-dependencies] worker` (`saxonche` joins in M2). Development, CI and the README use `uv sync --extra worker`, because the `einvoice` tests need these libraries. `uv run` does not remove installed extras.
+
+### Type stubs for lxml and defusedxml
+- **Did:** added the dev-only packages `lxml-stubs` and `types-defusedxml`.
+- **Why:** mypy `strict` needs types for the parsing code. These packages add nothing at runtime. The alternative was per-module `ignore_missing_imports`, which would hide real typing errors in the most security-sensitive code.

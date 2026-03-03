@@ -48,7 +48,7 @@ Prerequisites: Docker with Compose v2, Node 24 with Corepack, and [uv](https://d
 ```sh
 corepack enable
 pnpm install
-cd backend && uv sync && cd ..
+cd backend && uv sync --extra worker && cd ..
 pnpm dev
 ```
 
