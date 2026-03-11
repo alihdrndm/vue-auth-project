@@ -61,6 +61,11 @@ mypy_path = "src"
 files = ["src", "tests", "tools"]
 plugins = ["mypy_django_plugin.main", "pydantic.mypy"]
 
+# factur-x ships no type information; see docs/DECISIONS.md.
+[[tool.mypy.overrides]]
+module = ["facturx", "facturx.*"]
+ignore_missing_imports = true
+
 [tool.django-stubs]
 django_settings_module = "eingang.settings"
 

@@ -92,3 +92,11 @@ Dated record of every place the implementation differs from, or fills a gap in, 
 ### Type stubs for lxml and defusedxml
 - **Did:** added the dev-only packages `lxml-stubs` and `types-defusedxml`.
 - **Why:** mypy `strict` needs types for the parsing code. These packages add nothing at runtime. The alternative was per-module `ignore_missing_imports`, which would hide real typing errors in the most security-sensitive code.
+
+### Any DOCTYPE in a PDF attachment is refused before factur-x runs
+- **Spec:** detection uses `facturx.get_xml_from_pdf(data, check_xsd=False)`. Any XML with a DOCTYPE is rejected.
+- **Did:** `einvoice.pdf.embedded_invoice_xml` lists the PDF's XML attachments with pypdf first and raises `UnsafeXmlError` if any of them contains `<!DOCTYPE`, anywhere in the file. Only then does it call factur-x.
+- **Why:** factur-x parses each attachment with lxml's default parser, which loads DTDs and resolves entities, before returning the bytes. Refusing first means no XML parser except ours ever sees untrusted bytes. A DOCTYPE mentioned inside a comment is also refused. That is strict on purpose: no real invoice needs one.
+
+### factur-x is untyped
+- **Did:** a mypy override with `ignore_missing_imports` for `facturx` only. The one call site, in `einvoice/pdf.py`, checks the returned value's type before using it.

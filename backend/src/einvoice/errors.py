@@ -28,3 +28,10 @@ class InvoiceParseError(EinvoiceError):
         self.field = field
         self.path = path
         self.problem = problem
+
+
+class CorruptPdfError(EinvoiceError):
+    """The file starts like a PDF but cannot be read."""
+
+    def __init__(self) -> None:
+        super().__init__("the PDF cannot be read")
