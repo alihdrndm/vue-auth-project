@@ -81,6 +81,7 @@ format = ["_ruff-format", "_ruff-fix"]
 typecheck = "mypy"
 test = "pytest"
 api = "python manage.py runserver 127.0.0.1:8010"
+fetch-corpus = "python tools/fetch_corpus.py"
 openapi = "python tools/export_openapi.py"
 openapi-check = "python tools/export_openapi.py --check"
 worker = { cmd = "python -m eingang.worker", env = { PYTHONPATH = "src" } }
