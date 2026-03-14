@@ -100,3 +100,12 @@ Dated record of every place the implementation differs from, or fills a gap in, 
 
 ### factur-x is untyped
 - **Did:** a mypy override with `ignore_missing_imports` for `facturx` only. The one call site, in `einvoice/pdf.py`, checks the returned value's type before using it.
+
+### Ruff N802 is off in tests
+- **Spec:** every rule, check and error code has a test whose name contains its ID. Ruff's `N` rules are selected.
+- **Did:** `N802` (function names must be lowercase) is ignored under `tests/` only, so test names keep the IDs in their original case: `test_D1_…`, `test_C05_…`, `test_BR_DE_15_…`.
+
+### Detection details the spec leaves open
+- A hybrid PDF whose embedded XML is not well-formed is `hybrid_pdf_unsupported`, with the note "The embedded XML is not well-formed". It is treated like a plain PDF instead of being rejected, because its visible PDF is still a usable invoice. A DOCTYPE is still refused.
+- `Detection` has two fields beyond the spec's list: `profile_version` (the XRechnung version the spec asks to record, for example `3.0`) and `ubl_credit_note` (the root is a UBL `CreditNote`, which the format label needs).
+- Text extraction runs for every PDF, hybrid ones included, so `has_text_layer` and `page_count` are always set for PDFs.
