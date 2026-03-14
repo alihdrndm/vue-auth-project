@@ -228,3 +228,11 @@ def test_invoice_without_optional_parts_parses() -> None:
     assert invoice.payee_iban is None
     assert invoice.buyer == Party()
     assert invoice.notes == []
+
+
+def test_tax_number_is_read_for_the_seller_only() -> None:
+    root = parse_xml(CII)
+    buyer = root.findall(".//ram:BuyerTradeParty", namespaces=ns.CII_NS)[0]
+    registration = etree.SubElement(buyer, f"{{{ns.RAM}}}SpecifiedTaxRegistration")
+    etree.SubElement(registration, f"{{{ns.RAM}}}ID", schemeID="FC").text = "999/999/99999"
+    assert parse_cii(etree.tostring(root)).buyer.tax_number is None

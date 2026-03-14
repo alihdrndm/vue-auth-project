@@ -35,14 +35,14 @@ def _date(root: etree._Element, path: str, field: str) -> date | None:
     return to_date(text(root, path, NS), DATE_102, field, path)
 
 
-def _party(root: etree._Element, base: str) -> Party:
+def _party(root: etree._Element, base: str, *, with_tax_number: bool) -> Party:
     vat_id = None
     tax_number = None
     for registration in root.findall(f"{base}/ram:SpecifiedTaxRegistration/ram:ID", namespaces=NS):
         value = registration.text.strip() if registration.text else None
         if registration.get("schemeID") == "VA":
             vat_id = vat_id or value
-        elif registration.get("schemeID") == "FC":
+        elif with_tax_number and registration.get("schemeID") == "FC":
             tax_number = tax_number or value
     address = f"{base}/ram:PostalTradeAddress"
     return Party(
@@ -143,7 +143,7 @@ def parse_cii_root(root: etree._Element) -> CanonicalInvoice:
     if gross_total is None:
         raise InvoiceParseError("gross_total", gross_path)
     seller_base = f"{AGREEMENT}/ram:SellerTradeParty"
-    seller = _party(root, seller_base)
+    seller = _party(root, seller_base, with_tax_number=True)
     if seller.name is None:
         raise InvoiceParseError("seller.name", f"{seller_base}/ram:Name")
     type_path = f"{DOCUMENT}/ram:TypeCode"
@@ -163,7 +163,7 @@ def parse_cii_root(root: etree._Element) -> CanonicalInvoice:
                 root, f"{AGREEMENT}/ram:BuyerOrderReferencedDocument/ram:IssuerAssignedID", NS
             ),
             "seller": seller,
-            "buyer": _party(root, f"{AGREEMENT}/ram:BuyerTradeParty"),
+            "buyer": _party(root, f"{AGREEMENT}/ram:BuyerTradeParty", with_tax_number=False),
             "payee_iban": compact_upper(
                 text(root, f"{MEANS}/ram:PayeePartyCreditorFinancialAccount/ram:IBANID", NS)
             ),
