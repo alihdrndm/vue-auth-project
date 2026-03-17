@@ -109,3 +109,15 @@ Dated record of every place the implementation differs from, or fills a gap in, 
 - A hybrid PDF whose embedded XML is not well-formed is `hybrid_pdf_unsupported`, with the note "The embedded XML is not well-formed". It is treated like a plain PDF instead of being rejected, because its visible PDF is still a usable invoice. A DOCTYPE is still refused.
 - `Detection` has two fields beyond the spec's list: `profile_version` (the XRechnung version the spec asks to record, for example `3.0`) and `ubl_credit_note` (the root is a UBL `CreditNote`, which the format label needs).
 - Text extraction runs for every PDF, hybrid ones included, so `has_text_layer` and `page_count` are always set for PDFs.
+
+### What `test_parse_corpus_correct` covers
+- **Spec:** every corpus XML and hybrid PDF in a `correct` folder must parse.
+- **Did:** the test parses all 172 files under `ZUGFeRDv2/correct/` and `XML-Rechnung/{UBL,CII,FX}/`, with no exceptions. `ZUGFeRDv1/correct/` holds legacy ZUGFeRD 1 files, which by design are detected but never parsed (`legacy_zugferd1`, treated like plain PDFs). A separate test asserts their kind.
+- Two of those files, `MustangGnuaccountingBeispielRE-20140519_499.pdf` and `…20140522_501.pdf`, predate ZUGFeRD 1.0. Their root is in the draft namespace `urn:un:unece:uncefact:data:standard:CBFBUY:5`, so rule D2 classifies them as `hybrid_pdf_unsupported`. That is still the plain-PDF path, so nothing changes for the user.
+- Corpus tests fail with "run `uv run poe fetch-corpus`" when the corpus is missing. They are never skipped. CI downloads the corpus before the tests.
+
+### XPaths verified against the corpus (OP5)
+- Every XPath in the mapping table was checked against the corpus. The 25 XML-Rechnung invoices that exist in both UBL and CII parse to identical canonical invoices, on every field except `notes`. A test keeps it that way.
+- `notes` differ by design. UBL writes a note's subject code into the text (`#REG#Lieferant GmbH…`), while CII has a separate `ram:SubjectCode` element. The mapping takes "each `cbc:Note`" and "each `ram:Content`" as they are, so UBL notes keep the prefix.
+- `not_validating_full_invoice_based_onTest_EeISI_300_CENfullmodel` is a deliberately inconsistent corpus file. It parses, but it is excluded from the cross-syntax comparison.
+- Seller and buyer tax numbers: BT-32 exists only for the seller. Neither parser reads, and neither writer writes, a tax number for the buyer.
