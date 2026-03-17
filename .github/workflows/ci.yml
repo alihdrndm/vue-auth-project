@@ -44,6 +44,14 @@ jobs:
         run: uv run poe lint
       - name: Typecheck
         run: uv run poe typecheck
+      # The pinned ZUGFeRD corpus (about 150 MB) is downloaded once and cached by its commit.
+      - name: Cache the ZUGFeRD corpus
+        uses: actions/cache@v4
+        with:
+          path: data/corpus
+          key: zugferd-corpus-d891458e9822e34271a5438497bf924e89955979
+      - name: Fetch the ZUGFeRD corpus
+        run: uv run poe fetch-corpus
       - name: Test
         run: uv run poe test
       - name: OpenAPI freshness
