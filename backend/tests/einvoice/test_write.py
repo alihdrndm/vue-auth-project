@@ -117,7 +117,8 @@ def test_missing_type_code_is_written_as_commercial_invoice_380() -> None:
 _TEXT_ALPHABET = st.characters(
     whitelist_categories=("Lu", "Ll", "Nd", "Zs", "Po", "Pd"),
     whitelist_characters="äöüßÄÖÜ&<>\"'",
-    blacklist_characters="   ",
+    # No-break spaces: str.strip removes them, so a value could change on re-reading.
+    blacklist_characters="\u00a0\u2007\u202f",
 )
 texts = st.text(_TEXT_ALPHABET, min_size=1, max_size=30).map(str.strip).filter(bool)
 codes = st.text("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", min_size=2, max_size=22)
