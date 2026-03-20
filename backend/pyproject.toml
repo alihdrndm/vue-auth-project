@@ -74,13 +74,15 @@ django_settings_module = "eingang.settings"
 pythonpath = ["src"]
 testpaths = ["tests"]
 DJANGO_SETTINGS_MODULE = "eingang.settings"
-addopts = "--cov=src --cov-branch --cov-report=term-missing --cov-fail-under=75"
+addopts = "--cov=src --cov-branch --cov-report=term-missing --cov-report=json"
 
 [tool.poe.tasks]
 lint = ["_ruff-check", "_ruff-format-check", "_lint-imports"]
 format = ["_ruff-format", "_ruff-fix"]
 typecheck = "mypy"
-test = "pytest"
+test = ["_pytest", "_check-coverage"]
+_pytest = "pytest"
+_check-coverage = "python tools/check_coverage.py"
 api = "python manage.py runserver 127.0.0.1:8010"
 fetch-corpus = "python tools/fetch_corpus.py"
 openapi = "python tools/export_openapi.py"

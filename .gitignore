@@ -47,3 +47,4 @@ test-results/
 backend/.local-media/
 data/
 .next
+backend/coverage.json

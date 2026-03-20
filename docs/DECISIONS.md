@@ -121,3 +121,6 @@ Dated record of every place the implementation differs from, or fills a gap in, 
 - `notes` differ by design. UBL writes a note's subject code into the text (`#REG#Lieferant GmbH…`), while CII has a separate `ram:SubjectCode` element. The mapping takes "each `cbc:Note`" and "each `ram:Content`" as they are, so UBL notes keep the prefix.
 - `not_validating_full_invoice_based_onTest_EeISI_300_CENfullmodel` is a deliberately inconsistent corpus file. It parses, but it is excluded from the cross-syntax comparison.
 - Seller and buyer tax numbers: BT-32 exists only for the seller. Neither parser reads, and neither writer writes, a tax number for the buyer.
+
+### Per-package coverage thresholds
+- **Did:** `uv run poe test` runs pytest, which writes `backend/coverage.json` (git-ignored), and then `tools/check_coverage.py`. The script groups files by package under `src/` and enforces 90% of lines and 85% of branches for `einvoice`, 90% of lines for `invoices`, and 75% of lines for every other package. This replaces M0's single global threshold.
