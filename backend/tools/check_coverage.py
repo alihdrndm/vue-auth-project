@@ -7,7 +7,7 @@ Reads coverage.json, which pytest writes (`--cov-report=json`). Run as part of
 import json
 import sys
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
 REPORT = BACKEND_DIR / "coverage.json"
@@ -45,7 +45,8 @@ class Totals:
 
 
 def package_of(path: str) -> str:
-    parts = Path(path).parts
+    # coverage.json keeps the OS separator; split on both so the result is the same everywhere.
+    parts = PurePosixPath(path.replace("\\", "/")).parts
     return parts[parts.index("src") + 1] if "src" in parts else parts[0]
 
 

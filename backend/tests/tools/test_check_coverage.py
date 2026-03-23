@@ -43,3 +43,9 @@ def test_other_packages_need_75_percent_lines() -> None:
 def test_empty_packages_pass() -> None:
     packages = check_coverage.totals_by_package(report({"src/llm/__init__.py": (0, 0, 0, 0)}))
     assert check_coverage.problems(packages) == []
+
+
+def test_package_of_splits_both_separators_on_every_os() -> None:
+    windows_path = chr(92).join(["src", "einvoice", "detect.py"])
+    assert check_coverage.package_of(windows_path) == "einvoice"
+    assert check_coverage.package_of("src/eingang/settings.py") == "eingang"
