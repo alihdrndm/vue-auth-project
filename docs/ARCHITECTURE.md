@@ -45,3 +45,24 @@ flowchart LR
 | Security headers | `backend/src/eingang/settings.py` |
 | OpenAPI at `/api/schema/` and `/docs`, committed `openapi.json` | `backend/src/eingang/urls.py`, `backend/tools/export_openapi.py` |
 | Import boundaries | `backend/.importlinter` |
+| Format detection D1–D5, profile from BT-24, format label | `backend/src/einvoice/detect.py` |
+| Embedded XML and text layer of PDFs | `backend/src/einvoice/pdf.py` |
+| XML safety (no DOCTYPE, no entities, no network) | `backend/src/einvoice/xmlsafe.py`, `pdf.py` (attachments refused before factur-x parses them) |
+| Canonical invoice model and its precisions | `backend/src/einvoice/model.py` |
+| XPath mapping UBL / CII → canonical | `backend/src/einvoice/parse_ubl.py`, `parse_cii.py`, `fields.py` |
+| Writing UBL / CII | `backend/src/einvoice/write.py` |
+| Coverage thresholds per package | `backend/tools/check_coverage.py` |
+
+## The `einvoice` package
+
+A plain Python library with no framework imports (import-linter contract `einvoice-is-pure`). The data flows like this:
+
+```mermaid
+flowchart LR
+    bytes[file bytes] --> detect["detect()<br/>D1–D5"]
+    detect -->|PDF| pdf["pdf.embedded_invoice_xml()<br/>pdf.extract_text()"]
+    detect -->|XML / hybrid| xml["xmlsafe.parse_xml()"]
+    xml --> parse["parse_ubl() / parse_cii()"]
+    parse --> model[CanonicalInvoice]
+    model --> write["to_ubl() / to_cii()"]
+```

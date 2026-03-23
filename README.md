@@ -60,6 +60,7 @@ See `docs/COSTS.md` (written at deployment, from measured numbers).
 
 ## Data and licences
 
+- [ZUGFeRD corpus](https://github.com/ZUGFeRD/corpus) at commit `d891458e`: sample e-invoices used for parsing tests and the evaluation. Apache License 2.0. It is downloaded by `uv run poe fetch-corpus` into `data/corpus/` and never committed.
 - Design export in `design/export/`: the owner's own work, MIT.
 - Third-party artefacts are listed with their licences in [NOTICE](NOTICE).
 

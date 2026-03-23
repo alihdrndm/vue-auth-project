@@ -21,6 +21,20 @@ Eingang design export
   Version:  As committed in design/export/
 
 
+Reference structure
+===================
+
+ZUGFeRD corpus reference invoices
+  What:     The element structure of backend/src/einvoice/write.py follows the
+            reference files XML-Rechnung/UBL/XRECHNUNG_Einfach.ubl.xml and
+            XML-Rechnung/CII/XRECHNUNG_Einfach.cii.xml. No file content is
+            copied; the corpus itself is downloaded for tests, never committed.
+  Where:    backend/src/einvoice/write.py (structure only)
+  Licence:  Apache License 2.0
+  Source:   https://github.com/ZUGFeRD/corpus
+  Version:  commit d891458e9822e34271a5438497bf924e89955979
+
+
 Validation and visualisation rules (backend/vendor/)
 ====================================================
 
