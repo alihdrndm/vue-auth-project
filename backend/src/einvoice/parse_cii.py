@@ -8,6 +8,7 @@ from lxml import etree
 from einvoice import namespaces as ns
 from einvoice.errors import InvoiceParseError, UnsupportedFileError
 from einvoice.fields import (
+    clean,
     compact_upper,
     decimal_at,
     required_text,
@@ -39,7 +40,7 @@ def _party(root: etree._Element, base: str, *, with_tax_number: bool) -> Party:
     vat_id = None
     tax_number = None
     for registration in root.findall(f"{base}/ram:SpecifiedTaxRegistration/ram:ID", namespaces=NS):
-        value = registration.text.strip() if registration.text else None
+        value = clean(registration.text)
         if registration.get("schemeID") == "VA":
             vat_id = vat_id or value
         elif with_tax_number and registration.get("schemeID") == "FC":
@@ -66,7 +67,7 @@ def _tax_total(root: etree._Element, currency: str) -> Decimal | None:
     path = f"{SUMMATION}/ram:TaxTotalAmount"
     for amount in root.findall(path, namespaces=NS):
         if amount.get("currencyID") in (None, currency):
-            return to_decimal(amount.text.strip() if amount.text else None, "tax_total", path)
+            return to_decimal(clean(amount.text), "tax_total", path)
     return None
 
 

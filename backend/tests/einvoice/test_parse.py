@@ -44,7 +44,7 @@ EXPECTED = CanonicalInvoice(
         country_code="DE",
     ),
     payee_iban="DE89370400440532013000",
-    payee_bic="COBADEFFXXX",
+    payee_bic="COBADEFF370",
     payment_terms="Zahlbar innerhalb 30 Tagen netto",
     line_total=Decimal("1000"),
     allowance_total=Decimal("0"),
@@ -236,3 +236,10 @@ def test_tax_number_is_read_for_the_seller_only() -> None:
     registration = etree.SubElement(buyer, f"{{{ns.RAM}}}SpecifiedTaxRegistration")
     etree.SubElement(registration, f"{{{ns.RAM}}}ID", schemeID="FC").text = "999/999/99999"
     assert parse_cii(etree.tostring(root)).buyer.tax_number is None
+
+
+def test_whitespace_only_tax_total_is_none() -> None:
+    ubl = empty(UBL, "cac:TaxTotal/cbc:TaxAmount", ns.UBL_NS)
+    cii = empty(CII, ".//ram:TaxTotalAmount", ns.CII_NS)
+    assert parse_ubl(ubl).tax_total is None
+    assert parse_cii(cii).tax_total is None

@@ -8,6 +8,7 @@ from lxml import etree
 from einvoice import namespaces as ns
 from einvoice.errors import InvoiceParseError, UnsupportedFileError
 from einvoice.fields import (
+    clean,
     compact_upper,
     decimal_at,
     required_text,
@@ -57,7 +58,7 @@ def _tax_total(root: etree._Element, currency: str) -> Decimal | None:
     path = "cac:TaxTotal/cbc:TaxAmount"
     for amount in root.findall(path, namespaces=NS):
         if amount.get("currencyID") in (None, currency):
-            return to_decimal(amount.text.strip() if amount.text else None, "tax_total", path)
+            return to_decimal(clean(amount.text), "tax_total", path)
     return None
 
 
