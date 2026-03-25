@@ -73,7 +73,7 @@
     <cac:PayeeFinancialAccount>
       <cbc:ID>de89 3704 0044 0532 0130 00</cbc:ID>
       <cac:FinancialInstitutionBranch>
-        <cbc:ID>COBADEFFXXX</cbc:ID>
+        <cbc:ID>COBADEFF370</cbc:ID>
       </cac:FinancialInstitutionBranch>
     </cac:PayeeFinancialAccount>
   </cac:PaymentMeans>

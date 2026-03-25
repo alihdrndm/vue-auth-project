@@ -125,7 +125,7 @@
           <ram:IBANID>de89 3704 0044 0532 0130 00</ram:IBANID>
         </ram:PayeePartyCreditorFinancialAccount>
         <ram:PayeeSpecifiedCreditorFinancialInstitution>
-          <ram:BICID>COBADEFFXXX</ram:BICID>
+          <ram:BICID>COBADEFF370</ram:BICID>
         </ram:PayeeSpecifiedCreditorFinancialInstitution>
       </ram:SpecifiedTradeSettlementPaymentMeans>
       <ram:ApplicableTradeTax>
