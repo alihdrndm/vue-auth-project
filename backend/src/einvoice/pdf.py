@@ -7,7 +7,6 @@ from io import BytesIO
 import facturx
 import pdfplumber
 from pypdf import PdfReader
-from pypdf.errors import PdfReadError
 
 from einvoice.errors import CorruptPdfError, UnsafeXmlError
 
@@ -36,7 +35,7 @@ def is_pdf(data: bytes) -> bool:
 def _reader(data: bytes) -> PdfReader:
     try:
         return PdfReader(BytesIO(data))
-    except (PdfReadError, ValueError, OSError) as error:
+    except Exception as error:  # broad on purpose: a malformed PDF can fail in many ways
         raise CorruptPdfError from error
 
 
@@ -46,17 +45,27 @@ def _xml_attachments(reader: PdfReader) -> list[tuple[str, bytes]]:
         for name, contents in reader.attachments.items():
             if name.lower().endswith(".xml"):
                 attachments.extend((name, content) for content in contents)
-    except (PdfReadError, ValueError, KeyError) as error:
+    except Exception as error:  # broad on purpose: a malformed PDF can fail in many ways
         raise CorruptPdfError from error
     return attachments
+
+
+# XML may be encoded in UTF-16 or UTF-32; a DOCTYPE must be found in any of them.
+_ENCODINGS = ("utf-8", "utf-16-le", "utf-16-be", "utf-32-le", "utf-32-be")
+
+
+def _mentions_doctype(content: bytes) -> bool:
+    # The whole attachment is scanned: corpus files open with long licence comments.
+    return any(
+        "<!doctype" in content.decode(encoding, errors="ignore").lower() for encoding in _ENCODINGS
+    )
 
 
 def _refuse_doctype(attachments: list[tuple[str, bytes]]) -> None:
     # factur-x parses attachments with lxml's default parser before we see them, so any
     # DOCTYPE is refused here first (see docs/DECISIONS.md).
     for _name, content in attachments:
-        # The whole attachment is scanned: corpus files open with long licence comments.
-        if b"<!doctype" in content.lower():
+        if _mentions_doctype(content):
             raise UnsafeXmlError
 
 

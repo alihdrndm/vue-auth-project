@@ -39,5 +39,7 @@ def logging_config(*, json_logs: bool) -> dict[str, Any]:  # boundary: logging.c
             # The dev server's access log prints query strings, which can contain names.
             # Our own request log line (eingang.request) replaces it.
             "django.server": {"handlers": [], "level": "CRITICAL", "propagate": False},
+            # factur-x logs whole invoice XML at DEBUG and INFO; uploaded contents are never logged.
+            "factur-x": {"level": "WARNING"},
         },
     }

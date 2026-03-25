@@ -71,3 +71,11 @@ def test_corrupt_pdf_raises_for_xml_and_text() -> None:
         embedded_invoice_xml(b"%PDF-1.4\nthis is not a pdf")
     with pytest.raises(CorruptPdfError):
         extract_text(b"%PDF-1.4\nthis is not a pdf")
+
+
+@pytest.mark.parametrize("encoding", ["utf-16", "utf-16-be", "utf-32", "utf-32-le"])
+def test_xxe_doctype_is_found_in_utf16_and_utf32_attachments(encoding: str) -> None:
+    payload = f'<?xml version="1.0" encoding="{encoding}"?><!DOCTYPE r><r/>'.encode(encoding)
+    pdf = with_attachment(text_pdf([LONG_TEXT]), "factur-x.xml", payload)
+    with pytest.raises(UnsafeXmlError):
+        embedded_invoice_xml(pdf)

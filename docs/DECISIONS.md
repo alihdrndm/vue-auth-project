@@ -95,8 +95,20 @@ Dated record of every place the implementation differs from, or fills a gap in, 
 
 ### Any DOCTYPE in a PDF attachment is refused before factur-x runs
 - **Spec:** detection uses `facturx.get_xml_from_pdf(data, check_xsd=False)`. Any XML with a DOCTYPE is rejected.
-- **Did:** `einvoice.pdf.embedded_invoice_xml` lists the PDF's XML attachments with pypdf first and raises `UnsafeXmlError` if any of them contains `<!DOCTYPE`, anywhere in the file. Only then does it call factur-x.
-- **Why:** factur-x parses each attachment with lxml's default parser, which loads DTDs and resolves entities, before returning the bytes. Refusing first means no XML parser except ours ever sees untrusted bytes. A DOCTYPE mentioned inside a comment is also refused. That is strict on purpose: no real invoice needs one.
+- **Did:** `einvoice.pdf.embedded_invoice_xml` lists the PDF's XML attachments with pypdf first. It raises `UnsafeXmlError` if any of them mentions `<!DOCTYPE` in UTF-8, UTF-16 or UTF-32, anywhere in the file. Only then does it call factur-x.
+- **Why:** factur-x parses each attachment with lxml's default parser, which loads DTDs (it does not fetch external entities by default in lxml 6). Refusing first keeps DTD processing away from untrusted bytes. If a DOCTYPE were ever missed, `xmlsafe.parse_xml` still refuses it afterwards. A DOCTYPE mentioned inside a comment is also refused. That is strict on purpose: no real invoice needs one.
+
+### A PDF that cannot be read is `CorruptPdfError`
+- **Spec:** "corrupt PDF" is a permanent failure in the worker (section "Temporal workflows", step 7). It does not name the error.
+- **Did:** any exception from pypdf or pdfplumber while reading a PDF becomes `einvoice.errors.CorruptPdfError`, so the worker (M4) can treat it as permanent instead of retrying.
+
+### `factur-x` logger capped at WARNING
+- **Did:** the logging configuration sets the `factur-x` logger to WARNING.
+- **Why:** at DEBUG and INFO that library logs the extracted invoice XML, and uploaded contents must never be logged.
+
+### Tax total without a currency attribute
+- **Spec:** BT-110 is the tax amount "whose `@currencyID` equals BT-5".
+- **Did:** an amount without `@currencyID` is accepted as well. Every amount in the document currency normally carries the attribute, and the first matching amount wins. A second amount in another currency (BT-111) is never taken.
 
 ### factur-x is untyped
 - **Did:** a mypy override with `ignore_missing_imports` for `facturx` only. The one call site, in `einvoice/pdf.py`, checks the returned value's type before using it.
