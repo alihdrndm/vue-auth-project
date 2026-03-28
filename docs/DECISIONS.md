@@ -125,6 +125,7 @@ Dated record of every place the implementation differs from, or fills a gap in, 
 ### What `test_parse_corpus_correct` covers
 - **Spec:** every corpus XML and hybrid PDF in a `correct` folder must parse.
 - **Did:** the test parses all 172 files under `ZUGFeRDv2/correct/` and `XML-Rechnung/{UBL,CII,FX}/`, with no exceptions. `ZUGFeRDv1/correct/` holds legacy ZUGFeRD 1 files, which by design are detected but never parsed (`legacy_zugferd1`, treated like plain PDFs). A separate test asserts their kind.
+- Confirmed by the owner (2026-10-09): ZUGFeRD 1 files are detected only, never parsed. ZUGFeRD 1.0 predates EN 16931, so it is not an e-invoice under the BMF letter of 15 October 2024. The specification already routes it to plain-PDF extraction with check C11.
 - Two of those files, `MustangGnuaccountingBeispielRE-20140519_499.pdf` and `…20140522_501.pdf`, predate ZUGFeRD 1.0. Their root is in the draft namespace `urn:un:unece:uncefact:data:standard:CBFBUY:5`, so rule D2 classifies them as `hybrid_pdf_unsupported`. That is still the plain-PDF path, so nothing changes for the user.
 - Corpus tests fail with "run `uv run poe fetch-corpus`" when the corpus is missing. They are never skipped. CI downloads the corpus before the tests.
 
