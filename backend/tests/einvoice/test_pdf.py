@@ -79,3 +79,19 @@ def test_xxe_doctype_is_found_in_utf16_and_utf32_attachments(encoding: str) -> N
     pdf = with_attachment(text_pdf([LONG_TEXT]), "factur-x.xml", payload)
     with pytest.raises(UnsafeXmlError):
         embedded_invoice_xml(pdf)
+
+
+def test_xxe_doctype_in_a_utf7_attachment_is_refused() -> None:
+    # "+ADw-" and friends are UTF-7 for "<", "!" and "["; a byte scan would miss the DOCTYPE.
+    payload = (
+        b'<?xml version="1.0" encoding="UTF-7"?>'
+        b"+ADwAIQ-DOCTYPE r +AFsAPAAh-ENTITY e +ACI-PWNED+ACIAPgBd-+AD4-<r>&e;</r>"
+    )
+    pdf = with_attachment(text_pdf([LONG_TEXT]), "factur-x.xml", payload)
+    with pytest.raises(UnsafeXmlError):
+        embedded_invoice_xml(pdf)
+
+
+def test_malformed_xml_attachment_does_not_stop_the_search() -> None:
+    pdf = with_attachment(text_pdf([LONG_TEXT]), "broken.xml", b"<r>")
+    assert embedded_invoice_xml(pdf) is None

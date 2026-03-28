@@ -95,8 +95,8 @@ Dated record of every place the implementation differs from, or fills a gap in, 
 
 ### Any DOCTYPE in a PDF attachment is refused before factur-x runs
 - **Spec:** detection uses `facturx.get_xml_from_pdf(data, check_xsd=False)`. Any XML with a DOCTYPE is rejected.
-- **Did:** `einvoice.pdf.embedded_invoice_xml` lists the PDF's XML attachments with pypdf first. It raises `UnsafeXmlError` if any of them mentions `<!DOCTYPE` in UTF-8, UTF-16 or UTF-32, anywhere in the file. Only then does it call factur-x.
-- **Why:** factur-x parses each attachment with lxml's default parser, which loads DTDs (it does not fetch external entities by default in lxml 6). Refusing first keeps DTD processing away from untrusted bytes. If a DOCTYPE were ever missed, `xmlsafe.parse_xml` still refuses it afterwards. A DOCTYPE mentioned inside a comment is also refused. That is strict on purpose: no real invoice needs one.
+- **Did:** `einvoice.pdf.embedded_invoice_xml` lists the PDF's XML attachments with pypdf first. Each one passes two checks before factur-x is called: (1) its text, decoded as UTF-8, UTF-16 or UTF-32, must not mention `<!DOCTYPE`; (2) our safe parser (`xmlsafe.parse_xml`), which honours any declared encoding, UTF-7 for example, must not find a DOCTYPE. Either finding raises `UnsafeXmlError`. An attachment that is not well-formed for libxml2 is skipped, because factur-x cannot parse it either.
+- **Why:** factur-x parses each attachment with lxml's default parser, which loads and processes an internal DTD. It does not fetch external entities by default in lxml 6. A byte scan alone missed a UTF-7 DOCTYPE in the review. The safe parse covers every encoding libxml2 understands, which is exactly the set factur-x's parser could read. A DOCTYPE mentioned inside a comment is refused as well. That is strict on purpose: no real invoice needs one.
 
 ### A PDF that cannot be read is `CorruptPdfError`
 - **Spec:** "corrupt PDF" is a permanent failure in the worker (section "Temporal workflows", step 7). It does not name the error.

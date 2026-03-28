@@ -8,7 +8,8 @@ import facturx
 import pdfplumber
 from pypdf import PdfReader
 
-from einvoice.errors import CorruptPdfError, UnsafeXmlError
+from einvoice.errors import CorruptPdfError, UnsafeXmlError, UnsupportedFileError
+from einvoice.xmlsafe import parse_xml
 
 logger = logging.getLogger(__name__)
 
@@ -50,23 +51,32 @@ def _xml_attachments(reader: PdfReader) -> list[tuple[str, bytes]]:
     return attachments
 
 
-# XML may be encoded in UTF-16 or UTF-32; a DOCTYPE must be found in any of them.
-_ENCODINGS = ("utf-8", "utf-16-le", "utf-16-be", "utf-32-le", "utf-32-be")
+# Encodings an XML file may use without declaring them clearly enough for every parser.
+_SCANNED_ENCODINGS = ("utf-8", "utf-16-le", "utf-16-be", "utf-32-le", "utf-32-be")
 
 
 def _mentions_doctype(content: bytes) -> bool:
     # The whole attachment is scanned: corpus files open with long licence comments.
     return any(
-        "<!doctype" in content.decode(encoding, errors="ignore").lower() for encoding in _ENCODINGS
+        "<!doctype" in content.decode(encoding, errors="ignore").lower()
+        for encoding in _SCANNED_ENCODINGS
     )
 
 
 def _refuse_doctype(attachments: list[tuple[str, bytes]]) -> None:
-    # factur-x parses attachments with lxml's default parser before we see them, so any
-    # DOCTYPE is refused here first (see docs/DECISIONS.md).
+    # factur-x parses attachments with lxml's default parser, which processes DTDs, before
+    # we see them. Two checks run first (docs/DECISIONS.md): a scan of the decoded text in
+    # the common Unicode encodings, and our safe parser, which honours any declared
+    # encoding (UTF-7 and others) and refuses a DOCTYPE.
     for _name, content in attachments:
         if _mentions_doctype(content):
             raise UnsafeXmlError
+        try:
+            parse_xml(content)
+        except UnsafeXmlError:
+            raise
+        except UnsupportedFileError:
+            continue  # not well-formed for libxml2, so factur-x cannot parse it either
 
 
 def embedded_invoice_xml(data: bytes) -> bytes | None:
