@@ -137,3 +137,10 @@ Dated record of every place the implementation differs from, or fills a gap in, 
 
 ### Per-package coverage thresholds
 - **Did:** `uv run poe test` runs pytest, which writes `backend/coverage.json` (git-ignored), and then `tools/check_coverage.py`. The script groups files by package under `src/` and enforces 90% of lines and 85% of branches for `einvoice`, 90% of lines for `invoices`, and 75% of lines for every other package. This replaces M0's single global threshold.
+
+## 2026-10-09 — M2
+
+### Where the M2 libraries live
+- `saxonche` is in the `worker` extra, next to the other worker-only libraries (spec: "Only the worker image adds `saxonche`…").
+- `python-stdnum` is a runtime dependency. The sample builder needs it now to make valid VAT IDs and IBANs, and checks C06/C07 need it in M4.
+- `reportlab` and `pillow` are in the dev group, because only `tools/build_samples.py` uses them (spec: "sample builder only"). The samples are committed, so no production image needs them.
