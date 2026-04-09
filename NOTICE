@@ -38,7 +38,56 @@ ZUGFeRD corpus reference invoices
 Validation and visualisation rules (backend/vendor/)
 ====================================================
 
-Entries for the vendored KoSIT XRechnung validator configuration
-(backend/vendor/xrechnung-config/) and the KoSIT XRechnung visualisation
-stylesheets (backend/vendor/xrechnung-visualization/) are added here when
-those files are vendored, in the same format as the entry above.
+KoSIT validator configuration for XRechnung
+  What:     UBL 2.1 and UN/CEFACT CII D16B XML schemas, the compiled
+            EN 16931 (CEN) and XRechnung Schematron rules as XSLT, and
+            scenarios.xml
+  Where:    backend/vendor/xrechnung-config/
+  Licence:  Apache License 2.0 (backend/vendor/xrechnung-config/LICENSE).
+            The folder's own NOTICE file is retained unchanged; it reads
+            "KoSIT XML-Validator Configuration for XRechnung, Copyright 2020
+            Koordinierungsstelle für IT-Standards" and credits the
+            Coordination Office for IT-Standards (http://www.xoev.de/).
+            The LICENSE file also carries a German note that EN 16931 is
+            copyright of CEN, that XRechnung implements its semantic data
+            model and two mandatory syntaxes, and that reproduction is
+            permitted by CEN and DIN as copyright holders.
+  Source:   https://github.com/itplr-kosit/validator-configuration-xrechnung
+  Version:  release tag v2026-01-31, asset
+            xrechnung-3.0.2-validator-configuration-2026-01-31.zip
+            (XRechnung 3.0.2)
+  Bundled third-party parts, as listed in the folder's README.md (the
+  README states no separate licence for them, so each is used as
+  distributed in the KoSIT release):
+    - XML Schema of UBL Invoice and CreditNote 2.1 (OASIS,
+      http://docs.oasis-open.org/ubl/os-UBL-2.1/), in resources/ubl/2.1/xsd/
+    - XML Schema of UN/CEFACT uncoupled version 16B (UN/CEFACT,
+      http://www.unece.org/cefact/xml_schemas/index.html),
+      in resources/cii/16b/xsd/
+    - Schematron of EN16931:2017
+      (https://github.com/ConnectingEurope/eInvoicing-EN16931),
+      in resources/ubl/2.1/xsl/ and resources/cii/16b/xsl/
+    - Schematron of CIUS XRechnung, Extension XRechnung and CIUS XRechnung
+      CVD (KoSIT, https://projekte.kosit.org/xrechnung/xrechnung-schematron/),
+      in resources/xrechnung/3.0.2/xsl/
+
+KoSIT XRechnung visualisation
+  What:     XSLT stylesheets that render XRechnung UBL and CII documents as
+            HTML, with the viewer CSS and the German and English l10n files
+  Where:    backend/vendor/xrechnung-visualization/
+  Licence:  Apache License 2.0
+            (backend/vendor/xrechnung-visualization/LICENSE). The LICENSE
+            file also carries the same German note on EN 16931 copyright
+            (CEN) and the reproduction permission from CEN and DIN.
+  Source:   https://github.com/itplr-kosit/xrechnung-visualization
+  Version:  release tag v2026-01-31, asset
+            xrechnung-3.0.2-visualization-2026-01-31.zip
+
+KoSIT XRechnung test suite instances
+  What:     XRechnung UBL and CII reference instances (standard, extension
+            and technical cases), used for the validation parity evaluation
+  Where:    backend/vendor/xrechnung-testsuite/
+  Licence:  Apache License 2.0 (backend/vendor/xrechnung-testsuite/LICENSE)
+  Source:   https://github.com/itplr-kosit/xrechnung-testsuite
+  Version:  release tag v2026-01-31, asset
+            xrechnung-3.0.2-testsuite-2026-01-31.zip
