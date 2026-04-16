@@ -82,6 +82,12 @@ KoSIT XRechnung visualisation
   Source:   https://github.com/itplr-kosit/xrechnung-visualization
   Version:  release tag v2026-01-31, asset
             xrechnung-3.0.2-visualization-2026-01-31.zip
+  Bundled in that folder, as shipped in the release:
+    - xsl/FileSaver-v2.0.5.js, FileSaver.js by Eli Grey, MIT License
+      (https://github.com/eligrey/FileSaver.js). It is read by
+      xrechnung-html.xsl; Eingang removes every script from the HTML it
+      produces, so it never runs.
+    - xsl/xrechnung-viewer.js, part of the KoSIT release (Apache 2.0).
 
 KoSIT XRechnung test suite instances
   What:     XRechnung UBL and CII reference instances (standard, extension

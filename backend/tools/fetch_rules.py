@@ -42,12 +42,13 @@ def _config_files(name: str) -> bool:
 
 
 def _visualization_files(name: str) -> bool:
-    # The HTML transformation only; the PDF (XSL-FO) part and the browser scripts are not used.
+    # The HTML transformation only, not the PDF (XSL-FO) part. xrechnung-html.xsl reads the
+    # CSS and the two scripts with unparsed-text(); Eingang strips the scripts from its output.
     if name in ("README.md", "CHANGELOG.md"):
         return True
     if not name.startswith("xsl/") or name.startswith("xsl/xr-pdf"):
         return False
-    return name.endswith((".xsl", ".css")) or name.startswith("xsl/l10n/")
+    return name.endswith((".xsl", ".css", ".js")) or name.startswith("xsl/l10n/")
 
 
 def _testsuite_files(name: str) -> bool:

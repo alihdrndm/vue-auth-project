@@ -28,8 +28,8 @@ def test_visualization_keeps_html_parts_only() -> None:
     assert keep("xsl/xrechnung-html.xsl")
     assert keep("xsl/l10n/de.xml")
     assert keep("xsl/xrechnung-viewer.css")
+    assert keep("xsl/xrechnung-viewer.js")  # read by xrechnung-html.xsl, stripped afterwards
     assert not keep("xsl/xr-pdf.xsl")
-    assert not keep("xsl/xrechnung-viewer.js")
     assert not keep("conf/fonts/OFL.txt")
 
 
