@@ -155,3 +155,16 @@ Dated record of every place the implementation differs from, or fills a gap in, 
 - **Did:** `einvoice.saxon` hands all Saxon work to a single executor thread. That thread owns the processor and the compiled stylesheets, in thread-local storage. Callers on any thread submit a job and wait for the result.
 - **Why:** SaxonC's native runtime is bound to the thread that created the processor. Calling it from the worker's other threads, or releasing it on the main thread at exit, crashed the runtime in testing ("wrong IsolateThread"). One validation takes about 5–100 ms, so serialising costs little.
 - `saxonche` ships no type information, so it has a mypy `ignore_missing_imports` override like factur-x.
+
+### KoSIT test suite: all 86 instances validate
+- `test_testsuite_instances_all_validate` runs every instance of the vendored test suite (`standard/`, `extension/`, `technical-cases/`). All 86 are `valid` or `warnings`, so nothing has to be listed.
+
+### Corpus `fail` files that are not rejected
+Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as hybrid: legacy ZUGFeRD 1, a UBL inside a PDF, and an XML with a bad encoding attribute. 13 are `invalid`, among them the FNFE "BASIC" files, whose BT-24 is malformed (`urn:cen.eu:en16931:2017:compliant:factur-x.eu:1p0:basic`) and therefore `UNKNOWN`. The remaining six are kept by `NOT_REJECTED` in `tests/einvoice/test_validate_reference.py`:
+
+| File | Our result | Why the corpus fails it, and why we don't |
+|------|-----------|-------------------------------------------|
+| `Avoir_FR_type380_MINIMUM.pdf`, `Avoir_FR_type381_MINIMUM.pdf`, `Avoir_FR_type381_BASICWL.pdf` | `not_applicable` | MINIMUM and BASIC WL are not EN 16931 invoices, so their rules are not applied (spec, "Validation" step 2). The detection still marks them "not an e-invoice" (check C11). |
+| `noNetPriceValidation.xml` | `valid` | The net price (0.10) × quantity (400) does not equal the line amount (316.00). No EN 16931 rule ties these together, so the KoSIT validator accepts the file as well. Mustang applies its own extra check. |
+| `wrongFilename.pdf` | `valid` | The embedded file is named `factur-y.xml`. factur-x still finds it, and the invoice XML is valid. The failure concerns the PDF container's file naming, which is out of scope (ASSUMED E1). |
+| `ZUGFeRD_2_fully_compliant_complete.pdf` | `valid` | The embedded XML passes the XSD and EN 16931. The corpus gives no reason. The PDF was produced by iTextSharp 4.1 and is most likely not PDF/A-3, which Eingang does not check (ASSUMED E1). |

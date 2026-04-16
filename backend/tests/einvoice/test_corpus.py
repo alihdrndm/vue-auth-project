@@ -2,25 +2,13 @@
 
 from pathlib import Path
 
-import pytest
-
 from einvoice.detect import Kind, Syntax, detect
 from einvoice.model import CanonicalInvoice
 from einvoice.parse_cii import parse_cii
 from einvoice.parse_ubl import parse_ubl
 
-CORPUS = Path(__file__).resolve().parents[3] / "data" / "corpus"
-CORPUS_COMMIT = "d891458e9822e34271a5438497bf924e89955979"
 # Deliberately inconsistent test file of the corpus; its UBL and CII versions differ on purpose.
 NOT_VALIDATING = "not_validating_full_invoice_based_onTest_EeISI_300_CENfullmodel"
-
-
-@pytest.fixture(scope="module")
-def corpus() -> Path:
-    marker = CORPUS / ".commit"
-    if not marker.exists() or marker.read_text(encoding="utf-8").strip() != CORPUS_COMMIT:
-        pytest.fail("The corpus is missing or outdated. Run: cd backend && uv run poe fetch-corpus")
-    return CORPUS
 
 
 def files(corpus: Path, pattern: str) -> list[Path]:
