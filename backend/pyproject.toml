@@ -66,9 +66,9 @@ mypy_path = "src"
 files = ["src", "tests", "tools"]
 plugins = ["mypy_django_plugin.main", "pydantic.mypy"]
 
-# factur-x ships no type information; see docs/DECISIONS.md.
+# factur-x and saxonche ship no type information; see docs/DECISIONS.md.
 [[tool.mypy.overrides]]
-module = ["facturx", "facturx.*"]
+module = ["facturx", "facturx.*", "saxonche", "saxonche.*"]
 ignore_missing_imports = true
 
 [tool.django-stubs]

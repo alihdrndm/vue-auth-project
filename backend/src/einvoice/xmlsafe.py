@@ -48,3 +48,8 @@ def parse_xml(data: bytes) -> etree._Element:
 def to_bytes(root: etree._Element) -> bytes:
     """Serialise a safely parsed tree; this, never the original bytes, goes to other tools."""
     return etree.tostring(root, xml_declaration=True, encoding="UTF-8")
+
+
+def to_text(root: etree._Element) -> str:
+    """The safely parsed tree as text: the only form of a document handed to SaxonC."""
+    return etree.tostring(root, encoding="unicode")
