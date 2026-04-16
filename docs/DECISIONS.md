@@ -144,3 +144,14 @@ Dated record of every place the implementation differs from, or fills a gap in, 
 - `saxonche` is in the `worker` extra, next to the other worker-only libraries (spec: "Only the worker image adds `saxonche`…").
 - `python-stdnum` is a runtime dependency. The sample builder needs it now to make valid VAT IDs and IBANs, and checks C06/C07 need it in M4.
 - `reportlab` and `pillow` are in the dev group, because only `tools/build_samples.py` uses them (spec: "sample builder only"). The samples are committed, so no production image needs them.
+
+### The KoSIT scenarios' custom levels are applied
+- **Spec:** steps 1–5 of "Validation"; our verdicts must agree with the official validator (M6 parity).
+- **Did:** after the Schematron runs, `einvoice.validate` finds the first scenario in the vendored `scenarios.xml` whose `match` expression is true for the document, evaluating the XPath 2.0 with Saxon. It then applies that scenario's `customLevel` overrides, for example `BR-CL-23` → warning in XRechnung, or `CII-SR-452` → fatal. Documents that match no scenario keep each rule's own level.
+- **Why:** the KoSIT validator does exactly this. Without the overrides, valid XRechnung files with, say, a UN/ECE unit code that is not on the list would be reported invalid, and parity would fail.
+
+### SaxonC runs on one dedicated thread
+- **Spec:** compile the Schematron once per process and cache it.
+- **Did:** `einvoice.saxon` hands all Saxon work to a single executor thread. That thread owns the processor and the compiled stylesheets, in thread-local storage. Callers on any thread submit a job and wait for the result.
+- **Why:** SaxonC's native runtime is bound to the thread that created the processor. Calling it from the worker's other threads, or releasing it on the main thread at exit, crashed the runtime in testing ("wrong IsolateThread"). One validation takes about 5–100 ms, so serialising costs little.
+- `saxonche` ships no type information, so it has a mypy `ignore_missing_imports` override like factur-x.
