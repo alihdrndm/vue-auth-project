@@ -28,6 +28,12 @@ class PdfText:
     def non_whitespace_chars(self) -> int:
         return sum(len("".join(page.split())) for page in self.pages)
 
+    def as_text(self) -> str:
+        """The pages, each introduced by `--- page N ---` (HANDOFF section 5)."""
+        return "\n".join(
+            f"--- page {number} ---\n{page}" for number, page in enumerate(self.pages, start=1)
+        )
+
 
 def is_pdf(data: bytes) -> bool:
     return data.startswith(PDF_MAGIC)

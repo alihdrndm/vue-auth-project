@@ -95,3 +95,8 @@ def test_xxe_doctype_in_a_utf7_attachment_is_refused() -> None:
 def test_malformed_xml_attachment_does_not_stop_the_search() -> None:
     pdf = with_attachment(text_pdf([LONG_TEXT]), "broken.xml", b"<r>")
     assert embedded_invoice_xml(pdf) is None
+
+
+def test_text_pages_are_marked_with_their_number() -> None:
+    text = extract_text(text_pdf([["first"], ["second"]]))
+    assert text.as_text() == "--- page 1 ---\nfirst\n--- page 2 ---\nsecond"
