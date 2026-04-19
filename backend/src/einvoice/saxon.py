@@ -62,15 +62,20 @@ def compile_all(stylesheets: list[Path]) -> None:
     _run(job)
 
 
-def transform(stylesheet: Path, xml: str) -> str:
+def transform(stylesheet: Path, xml: str, parameters: dict[str, str] | None = None) -> str:
     """Run a stylesheet on a document given as text and return the result as text.
 
-    `xml` must come from `xmlsafe.to_text`, never from the original bytes.
+    `xml` must come from `xmlsafe.to_text`, never from the original bytes. `parameters`
+    sets string-valued stylesheet parameters for this run only.
     """
 
     def job(processor: PySaxonProcessor) -> str:
         node = processor.parse_xml(xml_text=xml)
-        result: str = _executable(processor, stylesheet).transform_to_string(xdm_node=node)
+        executable = _executable(processor, stylesheet)
+        executable.clear_parameters()
+        for name, value in (parameters or {}).items():
+            executable.set_parameter(name, processor.make_string_value(value))
+        result: str = executable.transform_to_string(xdm_node=node)
         return result
 
     return _run(job)
