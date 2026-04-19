@@ -9,7 +9,14 @@ from einvoice.detect import Profile, Syntax, detect
 from einvoice.model import CanonicalInvoice, Line, Party, TaxBreakdown
 from einvoice.parse_cii import parse_cii
 from einvoice.parse_ubl import parse_ubl
-from einvoice.write import XRECHNUNG_3_ID, ElectronicAddress, WriteOptions, to_cii, to_ubl
+from einvoice.write import (
+    PEPPOL_BILLING_PROCESS,
+    XRECHNUNG_3_ID,
+    ElectronicAddress,
+    WriteOptions,
+    to_cii,
+    to_ubl,
+)
 from einvoice.xmlsafe import parse_xml
 from tests.einvoice.test_parse import EXPECTED
 
@@ -216,3 +223,18 @@ def test_round_trip_ubl(invoice: CanonicalInvoice) -> None:
 @given(invoices)
 def test_round_trip_cii(invoice: CanonicalInvoice) -> None:
     assert parse_cii(to_cii(invoice, OPTIONS, XRECHNUNG_3_ID)) == invoice
+
+
+def test_business_process_bt_23_is_written_in_both_syntaxes() -> None:
+    ubl = parse_xml(to_ubl(EXPECTED, OPTIONS))
+    assert ubl.findtext("cbc:ProfileID", namespaces=ns.UBL_NS) == PEPPOL_BILLING_PROCESS
+    cii = parse_xml(to_cii(EXPECTED, OPTIONS, XRECHNUNG_3_ID))
+    path = (
+        "rsm:ExchangedDocumentContext/ram:BusinessProcessSpecifiedDocumentContextParameter/ram:ID"
+    )
+    assert cii.findtext(path, namespaces=ns.CII_NS) == PEPPOL_BILLING_PROCESS
+
+
+def test_business_process_can_be_left_out() -> None:
+    root = parse_xml(to_ubl(EXPECTED, WriteOptions(business_process=None)))
+    assert root.find("cbc:ProfileID", namespaces=ns.UBL_NS) is None

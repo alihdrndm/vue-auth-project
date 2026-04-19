@@ -15,6 +15,8 @@ from einvoice import namespaces as ns
 from einvoice.model import CREDIT_NOTE_TYPE_CODE, CanonicalInvoice, Line, Party
 
 XRECHNUNG_3_ID = "urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0"
+# BT-23, required by XRechnung (PEPPOL-EN16931-R001); the value the corpus reference files use.
+PEPPOL_BILLING_PROCESS = "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0"
 DEFAULT_TYPE_CODE = 380
 SEPA_CREDIT_TRANSFER = "58"
 
@@ -30,6 +32,7 @@ class WriteOptions:
     """What XRechnung requires but the canonical model does not hold."""
 
     customization_id: str = XRECHNUNG_3_ID  # UBL BT-24; CII takes it as `guideline_id`
+    business_process: str | None = PEPPOL_BILLING_PROCESS  # BT-23
     seller_contact_name: str | None = None  # BG-6
     seller_contact_phone: str | None = None
     seller_electronic_address: ElectronicAddress | None = None  # BT-34
@@ -163,6 +166,7 @@ def to_ubl(invoice: CanonicalInvoice, options: WriteOptions) -> bytes:
     root = etree.Element(f"{{{namespace}}}{tag}", nsmap=nsmap)  # type: ignore[arg-type]  # lxml-stubs omits None keys
     currency = invoice.currency
     _child(root, f"{CBC}CustomizationID", options.customization_id)
+    _optional(root, f"{CBC}ProfileID", options.business_process)
     _child(root, f"{CBC}ID", invoice.invoice_number)
     _child(root, f"{CBC}IssueDate", invoice.issue_date.isoformat())
     if not credit_note and invoice.due_date is not None:
@@ -319,6 +323,9 @@ def to_cii(invoice: CanonicalInvoice, options: WriteOptions, guideline_id: str) 
         nsmap={"rsm": ns.RSM, "ram": ns.RAM, "udt": ns.UDT},
     )
     context = _child(root, f"{RSM}ExchangedDocumentContext")
+    if options.business_process is not None:
+        process = _child(context, f"{RAM}BusinessProcessSpecifiedDocumentContextParameter")
+        _child(process, f"{RAM}ID", options.business_process)
     guideline = _child(context, f"{RAM}GuidelineSpecifiedDocumentContextParameter")
     _child(guideline, f"{RAM}ID", guideline_id)
 

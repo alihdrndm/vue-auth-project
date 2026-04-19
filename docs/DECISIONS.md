@@ -168,3 +168,7 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 | `noNetPriceValidation.xml` | `valid` | The net price (0.10) × quantity (400) does not equal the line amount (316.00). No EN 16931 rule ties these together, so the KoSIT validator accepts the file as well. Mustang applies its own extra check. |
 | `wrongFilename.pdf` | `valid` | The embedded file is named `factur-y.xml`. factur-x still finds it, and the invoice XML is valid. The failure concerns the PDF container's file naming, which is out of scope (ASSUMED E1). |
 | `ZUGFeRD_2_fully_compliant_complete.pdf` | `valid` | The embedded XML passes the XSD and EN 16931. The corpus gives no reason. The PDF was produced by iTextSharp 4.1 and is most likely not PDF/A-3, which Eingang does not check (ASSUMED E1). |
+
+### The writer adds BT-23 (business process)
+- **Spec:** `WriteOptions` carries what XRechnung requires beyond the model. Written XRechnung files must validate as `valid`.
+- **Did:** `WriteOptions.business_process` (BT-23) defaults to `urn:fdc:peppol.eu:2017:poacc:billing:01:1.0`, the value in the corpus reference files. It is written as UBL `cbc:ProfileID` and CII `BusinessProcessSpecifiedDocumentContextParameter`. XRechnung 3.0 rejects invoices without it (`PEPPOL-EN16931-R001`). The parsers do not read it, because the canonical model has no field for it.
