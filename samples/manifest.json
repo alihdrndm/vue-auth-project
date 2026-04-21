@@ -1,0 +1,150 @@
+{
+  "buyer": {
+    "name": "Holzwerk Brandt GmbH",
+    "vat_id": "DE291746055"
+  },
+  "samples": [
+    {
+      "id": "S01",
+      "file": "S01-RE-2026-0412.xml",
+      "sha256": "646427b5a24e513d558e5638beac71e40c6b8bc05d5e2c269ce4253f424c8596",
+      "received_offset_minutes": 2550,
+      "format_label": "XRechnung · UBL",
+      "expected_checks": [
+        "C04"
+      ],
+      "expected_status": "awaiting_approval"
+    },
+    {
+      "id": "S02",
+      "file": "S02-BN-88213.xml",
+      "sha256": "e3a0e247e1d8ba679e2fa076bae5ae7efc7aa14d3fe5c5580309c5304d31d02d",
+      "received_offset_minutes": 62,
+      "format_label": "XRechnung · CII",
+      "expected_checks": [],
+      "expected_status": "awaiting_approval"
+    },
+    {
+      "id": "S03",
+      "file": "S03-SA-26-1187.pdf",
+      "sha256": "c800293920fa8a2c6e11b52109a24651868c5d188650d05026c6c516748faf4b",
+      "received_offset_minutes": 980,
+      "format_label": "ZUGFeRD · EN 16931",
+      "expected_checks": [],
+      "expected_status": "awaiting_approval"
+    },
+    {
+      "id": "S04",
+      "file": "S04-F-2026-118.pdf",
+      "sha256": "510a4dcaf676144d2a0b81c421e9be2ecb3a34d9569283f6126a225de2b39340",
+      "received_offset_minutes": 1318,
+      "format_label": "ZUGFeRD · BASIC WL",
+      "expected_checks": [
+        "C04",
+        "C11"
+      ],
+      "expected_status": "needs_review"
+    },
+    {
+      "id": "S05",
+      "file": "S05-RE-2026-0413.xml",
+      "sha256": "6a1cddbfb6f8ea20f4a41b9f2a1af21998a40d7782ed9e58419a0765c4632021",
+      "received_offset_minutes": 1425,
+      "format_label": "XRechnung · UBL",
+      "expected_checks": [
+        "C15"
+      ],
+      "expected_status": "needs_review"
+    },
+    {
+      "id": "S06",
+      "file": "S06-RE-2026-0412.xml",
+      "sha256": "f1e33302a11551ccbc6cb1ec5c6e5dc927a1a91b44eb1a7bfa396aafc4006146",
+      "received_offset_minutes": 48,
+      "format_label": "XRechnung · UBL",
+      "expected_checks": [
+        "C02"
+      ],
+      "expected_status": "needs_review"
+    },
+    {
+      "id": "S07",
+      "file": "S07-BN-88290.xml",
+      "sha256": "67c34e7b2858c10da6d8baad0e6ad36831064dd8a8f50e3e1bcd2d3549ae357b",
+      "received_offset_minutes": 2815,
+      "format_label": "XRechnung · CII",
+      "expected_checks": [
+        "C05"
+      ],
+      "expected_status": "needs_review"
+    },
+    {
+      "id": "S08",
+      "file": "S08-2026-1043.pdf",
+      "sha256": "36707321d2b5ea62bf9296ecb5596d403787a296bb83728cf1704fbe85cfed40",
+      "received_offset_minutes": 3796,
+      "format_label": "Plain PDF",
+      "expected_checks": [
+        "C11",
+        "C12"
+      ],
+      "expected_status": "needs_review"
+    },
+    {
+      "id": "S09",
+      "file": "S09-HP-2026-021.pdf",
+      "sha256": "e5a8e3261a2f275f9243b5f32982d9293a775fc722b994e1f266a3836cbefe7b",
+      "received_offset_minutes": 4290,
+      "format_label": "Scanned PDF",
+      "expected_checks": [
+        "C10",
+        "C11"
+      ],
+      "expected_status": "needs_review"
+    },
+    {
+      "id": "S10",
+      "file": "S10-SA-26-1160.pdf",
+      "sha256": "141132fc3be55a547381a57ec86e25c19613503a172d8d7f2c4195736b573710",
+      "received_offset_minutes": 5508,
+      "format_label": "ZUGFeRD · EN 16931",
+      "expected_checks": [
+        "C04"
+      ],
+      "expected_status": "awaiting_approval"
+    },
+    {
+      "id": "S11",
+      "file": "S11-BN-88102-G.xml",
+      "sha256": "4bf5d79dc4c3d355747db18577858f6f5cf947db09458ca9d66b7f913d1f4984",
+      "received_offset_minutes": 10085,
+      "format_label": "XRechnung · UBL · credit note",
+      "expected_checks": [
+        "C04"
+      ],
+      "expected_status": "approved",
+      "decision": {
+        "decision": "approved",
+        "by": "Jonas Brandt (sample)",
+        "comment": ""
+      }
+    },
+    {
+      "id": "S12",
+      "file": "S12-SW-2026-77812.xml",
+      "sha256": "fcc0a297fcb5c67f5efb3fd3a70e7b054e2633f07a9f1f4c37b9f92b32458146",
+      "received_offset_minutes": 34480,
+      "format_label": "XRechnung · CII",
+      "expected_checks": [
+        "C04",
+        "C08"
+      ],
+      "expected_status": "rejected",
+      "decision": {
+        "decision": "rejected",
+        "by": "Jonas Brandt (sample)",
+        "comment": "Wrong cost centre, please ask for a corrected invoice."
+      }
+    }
+  ]
+}

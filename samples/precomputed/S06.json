@@ -1,0 +1,106 @@
+{
+  "id": "S06",
+  "detection": {
+    "kind": "xml",
+    "syntax": "ubl",
+    "profile": "XRECHNUNG",
+    "profile_version": "3.0",
+    "spec_id": "urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0",
+    "has_text_layer": null,
+    "page_count": null,
+    "is_einvoice": true,
+    "format_label": "XRechnung · UBL",
+    "notes": []
+  },
+  "validation": {
+    "status": "valid",
+    "engine": "xrechnung-config v2026-01-31; CEN 1.3.15; saxonche 13.0.0",
+    "xsd_ok": true,
+    "fatal_count": 0,
+    "warning_count": 0,
+    "issues": [
+      {
+        "rule_id": "BR-DE-TMP-32",
+        "severity": "information",
+        "message": "[BR-DE-TMP-32] Eine Rechnung sollte zur Angabe des Liefer-/Leistungsdatums entweder BT-72 \"Actual delivery date\", BG-14 \"Invoicing period\" oder in jeder Rechnungsposition BG-26 \"Invoice line period\" enthalten.",
+        "location": "/Q{urn:oasis:names:specification:ubl:schema:xsd:Invoice-2}Invoice[1]",
+        "test": "cac:Delivery/cbc:ActualDeliveryDate         or cac:InvoicePeriod         or (every $line in (cac:InvoiceLine | cac:CreditNoteLine) satisfies $line/cac:InvoicePeriod)",
+        "source": "xrechnung"
+      }
+    ]
+  },
+  "invoice": {
+    "invoice_number": "RE-2026-0412",
+    "type_code": 380,
+    "issue_date": "2026-03-02",
+    "due_date": null,
+    "currency": "EUR",
+    "buyer_reference": "HB-EINKAUF-2026",
+    "order_reference": null,
+    "seller": {
+      "name": "Elektro Kessler GmbH",
+      "vat_id": "DE318520741",
+      "tax_number": null,
+      "street": "Gießerstraße 7",
+      "postcode": "04229",
+      "city": "Leipzig",
+      "country_code": "DE",
+      "email": "buchhaltung@elektro-kessler.example"
+    },
+    "buyer": {
+      "name": "Holzwerk Brandt GmbH",
+      "vat_id": "DE291746055",
+      "tax_number": null,
+      "street": "Sägewerkstraße 12",
+      "postcode": "04129",
+      "city": "Leipzig",
+      "country_code": "DE",
+      "email": null
+    },
+    "payee_iban": "DE69860555921034567890",
+    "payee_bic": null,
+    "payment_terms": "Zahlbar innerhalb 30 Tagen netto",
+    "line_total": "1000.00",
+    "allowance_total": "0.00",
+    "charge_total": "0.00",
+    "net_total": "1000.00",
+    "tax_total": "190.00",
+    "gross_total": "1190.00",
+    "prepaid_amount": "0.00",
+    "payable_amount": "1190.00",
+    "tax_breakdown": [
+      {
+        "category": "S",
+        "rate": "19.00",
+        "taxable_amount": "1000.00",
+        "tax_amount": "190.00"
+      }
+    ],
+    "lines": [
+      {
+        "line_id": "1",
+        "description": "Elektroinstallation Werkhalle",
+        "quantity": "8.0000",
+        "unit_code": "HUR",
+        "unit_price": "75.000000",
+        "net_amount": "600.00",
+        "tax_category": "S",
+        "tax_rate": "19.00"
+      },
+      {
+        "line_id": "2",
+        "description": "Kabel NYM-J 3x1,5 mm², Rolle 50 m",
+        "quantity": "4.0000",
+        "unit_code": "H87",
+        "unit_price": "100.000000",
+        "net_amount": "400.00",
+        "tax_category": "S",
+        "tax_rate": "19.00"
+      }
+    ],
+    "notes": [
+      "Zweitschrift"
+    ]
+  },
+  "text": null
+}

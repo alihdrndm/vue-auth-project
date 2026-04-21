@@ -1,0 +1,76 @@
+{
+  "id": "S04",
+  "detection": {
+    "kind": "hybrid_pdf",
+    "syntax": "cii",
+    "profile": "BASIC WL",
+    "profile_version": null,
+    "spec_id": "urn:factur-x.eu:1p0:basicwl",
+    "has_text_layer": true,
+    "page_count": 1,
+    "is_einvoice": false,
+    "format_label": "ZUGFeRD · BASIC WL",
+    "notes": []
+  },
+  "validation": {
+    "status": "not_applicable",
+    "engine": "xrechnung-config v2026-01-31; CEN 1.3.15; saxonche 13.0.0",
+    "xsd_ok": null,
+    "fatal_count": 0,
+    "warning_count": 0,
+    "issues": []
+  },
+  "invoice": {
+    "invoice_number": "F-2026-118",
+    "type_code": 380,
+    "issue_date": "2026-02-26",
+    "due_date": null,
+    "currency": "EUR",
+    "buyer_reference": "HB-EINKAUF-2026",
+    "order_reference": null,
+    "seller": {
+      "name": "Atelier Moreau SARL",
+      "vat_id": "FR44732829320",
+      "tax_number": null,
+      "street": "12 rue des Tanneurs",
+      "postcode": "67000",
+      "city": "Strasbourg",
+      "country_code": "FR",
+      "email": null
+    },
+    "buyer": {
+      "name": "Holzwerk Brandt GmbH",
+      "vat_id": "DE291746055",
+      "tax_number": null,
+      "street": "Sägewerkstraße 12",
+      "postcode": "04129",
+      "city": "Leipzig",
+      "country_code": "DE",
+      "email": null
+    },
+    "payee_iban": "FR7630004000031234567890143",
+    "payee_bic": null,
+    "payment_terms": "Zahlbar innerhalb 30 Tagen netto",
+    "line_total": "640.00",
+    "allowance_total": "0.00",
+    "charge_total": "0.00",
+    "net_total": "640.00",
+    "tax_total": "0.00",
+    "gross_total": "640.00",
+    "prepaid_amount": "0.00",
+    "payable_amount": "640.00",
+    "tax_breakdown": [
+      {
+        "category": "AE",
+        "rate": "0.00",
+        "taxable_amount": "640.00",
+        "tax_amount": "0.00"
+      }
+    ],
+    "lines": [],
+    "notes": [
+      "Autoliquidation - Steuerschuldnerschaft des Leistungsempfängers"
+    ]
+  },
+  "text": "--- page 1 ---\nAtelier Moreau SARL\n12 rue des Tanneurs, 67000 Strasbourg\nUSt-IdNr.: FR44732829320\nAn: Holzwerk Brandt GmbH\nSägewerkstraße 12, 04129 Leipzig\nUSt-IdNr.: DE291746055\nRechnung\nRechnungsnummer: F-2026-118\nRechnungsdatum: 26.02.2026\nIhre Referenz: HB-EINKAUF-2026\nPos. Beschreibung Menge Einzelpreis Netto\nNetto: 640,00 EUR\nSteuerschuldnerschaft des Leistungsempfängers (Reverse Charge): 0,00 EUR\nBrutto: 640,00 EUR\nZahlbetrag: 640,00 EUR\nZahlungsbedingungen: Zahlbar innerhalb 30 Tagen netto\nIBAN: FR76 3000 4000 0312 3456 7890 143"
+}

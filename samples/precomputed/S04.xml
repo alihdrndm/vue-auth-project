@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<rsm:CrossIndustryInvoice xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
+  <rsm:ExchangedDocumentContext>
+    <ram:BusinessProcessSpecifiedDocumentContextParameter>
+      <ram:ID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</ram:ID>
+    </ram:BusinessProcessSpecifiedDocumentContextParameter>
+    <ram:GuidelineSpecifiedDocumentContextParameter>
+      <ram:ID>urn:factur-x.eu:1p0:basicwl</ram:ID>
+    </ram:GuidelineSpecifiedDocumentContextParameter>
+  </rsm:ExchangedDocumentContext>
+  <rsm:ExchangedDocument>
+    <ram:ID>F-2026-118</ram:ID>
+    <ram:TypeCode>380</ram:TypeCode>
+    <ram:IssueDateTime>
+      <udt:DateTimeString format="102">20260226</udt:DateTimeString>
+    </ram:IssueDateTime>
+    <ram:IncludedNote>
+      <ram:Content>Autoliquidation - Steuerschuldnerschaft des Leistungsempfängers</ram:Content>
+    </ram:IncludedNote>
+  </rsm:ExchangedDocument>
+  <rsm:SupplyChainTradeTransaction>
+    <ram:ApplicableHeaderTradeAgreement>
+      <ram:BuyerReference>HB-EINKAUF-2026</ram:BuyerReference>
+      <ram:SellerTradeParty>
+        <ram:Name>Atelier Moreau SARL</ram:Name>
+        <ram:PostalTradeAddress>
+          <ram:PostcodeCode>67000</ram:PostcodeCode>
+          <ram:LineOne>12 rue des Tanneurs</ram:LineOne>
+          <ram:CityName>Strasbourg</ram:CityName>
+          <ram:CountryID>FR</ram:CountryID>
+        </ram:PostalTradeAddress>
+        <ram:SpecifiedTaxRegistration>
+          <ram:ID schemeID="VA">FR44732829320</ram:ID>
+        </ram:SpecifiedTaxRegistration>
+      </ram:SellerTradeParty>
+      <ram:BuyerTradeParty>
+        <ram:Name>Holzwerk Brandt GmbH</ram:Name>
+        <ram:PostalTradeAddress>
+          <ram:PostcodeCode>04129</ram:PostcodeCode>
+          <ram:LineOne>Sägewerkstraße 12</ram:LineOne>
+          <ram:CityName>Leipzig</ram:CityName>
+          <ram:CountryID>DE</ram:CountryID>
+        </ram:PostalTradeAddress>
+        <ram:SpecifiedTaxRegistration>
+          <ram:ID schemeID="VA">DE291746055</ram:ID>
+        </ram:SpecifiedTaxRegistration>
+      </ram:BuyerTradeParty>
+    </ram:ApplicableHeaderTradeAgreement>
+    <ram:ApplicableHeaderTradeDelivery/>
+    <ram:ApplicableHeaderTradeSettlement>
+      <ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode>
+      <ram:SpecifiedTradeSettlementPaymentMeans>
+        <ram:TypeCode>58</ram:TypeCode>
+        <ram:PayeePartyCreditorFinancialAccount>
+          <ram:IBANID>FR7630004000031234567890143</ram:IBANID>
+        </ram:PayeePartyCreditorFinancialAccount>
+      </ram:SpecifiedTradeSettlementPaymentMeans>
+      <ram:ApplicableTradeTax>
+        <ram:CalculatedAmount>0.00</ram:CalculatedAmount>
+        <ram:TypeCode>VAT</ram:TypeCode>
+        <ram:ExemptionReason>Autoliquidation</ram:ExemptionReason>
+        <ram:BasisAmount>640.00</ram:BasisAmount>
+        <ram:CategoryCode>AE</ram:CategoryCode>
+        <ram:RateApplicablePercent>0.00</ram:RateApplicablePercent>
+      </ram:ApplicableTradeTax>
+      <ram:SpecifiedTradePaymentTerms>
+        <ram:Description>Zahlbar innerhalb 30 Tagen netto</ram:Description>
+      </ram:SpecifiedTradePaymentTerms>
+      <ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+        <ram:LineTotalAmount>640.00</ram:LineTotalAmount>
+        <ram:ChargeTotalAmount>0.00</ram:ChargeTotalAmount>
+        <ram:AllowanceTotalAmount>0.00</ram:AllowanceTotalAmount>
+        <ram:TaxBasisTotalAmount>640.00</ram:TaxBasisTotalAmount>
+        <ram:TaxTotalAmount currencyID="EUR">0.00</ram:TaxTotalAmount>
+        <ram:GrandTotalAmount>640.00</ram:GrandTotalAmount>
+        <ram:TotalPrepaidAmount>0.00</ram:TotalPrepaidAmount>
+        <ram:DuePayableAmount>640.00</ram:DuePayableAmount>
+      </ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+    </ram:ApplicableHeaderTradeSettlement>
+  </rsm:SupplyChainTradeTransaction>
+</rsm:CrossIndustryInvoice>

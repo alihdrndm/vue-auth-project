@@ -1,0 +1,85 @@
+{
+  "id": "S10",
+  "detection": {
+    "kind": "hybrid_pdf",
+    "syntax": "cii",
+    "profile": "EN 16931",
+    "profile_version": null,
+    "spec_id": "urn:cen.eu:en16931:2017",
+    "has_text_layer": true,
+    "page_count": 1,
+    "is_einvoice": true,
+    "format_label": "ZUGFeRD · EN 16931",
+    "notes": []
+  },
+  "validation": {
+    "status": "valid",
+    "engine": "xrechnung-config v2026-01-31; CEN 1.3.15; saxonche 13.0.0",
+    "xsd_ok": true,
+    "fatal_count": 0,
+    "warning_count": 0,
+    "issues": []
+  },
+  "invoice": {
+    "invoice_number": "SA/26/1160",
+    "type_code": 380,
+    "issue_date": "2026-02-24",
+    "due_date": null,
+    "currency": "EUR",
+    "buyer_reference": "HB-EINKAUF-2026",
+    "order_reference": null,
+    "seller": {
+      "name": "Spedition Albers GmbH",
+      "vat_id": "DE149203761",
+      "tax_number": null,
+      "street": "Hafenweg 21",
+      "postcode": "01139",
+      "city": "Dresden",
+      "country_code": "DE",
+      "email": "faktura@spedition-albers.example"
+    },
+    "buyer": {
+      "name": "Holzwerk Brandt GmbH",
+      "vat_id": "DE291746055",
+      "tax_number": null,
+      "street": "Sägewerkstraße 12",
+      "postcode": "04129",
+      "city": "Leipzig",
+      "country_code": "DE",
+      "email": null
+    },
+    "payee_iban": "DE95850503000221004455",
+    "payee_bic": null,
+    "payment_terms": "Zahlbar innerhalb 30 Tagen netto",
+    "line_total": "1008.40",
+    "allowance_total": "0.00",
+    "charge_total": "0.00",
+    "net_total": "1008.40",
+    "tax_total": "191.60",
+    "gross_total": "1200.00",
+    "prepaid_amount": "0.00",
+    "payable_amount": "1200.00",
+    "tax_breakdown": [
+      {
+        "category": "S",
+        "rate": "19.00",
+        "taxable_amount": "1008.40",
+        "tax_amount": "191.60"
+      }
+    ],
+    "lines": [
+      {
+        "line_id": "1",
+        "description": "Transport Leipzig - Dresden, Teilladung",
+        "quantity": "1.0000",
+        "unit_code": "C62",
+        "unit_price": "1008.400000",
+        "net_amount": "1008.40",
+        "tax_category": "S",
+        "tax_rate": "19.00"
+      }
+    ],
+    "notes": []
+  },
+  "text": "--- page 1 ---\nSpedition Albers GmbH\nHafenweg 21, 01139 Dresden\nUSt-IdNr.: DE149203761\nAn: Holzwerk Brandt GmbH\nSägewerkstraße 12, 04129 Leipzig\nUSt-IdNr.: DE291746055\nRechnung\nRechnungsnummer: SA/26/1160\nRechnungsdatum: 24.02.2026\nIhre Referenz: HB-EINKAUF-2026\nPos. Beschreibung Menge Einzelpreis Netto\n1 Transport Leipzig - Dresden, Teilladung 1 1.008,40 EUR 1.008,40 EUR\nNetto: 1.008,40 EUR\nUSt 19 %: 191,60 EUR\nBrutto: 1.190,00 EUR\nZahlbetrag: 1.190,00 EUR\nZahlungsbedingungen: Zahlbar innerhalb 30 Tagen netto\nIBAN: DE95 8505 0300 0221 0044 55"
+}

@@ -1,0 +1,94 @@
+{
+  "id": "S11",
+  "detection": {
+    "kind": "xml",
+    "syntax": "ubl",
+    "profile": "XRECHNUNG",
+    "profile_version": "3.0",
+    "spec_id": "urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0",
+    "has_text_layer": null,
+    "page_count": null,
+    "is_einvoice": true,
+    "format_label": "XRechnung · UBL · credit note",
+    "notes": []
+  },
+  "validation": {
+    "status": "valid",
+    "engine": "xrechnung-config v2026-01-31; CEN 1.3.15; saxonche 13.0.0",
+    "xsd_ok": true,
+    "fatal_count": 0,
+    "warning_count": 0,
+    "issues": [
+      {
+        "rule_id": "BR-DE-TMP-32",
+        "severity": "information",
+        "message": "[BR-DE-TMP-32] Eine Rechnung sollte zur Angabe des Liefer-/Leistungsdatums entweder BT-72 \"Actual delivery date\", BG-14 \"Invoicing period\" oder in jeder Rechnungsposition BG-26 \"Invoice line period\" enthalten.",
+        "location": "/Q{urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2}CreditNote[1]",
+        "test": "cac:Delivery/cbc:ActualDeliveryDate         or cac:InvoicePeriod         or (every $line in (cac:InvoiceLine | cac:CreditNoteLine) satisfies $line/cac:InvoicePeriod)",
+        "source": "xrechnung"
+      }
+    ]
+  },
+  "invoice": {
+    "invoice_number": "BN-88102-G",
+    "type_code": 381,
+    "issue_date": "2026-02-10",
+    "due_date": null,
+    "currency": "EUR",
+    "buyer_reference": "HB-EINKAUF-2026",
+    "order_reference": null,
+    "seller": {
+      "name": "Bürobedarf Nord KG",
+      "vat_id": "DE277401932",
+      "tax_number": null,
+      "street": "Am Kanal 3",
+      "postcode": "21073",
+      "city": "Hamburg",
+      "country_code": "DE",
+      "email": "rechnung@buerobedarf-nord.example"
+    },
+    "buyer": {
+      "name": "Holzwerk Brandt GmbH",
+      "vat_id": "DE291746055",
+      "tax_number": null,
+      "street": "Sägewerkstraße 12",
+      "postcode": "04129",
+      "city": "Leipzig",
+      "country_code": "DE",
+      "email": null
+    },
+    "payee_iban": "DE89370400440532013000",
+    "payee_bic": null,
+    "payment_terms": "Zahlbar innerhalb 30 Tagen netto",
+    "line_total": "49.00",
+    "allowance_total": "0.00",
+    "charge_total": "0.00",
+    "net_total": "49.00",
+    "tax_total": "9.31",
+    "gross_total": "58.31",
+    "prepaid_amount": "0.00",
+    "payable_amount": "58.31",
+    "tax_breakdown": [
+      {
+        "category": "S",
+        "rate": "19.00",
+        "taxable_amount": "49.00",
+        "tax_amount": "9.31"
+      }
+    ],
+    "lines": [
+      {
+        "line_id": "1",
+        "description": "Gutschrift: Ordner A4 zurückgegeben",
+        "quantity": "7.0000",
+        "unit_code": "H87",
+        "unit_price": "7.000000",
+        "net_amount": "49.00",
+        "tax_category": "S",
+        "tax_rate": "19.00"
+      }
+    ],
+    "notes": []
+  },
+  "text": null
+}

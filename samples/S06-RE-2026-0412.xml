@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</cbc:CustomizationID>
+  <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+  <cbc:ID>RE-2026-0412</cbc:ID>
+  <cbc:IssueDate>2026-03-02</cbc:IssueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:Note>Zweitschrift</cbc:Note>
+  <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cbc:BuyerReference>HB-EINKAUF-2026</cbc:BuyerReference>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="EM">buchhaltung@elektro-kessler.example</cbc:EndpointID>
+      <cac:PostalAddress>
+        <cbc:StreetName>Gießerstraße 7</cbc:StreetName>
+        <cbc:CityName>Leipzig</cbc:CityName>
+        <cbc:PostalZone>04229</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+        <cbc:CompanyID>DE318520741</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Elektro Kessler GmbH</cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+      <cac:Contact>
+        <cbc:Name>Petra Kessler</cbc:Name>
+        <cbc:Telephone>+49 341 4402210</cbc:Telephone>
+        <cbc:ElectronicMail>buchhaltung@elektro-kessler.example</cbc:ElectronicMail>
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="EM">rechnungseingang@holzwerk-brandt.example</cbc:EndpointID>
+      <cac:PostalAddress>
+        <cbc:StreetName>Sägewerkstraße 12</cbc:StreetName>
+        <cbc:CityName>Leipzig</cbc:CityName>
+        <cbc:PostalZone>04129</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+        <cbc:CompanyID>DE291746055</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Holzwerk Brandt GmbH</cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:PaymentMeans>
+    <cbc:PaymentMeansCode>58</cbc:PaymentMeansCode>
+    <cac:PayeeFinancialAccount>
+      <cbc:ID>DE69860555921034567890</cbc:ID>
+    </cac:PayeeFinancialAccount>
+  </cac:PaymentMeans>
+  <cac:PaymentTerms>
+    <cbc:Note>Zahlbar innerhalb 30 Tagen netto</cbc:Note>
+  </cac:PaymentTerms>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="EUR">190.00</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="EUR">1000.00</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="EUR">190.00</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19.00</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="EUR">1000.00</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="EUR">1000.00</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="EUR">1190.00</cbc:TaxInclusiveAmount>
+    <cbc:AllowanceTotalAmount currencyID="EUR">0.00</cbc:AllowanceTotalAmount>
+    <cbc:ChargeTotalAmount currencyID="EUR">0.00</cbc:ChargeTotalAmount>
+    <cbc:PrepaidAmount currencyID="EUR">0.00</cbc:PrepaidAmount>
+    <cbc:PayableAmount currencyID="EUR">1190.00</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:InvoiceLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="HUR">8.0000</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">600.00</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Elektroinstallation Werkhalle</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19.00</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">75.000000</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>2</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="H87">4.0000</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">400.00</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Kabel NYM-J 3x1,5 mm², Rolle 50 m</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>19.00</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">100.000000</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+</Invoice>

@@ -1,0 +1,95 @@
+{
+  "id": "S03",
+  "detection": {
+    "kind": "hybrid_pdf",
+    "syntax": "cii",
+    "profile": "EN 16931",
+    "profile_version": null,
+    "spec_id": "urn:cen.eu:en16931:2017",
+    "has_text_layer": true,
+    "page_count": 1,
+    "is_einvoice": true,
+    "format_label": "ZUGFeRD · EN 16931",
+    "notes": []
+  },
+  "validation": {
+    "status": "valid",
+    "engine": "xrechnung-config v2026-01-31; CEN 1.3.15; saxonche 13.0.0",
+    "xsd_ok": true,
+    "fatal_count": 0,
+    "warning_count": 0,
+    "issues": []
+  },
+  "invoice": {
+    "invoice_number": "SA/26/1187",
+    "type_code": 380,
+    "issue_date": "2026-03-03",
+    "due_date": null,
+    "currency": "EUR",
+    "buyer_reference": "HB-EINKAUF-2026",
+    "order_reference": null,
+    "seller": {
+      "name": "Spedition Albers GmbH",
+      "vat_id": "DE149203761",
+      "tax_number": null,
+      "street": "Hafenweg 21",
+      "postcode": "01139",
+      "city": "Dresden",
+      "country_code": "DE",
+      "email": "faktura@spedition-albers.example"
+    },
+    "buyer": {
+      "name": "Holzwerk Brandt GmbH",
+      "vat_id": "DE291746055",
+      "tax_number": null,
+      "street": "Sägewerkstraße 12",
+      "postcode": "04129",
+      "city": "Leipzig",
+      "country_code": "DE",
+      "email": null
+    },
+    "payee_iban": "DE95850503000221004455",
+    "payee_bic": null,
+    "payment_terms": "Zahlbar innerhalb 30 Tagen netto",
+    "line_total": "2400.00",
+    "allowance_total": "0.00",
+    "charge_total": "0.00",
+    "net_total": "2400.00",
+    "tax_total": "456.00",
+    "gross_total": "2856.00",
+    "prepaid_amount": "0.00",
+    "payable_amount": "2856.00",
+    "tax_breakdown": [
+      {
+        "category": "S",
+        "rate": "19.00",
+        "taxable_amount": "2400.00",
+        "tax_amount": "456.00"
+      }
+    ],
+    "lines": [
+      {
+        "line_id": "1",
+        "description": "Transport Leipzig - Hamburg, Komplettladung",
+        "quantity": "1.0000",
+        "unit_code": "C62",
+        "unit_price": "2000.000000",
+        "net_amount": "2000.00",
+        "tax_category": "S",
+        "tax_rate": "19.00"
+      },
+      {
+        "line_id": "2",
+        "description": "Palettentausch Europalette",
+        "quantity": "20.0000",
+        "unit_code": "H87",
+        "unit_price": "20.000000",
+        "net_amount": "400.00",
+        "tax_category": "S",
+        "tax_rate": "19.00"
+      }
+    ],
+    "notes": []
+  },
+  "text": "--- page 1 ---\nSpedition Albers GmbH\nHafenweg 21, 01139 Dresden\nUSt-IdNr.: DE149203761\nAn: Holzwerk Brandt GmbH\nSägewerkstraße 12, 04129 Leipzig\nUSt-IdNr.: DE291746055\nRechnung\nRechnungsnummer: SA/26/1187\nRechnungsdatum: 03.03.2026\nIhre Referenz: HB-EINKAUF-2026\nPos. Beschreibung Menge Einzelpreis Netto\n1 Transport Leipzig - Hamburg, Komplettladung 1 2.000,00 EUR 2.000,00 EUR\n2 Palettentausch Europalette 20 20,00 EUR 400,00 EUR\nNetto: 2.400,00 EUR\nUSt 19 %: 456,00 EUR\nBrutto: 2.856,00 EUR\nZahlbetrag: 2.856,00 EUR\nZahlungsbedingungen: Zahlbar innerhalb 30 Tagen netto\nIBAN: DE95 8505 0300 0221 0044 55"
+}

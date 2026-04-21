@@ -1,0 +1,104 @@
+{
+  "id": "S02",
+  "detection": {
+    "kind": "xml",
+    "syntax": "cii",
+    "profile": "XRECHNUNG",
+    "profile_version": "3.0",
+    "spec_id": "urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0",
+    "has_text_layer": null,
+    "page_count": null,
+    "is_einvoice": true,
+    "format_label": "XRechnung · CII",
+    "notes": []
+  },
+  "validation": {
+    "status": "valid",
+    "engine": "xrechnung-config v2026-01-31; CEN 1.3.15; saxonche 13.0.0",
+    "xsd_ok": true,
+    "fatal_count": 0,
+    "warning_count": 0,
+    "issues": [
+      {
+        "rule_id": "BR-DE-TMP-32",
+        "severity": "information",
+        "message": "[BR-DE-TMP-32] Eine Rechnung sollte zur Angabe des Liefer-/Leistungsdatums entweder BT-72 \"Actual delivery date\", BG-14 \"Invoicing period\" oder in jeder Rechnungsposition BG-26 \"Invoice line period\" enthalten.",
+        "location": "/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}CrossIndustryInvoice[1]/Q{urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100}SupplyChainTradeTransaction[1]",
+        "test": "               ram:ApplicableHeaderTradeDelivery/ram:ActualDeliverySupplyChainEvent/ram:OccurrenceDateTime               or ram:ApplicableHeaderTradeSettlement/ram:BillingSpecifiedPeriod               or (every $line in ram:IncludedSupplyChainTradeLineItem               satisfies $line/ram:SpecifiedLineTradeSettlement/ram:BillingSpecifiedPeriod)",
+        "source": "xrechnung"
+      }
+    ]
+  },
+  "invoice": {
+    "invoice_number": "BN-88213",
+    "type_code": 380,
+    "issue_date": "2026-03-05",
+    "due_date": null,
+    "currency": "EUR",
+    "buyer_reference": "HB-EINKAUF-2026",
+    "order_reference": null,
+    "seller": {
+      "name": "Bürobedarf Nord KG",
+      "vat_id": "DE277401932",
+      "tax_number": null,
+      "street": "Am Kanal 3",
+      "postcode": "21073",
+      "city": "Hamburg",
+      "country_code": "DE",
+      "email": "rechnung@buerobedarf-nord.example"
+    },
+    "buyer": {
+      "name": "Holzwerk Brandt GmbH",
+      "vat_id": "DE291746055",
+      "tax_number": null,
+      "street": "Sägewerkstraße 12",
+      "postcode": "04129",
+      "city": "Leipzig",
+      "country_code": "DE",
+      "email": null
+    },
+    "payee_iban": "DE89370400440532013000",
+    "payee_bic": null,
+    "payment_terms": "Zahlbar innerhalb 30 Tagen netto",
+    "line_total": "346.50",
+    "allowance_total": "0.00",
+    "charge_total": "0.00",
+    "net_total": "346.50",
+    "tax_total": "65.84",
+    "gross_total": "412.34",
+    "prepaid_amount": "0.00",
+    "payable_amount": "412.34",
+    "tax_breakdown": [
+      {
+        "category": "S",
+        "rate": "19.00",
+        "taxable_amount": "346.50",
+        "tax_amount": "65.84"
+      }
+    ],
+    "lines": [
+      {
+        "line_id": "1",
+        "description": "Kopierpapier A4, 80 g, Karton à 2.500 Blatt",
+        "quantity": "15.0000",
+        "unit_code": "XCT",
+        "unit_price": "18.900000",
+        "net_amount": "283.50",
+        "tax_category": "S",
+        "tax_rate": "19.00"
+      },
+      {
+        "line_id": "2",
+        "description": "Ordner A4, breit, blau",
+        "quantity": "21.0000",
+        "unit_code": "H87",
+        "unit_price": "3.000000",
+        "net_amount": "63.00",
+        "tax_category": "S",
+        "tax_rate": "19.00"
+      }
+    ],
+    "notes": []
+  },
+  "text": null
+}
