@@ -46,6 +46,7 @@ dev = [
     "respx>=0.23.1",
     "ruff>=0.16.10",
     "types-defusedxml>=0.7.0.20260504",
+    "types-reportlab>=5.0.0.20261008",
 ]
 
 [tool.ruff]
@@ -90,6 +91,7 @@ _check-coverage = "python tools/check_coverage.py"
 api = "python manage.py runserver 127.0.0.1:8010"
 fetch-corpus = "python tools/fetch_corpus.py"
 fetch-rules = "python tools/fetch_rules.py"
+build-samples = "python tools/build_samples.py"
 openapi = "python tools/export_openapi.py"
 openapi-check = "python tools/export_openapi.py --check"
 worker = { cmd = "python -m eingang.worker", env = { PYTHONPATH = "src" } }

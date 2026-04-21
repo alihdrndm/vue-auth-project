@@ -172,3 +172,11 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 ### The writer adds BT-23 (business process)
 - **Spec:** `WriteOptions` carries what XRechnung requires beyond the model. Written XRechnung files must validate as `valid`.
 - **Did:** `WriteOptions.business_process` (BT-23) defaults to `urn:fdc:peppol.eu:2017:poacc:billing:01:1.0`, the value in the corpus reference files. It is written as UBL `cbc:ProfileID` and CII `BusinessProcessSpecifiedDocumentContextParameter`. XRechnung 3.0 rejects invoices without it (`PEPPOL-EN16931-R001`). The parsers do not read it, because the canonical model has no field for it.
+
+### Sample builder details
+- The visible invoices are German, like real supplier invoices, with "Rechnungsnummer", "Brutto", "Zahlbetrag" and amounts as `1.190,00 EUR`. That is the vocabulary the M5 extraction prompt is written for.
+- Hybrid samples are made with `facturx.generate_from_binary(..., check_xsd=True)`, so their XML also passes the Factur-X schema of their level.
+- Builds are reproducible except for the three hybrid PDFs (S03, S04, S10): factur-x writes the current time into their XMP metadata. The samples are built once and committed, and `samples/manifest.json` holds the SHA-256 of the committed files, which a test checks.
+- `samples/precomputed/<ID>.json` carries `text` for PDFs in the section 5 format, each page introduced by `--- page N ---`. It also carries `invoice: null` for the plain PDF and the scan, because their data comes from the LLM (M5) or from a person.
+- `types-reportlab` is a dev-only stub package, so the builder type-checks under mypy strict.
+- S02's paper is counted in cartons with unit code `XCT` (UN/ECE Rec 21). The plain `CT` is not on the list and triggers `BR-CL-23`, and the samples must be strictly `valid`.
