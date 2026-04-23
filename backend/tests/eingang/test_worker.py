@@ -13,3 +13,9 @@ def test_worker_does_not_start_without_registered_workflows_or_activities(
         asyncio.run(worker.run())
     assert "not started" in caplog.text
     assert worker.TASK_QUEUE == "eingang-main"
+
+
+def test_worker_compiles_the_stylesheets_at_start_up(caplog: pytest.LogCaptureFixture) -> None:
+    with caplog.at_level(logging.INFO, logger="eingang.worker"):
+        worker.prepare_stylesheets()
+    assert "Stylesheets compiled" in caplog.text

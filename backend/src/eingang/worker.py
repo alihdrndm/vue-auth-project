@@ -3,6 +3,7 @@
 import asyncio
 import logging
 import os
+import time
 from collections.abc import Callable, Sequence
 from concurrent.futures import ThreadPoolExecutor
 
@@ -57,7 +58,18 @@ def main() -> None:
     import django
 
     django.setup()
+    prepare_stylesheets()
     asyncio.run(run())
+
+
+def prepare_stylesheets() -> None:
+    """Compile the Schematron and visualisation stylesheets once, before the first document."""
+    from einvoice import validate, visualize
+
+    started = time.perf_counter()
+    validate.warm_up()
+    visualize.warm_up()
+    logger.info("Stylesheets compiled in %.1f s", time.perf_counter() - started)
 
 
 if __name__ == "__main__":
