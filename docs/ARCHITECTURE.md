@@ -52,6 +52,12 @@ flowchart LR
 | XPath mapping UBL / CII → canonical | `backend/src/einvoice/parse_ubl.py`, `parse_cii.py`, `fields.py` |
 | Writing UBL / CII | `backend/src/einvoice/write.py` |
 | Coverage thresholds per package | `backend/tools/check_coverage.py` |
+| Vendored KoSIT rules, pinned by SHA-256 | `backend/tools/fetch_rules.py`, `backend/vendor/rules.lock.json`, `backend/vendor/` |
+| Validation steps 1–5 (XSD, EN 16931, XRechnung, SVRL, status) | `backend/src/einvoice/validate.py`, `svrl.py` |
+| KoSIT scenario custom levels | `backend/src/einvoice/scenarios.py` |
+| SaxonC on one thread, stylesheets compiled once | `backend/src/einvoice/saxon.py`; warm-up in `backend/src/eingang/worker.py` |
+| Visualisation (UBL/CII → XR → static HTML) | `backend/src/einvoice/visualize.py` |
+| Sandbox sample set, manifest and precomputed data | `backend/tools/sample_data.py`, `backend/tools/build_samples.py`, `samples/` |
 
 ## The `einvoice` package
 
@@ -65,4 +71,8 @@ flowchart LR
     xml --> parse["parse_ubl() / parse_cii()"]
     parse --> model[CanonicalInvoice]
     model --> write["to_ubl() / to_cii()"]
+    xml --> validate["validate()<br/>XSD → EN 16931 → XRechnung<br/>+ KoSIT custom levels"]
+    xml --> visualize["visualize()<br/>→ XR → static HTML"]
 ```
+
+Validation and visualisation run SaxonC-HE. Its native runtime is bound to one thread, so `einvoice.saxon` runs every transformation on a single dedicated thread and caches the compiled stylesheets there. Callers on any worker thread submit a job and wait for the result.
