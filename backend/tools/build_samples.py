@@ -215,9 +215,8 @@ def check(sample: Sample, label: str, report: ValidationReport) -> list[str]:
 
 
 def write_json(path: Path, data: object) -> None:
-    path.write_text(
-        json.dumps(data, indent=2, ensure_ascii=False, default=str) + "\n", encoding="utf-8"
-    )
+    text = json.dumps(data, indent=2, ensure_ascii=False, default=str) + "\n"
+    path.write_text(text, encoding="utf-8", newline="\n")
 
 
 def main() -> int:
@@ -246,7 +245,9 @@ def main() -> int:
             (PRECOMPUTED_DIR / f"{sample.id}.xml").write_bytes(detection.xml)
         page = visualize(detection)
         if page is not None:
-            (PRECOMPUTED_DIR / f"{sample.id}.visualization.html").write_text(page, encoding="utf-8")
+            (PRECOMPUTED_DIR / f"{sample.id}.visualization.html").write_text(
+                page, encoding="utf-8", newline="\n"
+            )
         entry: dict[str, object] = {
             "id": sample.id,
             "file": sample.filename,
