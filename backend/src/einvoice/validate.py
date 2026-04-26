@@ -53,7 +53,9 @@ NOT_APPLICABLE = ValidationReport(status="not_applicable", engine=ENGINE, xsd_ok
 @cache
 def _schema(path: Path) -> etree.XMLSchema:
     # Vendored, trusted schema files; their imports are local relative paths.
-    parser = etree.XMLParser(no_network=True, resolve_entities=False)
+    parser = etree.XMLParser(
+        resolve_entities=False, no_network=True, dtd_validation=False, load_dtd=False
+    )
     return etree.XMLSchema(etree.parse(str(path), parser=parser))
 
 
@@ -76,7 +78,7 @@ def xsd_issues(root: etree._Element, syntax: Syntax) -> list[Issue]:
             rule_id="XSD",
             severity="fatal",
             message=error.message,
-            location=f"line {error.line}",
+            location=str(error.line),
             test="",
             source="xsd",
         )

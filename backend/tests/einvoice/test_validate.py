@@ -81,7 +81,7 @@ def test_xsd_failure_is_invalid_and_skips_schematron() -> None:
     assert report.xsd_ok is False
     assert {issue.rule_id for issue in report.issues} == {"XSD"}
     assert all(issue.source == "xsd" for issue in report.issues)
-    assert report.issues[0].location.startswith("line ")
+    assert report.issues[0].location.isdigit()  # the line number
 
 
 def test_en16931_profile_runs_cen_rules_only() -> None:
@@ -99,6 +99,24 @@ def test_xrechnung_2x_is_checked_against_en16931_rules_only() -> None:
     detection = detect(xml, "a.xml")
     assert (detection.profile, detection.profile_version) == (Profile.XRECHNUNG, "2.3")
     assert all(issue.source != "xrechnung" for issue in validate(detection).issues)
+
+
+@pytest.mark.parametrize(
+    ("spec_id", "profile"),
+    [
+        ("urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic", Profile.BASIC),
+        ("urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended", Profile.EXTENDED),
+    ],
+)
+def test_basic_and_extended_get_xsd_and_en16931_rules_only(spec_id: str, profile: Profile) -> None:
+    # ASSUMED E3: no Factur-X profile rules and no XRechnung rules (BR-DE-15 would fire).
+    xml = with_spec_id(without(VALID_CII, ".//ram:BuyerReference", ns.CII_NS), spec_id)
+    detection = detect(xml, "a.xml")
+    assert detection.profile is profile
+    report = validate(detection)
+    assert report.xsd_ok is True
+    assert {issue.source for issue in report.issues} <= {"en16931"}
+    assert "BR-DE-15" not in {issue.rule_id for issue in report.issues}
 
 
 @pytest.mark.parametrize("profile", [Profile.MINIMUM, Profile.BASIC_WL])
