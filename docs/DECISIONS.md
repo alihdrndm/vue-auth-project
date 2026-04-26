@@ -180,3 +180,20 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - `samples/precomputed/<ID>.json` carries `text` for PDFs in the section 5 format, each page introduced by `--- page N ---`. It also carries `invoice: null` for the plain PDF and the scan, because their data comes from the LLM (M5) or from a person.
 - `types-reportlab` is a dev-only stub package, so the builder type-checks under mypy strict.
 - S02's paper is counted in cartons with unit code `XCT` (UN/ECE Rec 21). The plain `CT` is not on the list and triggers `BR-CL-23`, and the samples must be strictly `valid`.
+
+### The visualisation is a static page, and its scripts are vendored
+- **Spec:** the KoSIT two-step visualisation (UBL/CII → XR → HTML), shown in an `<iframe sandbox>` without scripts. The vendored files are "the XSLT and CSS".
+- **Did:**
+  - `fetch_rules.py` also vendors the release's `xsl/FileSaver-v2.0.5.js` and `xsl/xrechnung-viewer.js`, because `xrechnung-html.xsl` reads both with `unparsed-text()` and fails without them.
+  - `einvoice.visualize` runs both official steps with the stylesheet parameter `lang=en`, since the UI is English.
+  - It then post-processes the HTML: it removes every `<script>` element and every `on…` attribute. The page's tab switching is a script that can never run here, so it also removes the tab bar (`class="menue"`) and changes every `divHide` section to `divShow`, so all sections are visible.
+  - The XR intermediate document is parsed with the safe parser before the second step.
+- **Why:** without scripts, only the first tab (the overview) would be visible, and the lines and VAT breakdown would stay hidden. Removing the scripts as well as forbidding them (CSP, iframe sandbox) means the stored HTML is safe on its own. FileSaver.js is MIT-licensed; NOTICE reproduces its licence.
+
+### Confirmed: the KoSIT validator skips Schematron after an XSD failure
+- **Spec:** step 1, "the KoSIT validator does the same; confirm it in M2".
+- **Confirmed:** in the validator source at tag v1.6.0, `SchematronValidationAction.isSkipped()` returns true when `isSchemaInvalid(results)`, that is, when schema validation failed. `einvoice.validate` does the same.
+
+### XSD issues and the schema parser
+- An XSD issue's `location` is the line number as text (`"12"`), the same field that holds an XPath for Schematron issues.
+- The vendored XSD files are loaded with the same parser flags as `xmlsafe` (no entities, no DTD, no network). They are trusted files, but the XML-safety rule covers every parse.
