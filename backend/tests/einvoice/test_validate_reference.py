@@ -23,13 +23,13 @@ NOT_REJECTED = {
 }
 
 
-def test_testsuite_instances_all_validate() -> None:
+def test_testsuite_instances_all_validate_as_valid() -> None:
     paths = sorted(TESTSUITE.rglob("*.xml"))
     assert len(paths) == 86
     failures = {}
     for path in paths:
         report = validate(detect(path.read_bytes(), path.name))
-        if report.status not in ("valid", "warnings"):
+        if report.status != "valid":
             fatal = [issue.rule_id for issue in report.issues if issue.severity == "fatal"]
             failures[str(path.relative_to(TESTSUITE))] = (report.status, fatal)
     assert failures == {}
