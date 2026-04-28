@@ -157,7 +157,7 @@ Dated record of every place the implementation differs from, or fills a gap in, 
 - `saxonche` ships no type information, so it has a mypy `ignore_missing_imports` override like factur-x.
 
 ### KoSIT test suite: all 86 instances validate
-- `test_testsuite_instances_all_validate` runs every instance of the vendored test suite (`standard/`, `extension/`, `technical-cases/`). All 86 are `valid` or `warnings`, so nothing has to be listed.
+- `test_testsuite_instances_all_validate_as_valid` runs every instance of the vendored test suite (`standard/`, `extension/`, `technical-cases/`). All 86 are strictly `valid`, so nothing has to be listed.
 
 ### Corpus `fail` files that are not rejected
 Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as hybrid: legacy ZUGFeRD 1, a UBL inside a PDF, and an XML with a bad encoding attribute. 13 are `invalid`, among them the FNFE "BASIC" files, whose BT-24 is malformed (`urn:cen.eu:en16931:2017:compliant:factur-x.eu:1p0:basic`) and therefore `UNKNOWN`. The remaining six are kept by `NOT_REJECTED` in `tests/einvoice/test_validate_reference.py`:
