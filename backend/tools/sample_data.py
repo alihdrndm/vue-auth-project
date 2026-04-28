@@ -7,7 +7,7 @@ names. `build_samples.py` turns this data into files.
 
 from dataclasses import dataclass, field
 from datetime import date
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 from typing import Literal
 
 from stdnum import iban, luhn
@@ -20,6 +20,7 @@ EN16931_ID = "urn:cen.eu:en16931:2017"
 BASIC_WL_ID = "urn:factur-x.eu:1p0:basicwl"
 TERMS = "Zahlbar innerhalb 30 Tagen netto"
 NINETEEN = Decimal("19")
+CENT = Decimal("0.01")
 
 
 def german_vat_id(digits: str) -> str:
@@ -144,7 +145,7 @@ def options(contact: str, phone: str, email: str) -> WriteOptions:
 
 
 def line(number: int, text: str, quantity: str, unit: str, price: str) -> Line:
-    net = (Decimal(quantity) * Decimal(price)).quantize(Decimal("0.01"))
+    net = (Decimal(quantity) * Decimal(price)).quantize(CENT, rounding=ROUND_HALF_UP)
     return Line(
         line_id=str(number),
         description=text,
@@ -171,7 +172,7 @@ def standard_invoice(
 ) -> CanonicalInvoice:
     """An invoice at 19 % VAT whose totals follow from its lines exactly."""
     net = sum((item.net_amount or Decimal(0) for item in lines), Decimal(0))
-    tax = (net * NINETEEN / 100).quantize(Decimal("0.01"))
+    tax = (net * NINETEEN / 100).quantize(CENT, rounding=ROUND_HALF_UP)
     return CanonicalInvoice(
         invoice_number=number,
         type_code=type_code,
