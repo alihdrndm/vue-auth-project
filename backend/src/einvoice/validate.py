@@ -54,7 +54,11 @@ NOT_APPLICABLE = ValidationReport(status="not_applicable", engine=ENGINE, xsd_ok
 def _schema(path: Path) -> etree.XMLSchema:
     # Vendored, trusted schema files; their imports are local relative paths.
     parser = etree.XMLParser(
-        resolve_entities=False, no_network=True, dtd_validation=False, load_dtd=False
+        resolve_entities=False,
+        no_network=True,
+        dtd_validation=False,
+        load_dtd=False,
+        huge_tree=False,
     )
     return etree.XMLSchema(etree.parse(str(path), parser=parser))
 
