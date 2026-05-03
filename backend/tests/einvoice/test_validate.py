@@ -108,7 +108,9 @@ def test_xrechnung_2x_is_checked_against_en16931_rules_only() -> None:
         ("urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended", Profile.EXTENDED),
     ],
 )
-def test_basic_and_extended_get_xsd_and_en16931_rules_only(spec_id: str, profile: Profile) -> None:
+def test_E3_basic_and_extended_get_xsd_and_en16931_rules_only(
+    spec_id: str, profile: Profile
+) -> None:
     # ASSUMED E3: no Factur-X profile rules and no XRechnung rules (BR-DE-15 would fire).
     xml = with_spec_id(without(VALID_CII, ".//ram:BuyerReference", ns.CII_NS), spec_id)
     detection = detect(xml, "a.xml")
