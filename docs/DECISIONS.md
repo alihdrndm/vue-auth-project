@@ -197,3 +197,9 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 ### XSD issues and the schema parser
 - An XSD issue's `location` is the line number as text (`"12"`), the same field that holds an XPath for Schematron issues.
 - The vendored XSD files are loaded with the same parser flags as `xmlsafe` (no entities, no DTD, no network). They are trusted files, but the XML-safety rule covers every parse.
+
+## 2026-10-09 — M3
+
+### Ruff DJ001 is off; migrations are lint-exempt for RUF012
+- **Did:** `DJ001` (avoid `null=True` on text fields) is ignored project-wide. Generated migrations ignore `RUF012` and `E501`.
+- **Why:** the "Database" table marks many text fields `(null)`, for example `vat_id`, `failure_reason` and `sender_email`, and the canonical model uses `None` for "absent". Storing NULL keeps "not set" distinct from an empty string. Partial unique constraints such as `unique (organization, vat_id) where not null` depend on it.

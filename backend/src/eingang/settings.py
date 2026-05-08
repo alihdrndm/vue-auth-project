@@ -22,7 +22,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "rest_framework",
     "drf_spectacular",
+    "accounts",
 ]
+
+AUTH_USER_MODEL = "accounts.User"
 
 MIDDLEWARE = [
     "eingang.middleware.RequestContextMiddleware",
