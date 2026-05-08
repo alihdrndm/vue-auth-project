@@ -203,3 +203,10 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 ### Ruff DJ001 is off; migrations are lint-exempt for RUF012
 - **Did:** `DJ001` (avoid `null=True` on text fields) is ignored project-wide. Generated migrations ignore `RUF012` and `E501`.
 - **Why:** the "Database" table marks many text fields `(null)`, for example `vat_id`, `failure_reason` and `sender_email`, and the canonical model uses `None` for "absent". Storing NULL keeps "not set" distinct from an empty string. Partial unique constraints such as `unique (organization, vat_id) where not null` depend on it.
+
+### Model details the "Database" table leaves open
+- `Document.kind` and `format_label` are NULL until the worker has detected the file. The API process cannot detect: the api-stays-light contract keeps PDF libraries out of it.
+- `ValidationReport.xsd_ok` is nullable: `not_applicable` reports validated nothing.
+- Required user references (`Approval.decided_by`, `ExportBatch.created_by`) use `RESTRICT`, not `PROTECT`. A user with decisions or exports cannot be deleted on their own, but deleting a sandbox organisation still deletes everything in it. `PROTECT` blocked that cascade in testing.
+- The LLM ledger's `organization` is `SET_NULL`, so spend stays on record after a sandbox is deleted (spec "The ledger and the cache are never deleted").
+- `Event` refuses updates and deletes through `save()`/`delete()`. Deleting the whole organisation or document still removes its events by cascade.

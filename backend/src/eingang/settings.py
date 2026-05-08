@@ -23,6 +23,11 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     "accounts",
+    "invoices",
+    "suppliers",
+    "exports",
+    "llm",
+    "sandbox",
 ]
 
 AUTH_USER_MODEL = "accounts.User"
