@@ -81,6 +81,37 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+LOCAL_MEDIA_DIR = BASE_DIR / ".local-media"
+
+
+def _documents_storage() -> dict[str, object]:
+    if config.STORAGE_BACKEND == "s3":
+        return {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "bucket_name": config.S3_BUCKET,
+                "endpoint_url": config.S3_ENDPOINT_URL,
+                "region_name": config.S3_REGION or None,
+                "access_key": config.S3_ACCESS_KEY_ID,
+                "secret_key": config.S3_SECRET_ACCESS_KEY,
+                "addressing_style": "path",  # Supabase Storage needs path-style URLs
+                "default_acl": None,
+                "file_overwrite": True,
+                "querystring_auth": True,
+            },
+        }
+    return {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {"location": str(LOCAL_MEDIA_DIR), "allow_overwrite": True},
+    }
+
+
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+    "documents": _documents_storage(),
+}
+
 # Security headers (HTTP API conventions).
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "same-origin"
@@ -99,9 +130,20 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
     "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],
-    "DEFAULT_AUTHENTICATION_CLASSES": [],
-    "DEFAULT_PERMISSION_CLASSES": [],
-    "UNAUTHENTICATED_USER": None,
+    "DEFAULT_AUTHENTICATION_CLASSES": ["accounts.authentication.SessionAuthentication"],
+    # Every endpoint needs a session unless its view says otherwise (auth, sandbox, health).
+    "DEFAULT_PERMISSION_CLASSES": ["accounts.permissions.AnyMember"],
+    "DEFAULT_THROTTLE_CLASSES": ["eingang.throttles.GeneralThrottle"],
+    "DEFAULT_THROTTLE_RATES": {
+        "general": "120/min",
+        "login": "10/min",
+        "uploads": "30/min",
+        "sandbox": "5/hour",
+    },
+    # Proxy hops in front of the API (Vercel, Railway); measured at deployment.
+    "NUM_PROXIES": config.TRUSTED_PROXY_HOPS,
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 25,
 }
 
 SWAGGER_UI_VERSION = "5.33.1"

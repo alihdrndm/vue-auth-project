@@ -36,6 +36,9 @@ class Settings(BaseSettings):
     S3_SECRET_ACCESS_KEY: str = ""
     S3_BUCKET: str = "documents"
 
+    # Proxy hops in front of the API whose X-Forwarded-For entries are trusted (rate limits).
+    TRUSTED_PROXY_HOPS: int = Field(default=0, ge=0)
+
     TEMPORAL_ADDRESS: str = "localhost:7233"
     TEMPORAL_NAMESPACE: str = "eingang"
 

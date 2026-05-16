@@ -210,3 +210,10 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - Required user references (`Approval.decided_by`, `ExportBatch.created_by`) use `RESTRICT`, not `PROTECT`. A user with decisions or exports cannot be deleted on their own, but deleting a sandbox organisation still deletes everything in it. `PROTECT` blocked that cascade in testing.
 - The LLM ledger's `organization` is `SET_NULL`, so spend stays on record after a sandbox is deleted (spec "The ledger and the cache are never deleted").
 - `Event` refuses updates and deletes through `save()`/`delete()`. Deleting the whole organisation or document still removes its events by cascade.
+
+### Proxy hops for rate limits: `TRUSTED_PROXY_HOPS`
+- **Spec:** set DRF's `NUM_PROXIES` to the measured number of proxy hops, and record it.
+- **Did:** a new setting `TRUSTED_PROXY_HOPS` (default 0, in `.env.example`) feeds `NUM_PROXIES`. The hop count of Vercel → Railway can only be measured on the deployed stack, so M9 measures it and records the number here and in `docs/DEPLOY.md`. A test proves that a client-supplied `X-Forwarded-For` does not change the throttle key.
+
+### Login is CSRF-protected too
+- **Did:** `POST /auth/login` checks the CSRF token like every other unsafe request, although the visitor has no session yet. This prevents login CSRF. The SPA fetches the token from `GET /auth/csrf` first, as the spec describes. CSRF failures answer `403 CSRF_FAILED`.
