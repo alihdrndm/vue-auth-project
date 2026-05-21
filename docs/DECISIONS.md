@@ -38,6 +38,7 @@ Dated record of every place the implementation differs from, or fills a gap in, 
 
 ### Import-linter contracts arrive with their modules
 - **Did:** `einvoice-is-pure` and `workflows-are-deterministic` are active now. `api-stays-light` and `one-llm-door`, plus the Django-app entries of the first two, are added once the modules they name exist (M3–M5). Until then import-linter rejects contracts that name missing packages.
+- **Update (M3):** all four contracts are active, and every Django app is a root package in them. `api-stays-light` covers `*.api` and `*.serializers`; `sandbox.seed` joins it in M4, when the module exists. `one-llm-door` forbids `openai` everywhere except `llm.client`, which arrives in M5.
 
 ### Coverage thresholds per package arrive with the packages
 - **Did:** M0 enforces the "everything else" threshold, 75% of lines with branch measurement, over `src/`. The stricter thresholds for `einvoice` (M1) and `invoices` (M4) are added once those packages contain code.

@@ -2,6 +2,12 @@
 root_packages =
     eingang
     einvoice
+    accounts
+    invoices
+    suppliers
+    exports
+    llm
+    sandbox
 include_external_packages = True
 
 [importlinter:contract:einvoice-is-pure]
@@ -13,6 +19,12 @@ forbidden_modules =
     django
     rest_framework
     eingang
+    accounts
+    invoices
+    suppliers
+    exports
+    llm
+    sandbox
     temporalio
     openai
 
@@ -28,3 +40,44 @@ forbidden_modules =
     httpx
     openai
     einvoice
+    accounts
+    invoices
+    suppliers
+    exports
+    llm
+    sandbox
+
+[importlinter:contract:api-stays-light]
+name = api-stays-light
+type = forbidden
+source_modules =
+    *.api
+    *.serializers
+forbidden_modules =
+    einvoice.validate
+    einvoice.visualize
+    einvoice.pdf
+    saxonche
+    pdfplumber
+    pypdf
+    facturx
+    openai
+allow_indirect_imports = False
+
+[importlinter:contract:one-llm-door]
+name = one-llm-door
+type = forbidden
+source_modules =
+    eingang
+    einvoice
+    accounts
+    invoices
+    suppliers
+    exports
+    llm
+    sandbox
+forbidden_modules =
+    openai
+ignore_imports =
+    llm.client -> openai
+unmatched_ignore_imports_alerting = none
