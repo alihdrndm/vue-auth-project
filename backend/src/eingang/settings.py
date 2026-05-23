@@ -82,6 +82,8 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 LOCAL_MEDIA_DIR = BASE_DIR / ".local-media"
+# The committed sandbox sample set (manifest, files, precomputed data).
+SAMPLES_DIR = BASE_DIR.parent / "samples"
 
 
 def _documents_storage() -> dict[str, object]:

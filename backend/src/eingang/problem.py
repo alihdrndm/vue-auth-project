@@ -32,6 +32,7 @@ class ProblemError(Exception):
         *,
         errors: list[dict[str, str]] | None = None,
         extra: Mapping[str, object] | None = None,
+        headers: Mapping[str, str] | None = None,
     ) -> None:
         super().__init__(detail)
         self.status = status
@@ -40,6 +41,7 @@ class ProblemError(Exception):
         self.detail = detail
         self.errors = errors
         self.extra = extra or {}
+        self.headers: Mapping[str, str] = headers or {}
 
 
 def problem_response(
@@ -77,6 +79,7 @@ def from_problem_error(error: ProblemError) -> JsonResponse:
         error.detail,
         errors=error.errors,
         extra=error.extra,
+        headers=error.headers,
     )
 
 

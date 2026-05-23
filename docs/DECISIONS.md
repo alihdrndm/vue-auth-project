@@ -218,3 +218,8 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 
 ### Login is CSRF-protected too
 - **Did:** `POST /auth/login` checks the CSRF token like every other unsafe request, although the visitor has no session yet. This prevents login CSRF. The SPA fetches the token from `GET /auth/csrf` first, as the spec describes. CSRF failures answer `403 CSRF_FAILED`.
+
+### Sandbox limits and session
+- The 50-per-day limit counts the sandbox organisations created in the last 24 hours, in the database. A cache counter would reset with every deploy or restart. The 5-per-hour-per-IP limit is a DRF throttle. Both answer `429 SANDBOX_LIMIT`; the per-IP one adds `Retry-After`.
+- The sandbox session's expiry is set as a relative age (`expires_at − now`), which ends at the same moment as `expires_at`. Django's session clock is the real clock, while sandbox expiry checks use the injected clock (spec "Testing standards"), so a relative age keeps both consistent in tests.
+- `POST /sandbox` is CSRF-protected like login.
