@@ -223,3 +223,8 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - The 50-per-day limit counts the sandbox organisations created in the last 24 hours, in the database. A cache counter would reset with every deploy or restart. The 5-per-hour-per-IP limit is a DRF throttle. Both answer `429 SANDBOX_LIMIT`; the per-IP one adds `Retry-After`.
 - The sandbox session's expiry is set as a relative age (`expires_at − now`), which ends at the same moment as `expires_at`. Django's session clock is the real clock, while sandbox expiry checks use the injected clock (spec "Testing standards"), so a relative age keeps both consistent in tests.
 - `POST /sandbox` is CSRF-protected like login.
+
+### `allowed_actions` details
+- Roles per action follow the endpoint table: edit, resolve, mark reviewed, send back, reopen and retry are admin/accountant; approve and reject are admin/approver; delete is admin.
+- No document action is closed to sandbox visitors. The spec restricts only members, organisation settings other than the name, and deleting the organisation. `SANDBOX_RESTRICTED` therefore never appears in `allowed_actions`; it stays in the reason order for completeness.
+- `FOUR_EYES` applies to approve and reject when the organisation has four-eyes on and the user is the document's `reviewed_by`. `BLOCKING_CHECKS` applies to "mark reviewed" and counts unresolved `block` checks only.
