@@ -9,11 +9,19 @@ import asyncio
 import threading
 from collections.abc import Coroutine
 from concurrent.futures import TimeoutError as FutureTimeoutError
+from uuid import UUID
 
 from temporalio.client import Client
 from temporalio.contrib.pydantic import pydantic_data_converter
+from temporalio.exceptions import WorkflowAlreadyStartedError
 
 from eingang.config import get_settings
+from eingang.workflows.contracts import (
+    TASK_QUEUE,
+    WF_PROCESS_INVOICE,
+    ProcessInvoiceInput,
+    process_invoice_workflow_id,
+)
 
 
 class _LoopThread:
@@ -75,3 +83,34 @@ def is_healthy(timeout: float) -> bool:
     if not healthy:
         loop_thread.forget_client()
     return healthy
+
+
+START_TIMEOUT_SECONDS = 5.0
+
+
+class TemporalUnavailableError(Exception):
+    """Temporal did not accept the request; the caller stores the work and retries later."""
+
+
+async def _start_processing(loop_thread: _LoopThread, document_id: UUID) -> None:
+    client = await loop_thread.client()
+    try:
+        await client.start_workflow(
+            WF_PROCESS_INVOICE,
+            ProcessInvoiceInput(document_id=document_id),
+            id=process_invoice_workflow_id(document_id),
+            task_queue=TASK_QUEUE,
+        )
+    except WorkflowAlreadyStartedError:
+        # Already running for this document: nothing to do (deterministic workflow IDs).
+        return
+
+
+def start_processing(document_id: UUID) -> None:
+    """Start `ProcessInvoiceWorkflow` for a stored document, or raise TemporalUnavailableError."""
+    loop_thread = _get_loop_thread()
+    try:
+        loop_thread.run(_start_processing(loop_thread, document_id), START_TIMEOUT_SECONDS)
+    except Exception as error:  # any failure: the maintenance workflow starts it later
+        loop_thread.forget_client()
+        raise TemporalUnavailableError from error

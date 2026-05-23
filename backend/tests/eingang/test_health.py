@@ -1,3 +1,5 @@
+import uuid
+
 import pytest
 from django.test import Client
 
@@ -57,3 +59,13 @@ def test_temporal_health_is_false_for_an_unreachable_server(
     unreachable = Settings(_env_file=None, TEMPORAL_ADDRESS="127.0.0.1:1")
     monkeypatch.setattr(temporal_client, "get_settings", lambda: unreachable)
     assert temporal_client.is_healthy(timeout=2.0) is False
+
+
+def test_start_processing_raises_when_temporal_is_unreachable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    unreachable = Settings(_env_file=None, TEMPORAL_ADDRESS="127.0.0.1:1")
+    monkeypatch.setattr(temporal_client, "get_settings", lambda: unreachable)
+    temporal_client._get_loop_thread().forget_client()
+    with pytest.raises(temporal_client.TemporalUnavailableError):
+        temporal_client.start_processing(uuid.uuid4())
