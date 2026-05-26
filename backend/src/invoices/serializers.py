@@ -46,6 +46,13 @@ class DocumentSummarySerializer(Serializer):
     allowed_actions = AllowedActionSerializer(many=True)
 
 
+class DocumentPageSerializer(Serializer):
+    count = serializers.IntegerField()
+    next = serializers.URLField(allow_null=True)
+    previous = serializers.URLField(allow_null=True)
+    results = DocumentSummarySerializer(many=True)
+
+
 def with_summary_data(documents: QuerySet[Document]) -> QuerySet[Document]:
     """Everything a summary reads, fetched in the list's own queries."""
     unresolved = Q(checks__resolved_at__isnull=True)

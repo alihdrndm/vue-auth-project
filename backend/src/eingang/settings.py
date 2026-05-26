@@ -145,6 +145,8 @@ REST_FRAMEWORK = {
     },
     # Proxy hops in front of the API (Vercel, Railway); measured at deployment.
     "NUM_PROXIES": config.TRUSTED_PROXY_HOPS,
+    # `?format=` is the document list's format-label filter, not a renderer choice.
+    "URL_FORMAT_OVERRIDE": None,
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 25,
 }

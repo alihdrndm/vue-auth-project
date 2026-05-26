@@ -6,6 +6,7 @@ from collections.abc import Sequence
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import serializers
 from rest_framework.exceptions import NotAuthenticated, ValidationError
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import BaseParser, MultiPartParser
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
@@ -20,7 +21,13 @@ from eingang import temporal_client
 from eingang.problem import ProblemError
 from eingang.throttles import GeneralThrottle, UploadThrottle
 from invoices.models import Document
-from invoices.serializers import DocumentSummarySerializer, document_summary, with_summary_data
+from invoices.queries import DocumentListQuerySerializer, filter_documents
+from invoices.serializers import (
+    DocumentPageSerializer,
+    DocumentSummarySerializer,
+    document_summary,
+    with_summary_data,
+)
 from invoices.uploads import (
     MAX_FILES_PER_REQUEST,
     SizeLimitedUploadHandler,
@@ -77,6 +84,25 @@ class DocumentCollectionView(APIView):
 
     def get_parsers(self) -> list[BaseParser]:
         return [MultiPartParser()]
+
+    @extend_schema(
+        parameters=[DocumentListQuerySerializer],
+        responses={200: DocumentPageSerializer},
+        tags=TAGS,
+        operation_id="api_v1_documents_list",
+    )
+    def get(self, request: Request) -> Response:
+        user = current_user(request)
+        query = DocumentListQuerySerializer(data=request.query_params)
+        query.is_valid(raise_exception=True)
+        documents = with_summary_data(
+            filter_documents(scoped(Document.objects.all(), request), query.validated_data)
+        )
+        paginator = PageNumberPagination()
+        page = paginator.paginate_queryset(documents, request, view=self) or []
+        return paginator.get_paginated_response(
+            [document_summary(document, user) for document in page]
+        )
 
     @extend_schema(
         request=inline_serializer(

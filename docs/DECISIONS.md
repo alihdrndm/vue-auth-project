@@ -235,3 +235,7 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - Duplicates (same SHA-256 as a non-deleted document of the organisation, or repeated within the request) are reported in `duplicates` with the existing document's id, and a `document.duplicate_upload` event is recorded on that document.
 - The sandbox's upload count includes deleted uploads, so deleting does not reset the per-sandbox limit.
 - If Temporal does not accept the start, the documents stay stored with status `received` and a `workflow_id`, and the response is `503 TEMPORAL_UNAVAILABLE`. The daily maintenance starts them later (M4).
+
+### DRF's `?format=` override is off
+- **Spec:** `GET /documents?format=` filters by format label.
+- **Did:** `URL_FORMAT_OVERRIDE` is set to `None`. DRF otherwise reads `?format=` as a renderer name and answers 404 for "Plain PDF".
