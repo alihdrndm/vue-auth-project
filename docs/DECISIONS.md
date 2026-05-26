@@ -228,3 +228,10 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - Roles per action follow the endpoint table: edit, resolve, mark reviewed, send back, reopen and retry are admin/accountant; approve and reject are admin/approver; delete is admin.
 - No document action is closed to sandbox visitors. The spec restricts only members, organisation settings other than the name, and deleting the organisation. `SANDBOX_RESTRICTED` therefore never appears in `allowed_actions`; it stays in the reason order for completeness.
 - `FOUR_EYES` applies to approve and reject when the organisation has four-eyes on and the user is the document's `reviewed_by`. `BLOCKING_CHECKS` applies to "mark reviewed" and counts unresolved `block` checks only.
+
+### Upload details
+- The size-limited upload reader is installed by `invoices.middleware.UploadLimitMiddleware` for every multipart POST. DRF's CSRF check reads `request.POST`, which parses the body before the view runs, so a view cannot choose the reader. The middleware also refuses a body larger than ten maximum-size files from `Content-Length` alone, and a single file over the limit stops reading at the first byte past it. Both answer `413 FILE_TOO_LARGE`.
+- A request is all or nothing: if any file is of an unsupported type, nothing is stored (`415 UNSUPPORTED_FILE`). The SPA sends one file per request anyway.
+- Duplicates (same SHA-256 as a non-deleted document of the organisation, or repeated within the request) are reported in `duplicates` with the existing document's id, and a `document.duplicate_upload` event is recorded on that document.
+- The sandbox's upload count includes deleted uploads, so deleting does not reset the per-sandbox limit.
+- If Temporal does not accept the start, the documents stay stored with status `received` and a `workflow_id`, and the response is `503 TEMPORAL_UNAVAILABLE`. The daily maintenance starts them later (M4).
