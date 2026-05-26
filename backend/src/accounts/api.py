@@ -1,21 +1,49 @@
-"""Sign-in endpoints: csrf, login, logout, me (HANDOFF "HTTP API")."""
+"""Sign-in, organisation and member endpoints (HANDOFF "HTTP API")."""
+
+import secrets
+from collections.abc import Mapping, Sequence
+from uuid import UUID
 
 from django.contrib.auth import authenticate, login, logout
+from django.db import IntegrityError, transaction
+from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from drf_spectacular.utils import OpenApiResponse, extend_schema
-from rest_framework.exceptions import NotAuthenticated
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from rest_framework.exceptions import NotAuthenticated, ValidationError
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.models import User
-from accounts.permissions import AnyMember, signed_in_user
-from accounts.serializers import LoginRequestSerializer, SessionSerializer, session_payload
+from accounts.permissions import (
+    AdminOnly,
+    AnyMember,
+    NotInSandbox,
+    sandbox_restricted,
+    signed_in_user,
+)
+from accounts.scoping import organization_of, scoped
+from accounts.serializers import (
+    LoginRequestSerializer,
+    MemberCreatedSerializer,
+    MemberCreateSerializer,
+    MemberPageSerializer,
+    MemberSerializer,
+    MemberUpdateSerializer,
+    OrganizationSerializer,
+    OrganizationUpdateSerializer,
+    SessionSerializer,
+    session_payload,
+)
 from eingang.problem import ProblemError
 from eingang.throttles import GeneralThrottle, LoginThrottle
 
 TAGS = ["auth"]
+ORGANIZATION_TAGS = ["organization"]
+MEMBER_TAGS = ["members"]
 
 
 class CsrfView(APIView):
@@ -75,3 +103,117 @@ class MeView(APIView):
         if user is None:
             raise NotAuthenticated
         return Response(session_payload(user))
+
+
+# The one organisation setting a sandbox visitor may change.
+SANDBOX_EDITABLE = frozenset({"name"})
+
+
+class OrganizationView(APIView):
+    def get_permissions(self) -> Sequence[BasePermission]:
+        if self.request.method == "PATCH":
+            return (AdminOnly(),)
+        return (AnyMember(),)
+
+    @extend_schema(responses={200: OrganizationSerializer}, tags=ORGANIZATION_TAGS)
+    def get(self, request: Request) -> Response:
+        return Response(OrganizationSerializer(organization_of(request)).data)
+
+    @extend_schema(
+        request=OrganizationUpdateSerializer,
+        responses={200: OrganizationSerializer},
+        tags=ORGANIZATION_TAGS,
+    )
+    def patch(self, request: Request) -> Response:
+        organization = organization_of(request)
+        if (
+            organization.is_sandbox
+            and isinstance(request.data, Mapping)
+            and set(request.data) - SANDBOX_EDITABLE
+        ):
+            raise sandbox_restricted()
+        payload = OrganizationUpdateSerializer(data=request.data)
+        payload.is_valid(raise_exception=True)
+        for field, value in payload.validated_data.items():
+            setattr(organization, field, value)
+        organization.save()
+        return Response(OrganizationSerializer(organization).data)
+
+
+class MemberListView(APIView):
+    # Role first, so a non-admin gets FORBIDDEN_ROLE and a sandbox admin SANDBOX_RESTRICTED.
+    permission_classes = (AdminOnly, NotInSandbox)
+
+    @extend_schema(
+        operation_id="api_v1_members_list",
+        parameters=[OpenApiParameter("page", int)],
+        responses={200: MemberPageSerializer},
+        tags=MEMBER_TAGS,
+    )
+    def get(self, request: Request) -> Response:
+        members = scoped(User.objects.all(), request).order_by("name", "email")
+        paginator = PageNumberPagination()
+        page = paginator.paginate_queryset(members, request, view=self)
+        return paginator.get_paginated_response(MemberSerializer(page, many=True).data)
+
+    @extend_schema(
+        request=MemberCreateSerializer,
+        responses={201: MemberCreatedSerializer},
+        tags=MEMBER_TAGS,
+    )
+    def post(self, request: Request) -> Response:
+        payload = MemberCreateSerializer(data=request.data)
+        payload.is_valid(raise_exception=True)
+        password = secrets.token_urlsafe(18)
+        try:
+            with transaction.atomic():
+                member = User.objects.create_user(
+                    payload.validated_data["email"],
+                    password,
+                    organization=organization_of(request),
+                    role=payload.validated_data["role"],
+                    name=payload.validated_data["name"],
+                )
+        except IntegrityError as error:
+            # Another request created the same address between the check and the insert.
+            raise ValidationError(
+                {"email": ["A user with this email address already exists."]}
+            ) from error
+        body = MemberCreatedSerializer(
+            {
+                "id": member.id,
+                "email": member.email,
+                "name": member.name,
+                "role": member.role,
+                "is_active": member.is_active,
+                "one_time_password": password,
+            }
+        ).data
+        return Response(body, status=201)
+
+
+class MemberDetailView(APIView):
+    permission_classes = (AdminOnly, NotInSandbox)
+
+    @extend_schema(
+        request=MemberUpdateSerializer,
+        responses={200: MemberSerializer},
+        tags=MEMBER_TAGS,
+    )
+    def patch(self, request: Request, member_id: UUID) -> Response:
+        member = get_object_or_404(scoped(User.objects.all(), request), id=member_id)
+        payload = MemberUpdateSerializer(data=request.data)
+        payload.is_valid(raise_exception=True)
+        changes = payload.validated_data
+        if member.id == request.user.pk:
+            errors: dict[str, list[str]] = {}
+            if changes.get("is_active", True) is False:
+                errors["is_active"] = ["You can't deactivate yourself."]
+            if changes.get("role", member.role) != member.role:
+                errors["role"] = ["You can't change your own role."]
+            if errors:
+                raise ValidationError(errors)
+        for field, value in changes.items():
+            setattr(member, field, value)
+        member.save()
+        return Response(MemberSerializer(member).data)
