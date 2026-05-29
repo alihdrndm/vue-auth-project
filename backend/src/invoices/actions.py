@@ -109,3 +109,32 @@ def allowed_actions(
                 AllowedAction(action=action, enabled=False, reason_code=reason[0], reason=reason[1])
             )
     return result
+
+
+ResolveReason = Literal["FORBIDDEN_ROLE", "CHECK_NOT_RESOLVABLE", "INVALID_TRANSITION"]
+ADMIN_ONLY_CHECKS = frozenset({"C15"})  # "accept anyway" on a failed validation
+
+
+@dataclass(frozen=True)
+class Resolvable:
+    enabled: bool
+    reason_code: ResolveReason | None = None
+    reason: str | None = None
+
+
+def check_resolvable(check: Check, document: Document, user: User) -> Resolvable:
+    """Whether this user may resolve this check now (HTTP API: `checks/{id}/resolve`)."""
+    allowed_roles = ROLES_BY_ACTION["resolve_check"]
+    if check.check_id in ADMIN_ONLY_CHECKS:
+        allowed_roles = frozenset({Role.ADMIN})
+    if user.role not in allowed_roles:
+        return Resolvable(False, "FORBIDDEN_ROLE", f"Your role ({user.role}) can't do this.")
+    if check.severity == Check.Severity.INFO:
+        return Resolvable(False, "CHECK_NOT_RESOLVABLE", "Information only.")
+    if check.resolved_at is not None:
+        return Resolvable(False, "CHECK_NOT_RESOLVABLE", "Already resolved.")
+    if document.status != Status.NEEDS_REVIEW:
+        return Resolvable(
+            False, "INVALID_TRANSITION", "Only invoices that need review can be changed."
+        )
+    return Resolvable(True)

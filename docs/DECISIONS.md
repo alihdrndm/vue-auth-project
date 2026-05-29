@@ -239,3 +239,8 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 ### DRF's `?format=` override is off
 - **Spec:** `GET /documents?format=` filters by format label.
 - **Did:** `URL_FORMAT_OVERRIDE` is set to `None`. DRF otherwise reads `?format=` as a renderer name and answers 404 for "Plain PDF".
+
+### Document detail, files and delete
+- Each check's `resolve` uses `FORBIDDEN_ROLE` (C15 is admin-only), `CHECK_NOT_RESOLVABLE` (information-only or already resolved) and `INVALID_TRANSITION` (the document does not need review). These are the same codes `POST /checks/{id}/resolve` answers (M4).
+- `/file`, `/xml` and `/text` are sent as attachments with `Content-Security-Policy: sandbox; default-src 'none'`. `/visualization` gets the CSP of section 4 and `X-Frame-Options: SAMEORIGIN`. A representation the worker has not stored answers `404 NOT_AVAILABLE`.
+- Delete is a soft delete (`deleted_at`) with a `document.deleted` event. Exported documents answer `409 ALREADY_EXPORTED`. Documents still `received` or `processing` answer `409 INVALID_TRANSITION`, because `allowed_actions` offers no delete in those statuses. Signalling the running workflow (`deleted`) arrives with the workflows in M4.

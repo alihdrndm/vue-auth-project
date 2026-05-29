@@ -2,7 +2,12 @@
 
 import logging
 from collections.abc import Sequence
+from uuid import UUID
 
+from django.db import transaction
+from django.http import Http404, HttpResponse
+from django.utils.http import content_disposition_header
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import serializers
 from rest_framework.exceptions import NotAuthenticated, ValidationError
@@ -15,16 +20,18 @@ from rest_framework.throttling import BaseThrottle
 from rest_framework.views import APIView
 
 from accounts.models import User
-from accounts.permissions import AdminOrAccountant, AnyMember, signed_in_user
+from accounts.permissions import AdminOnly, AdminOrAccountant, AnyMember, signed_in_user
 from accounts.scoping import scoped
-from eingang import temporal_client
+from eingang import clock, storage, temporal_client
 from eingang.problem import ProblemError
 from eingang.throttles import GeneralThrottle, UploadThrottle
-from invoices.models import Document
+from invoices.models import Document, Event
 from invoices.queries import DocumentListQuerySerializer, filter_documents
 from invoices.serializers import (
+    DocumentDetailSerializer,
     DocumentPageSerializer,
     DocumentSummarySerializer,
+    document_detail,
     document_summary,
     with_summary_data,
 )
@@ -148,3 +155,119 @@ class DocumentCollectionView(APIView):
             },
             status=201,
         )
+
+
+def not_available() -> ProblemError:
+    return ProblemError(
+        404, "NOT_AVAILABLE", "Not available", "This document has no such representation."
+    )
+
+
+def get_document(request: Request, document_id: UUID) -> Document:
+    """The document, if it belongs to the user's organisation and is not deleted."""
+    document = (
+        with_summary_data(scoped(Document.objects.filter(deleted_at__isnull=True), request))
+        .filter(id=document_id)
+        .first()
+    )
+    if document is None:
+        raise Http404
+    return document
+
+
+# Bytes a user uploaded are never rendered as a page from the app's origin.
+DOWNLOAD_CSP = "sandbox; default-src 'none'"
+VISUALIZATION_CSP = "default-src 'none'; style-src 'unsafe-inline'; img-src data:"
+
+
+def download(data: bytes, content_type: str, filename: str) -> HttpResponse:
+    response = HttpResponse(data, content_type=content_type)
+    response["Content-Disposition"] = content_disposition_header(True, filename)
+    response["Content-Security-Policy"] = DOWNLOAD_CSP
+    return response
+
+
+class DocumentDetailView(APIView):
+    def get_permissions(self) -> list[BasePermission]:
+        if self.request.method == "DELETE":
+            return [AdminOnly()]
+        return [AnyMember()]
+
+    @extend_schema(responses={200: DocumentDetailSerializer}, tags=TAGS)
+    def get(self, request: Request, document_id: UUID) -> Response:
+        user = current_user(request)
+        return Response(document_detail(get_document(request, document_id), user))
+
+    @extend_schema(
+        responses={204: None, 409: OpenApiResponse(description="ALREADY_EXPORTED")}, tags=TAGS
+    )
+    def delete(self, request: Request, document_id: UUID) -> Response:
+        user = current_user(request)
+        document = get_document(request, document_id)
+        if document.status == Document.Status.EXPORTED:
+            raise ProblemError(
+                409,
+                "ALREADY_EXPORTED",
+                "Already exported",
+                "An exported invoice cannot be deleted.",
+            )
+        if document.status in (Document.Status.RECEIVED, Document.Status.PROCESSING):
+            raise ProblemError(
+                409,
+                "INVALID_TRANSITION",
+                "Not possible now",
+                "A document cannot be deleted while it is being processed.",
+            )
+        with transaction.atomic():
+            document.deleted_at = clock.now()
+            document.save(update_fields=["deleted_at", "updated_at"])
+            Event.objects.create(
+                organization=document.organization,
+                document=document,
+                actor=user,
+                type=Event.Type.DOCUMENT_DELETED,
+                data={},
+            )
+        return Response(status=204)
+
+
+class DocumentFileView(APIView):
+    @extend_schema(responses={(200, "application/octet-stream"): OpenApiTypes.BINARY}, tags=TAGS)
+    def get(self, request: Request, document_id: UUID) -> HttpResponse:
+        document = get_document(request, document_id)
+        data = storage.read(document.storage_key)
+        return download(data, document.content_type, document.original_filename)
+
+
+class DocumentXmlView(APIView):
+    @extend_schema(responses={(200, "application/xml"): OpenApiTypes.STR}, tags=TAGS)
+    def get(self, request: Request, document_id: UUID) -> HttpResponse:
+        document = get_document(request, document_id)
+        key = storage.derived_key(document.organization_id, document.id, "invoice.xml")
+        if not storage.exists(key):
+            raise not_available()
+        return download(storage.read(key), "application/xml", f"{document.id}.xml")
+
+
+class DocumentTextView(APIView):
+    @extend_schema(responses={(200, "text/plain"): OpenApiTypes.STR}, tags=TAGS)
+    def get(self, request: Request, document_id: UUID) -> HttpResponse:
+        document = get_document(request, document_id)
+        key = storage.derived_key(document.organization_id, document.id, "text.txt")
+        if not storage.exists(key):
+            raise not_available()
+        return download(storage.read(key), "text/plain; charset=utf-8", f"{document.id}.txt")
+
+
+class DocumentVisualizationView(APIView):
+    @extend_schema(responses={(200, "text/html"): OpenApiTypes.STR}, tags=TAGS)
+    def get(self, request: Request, document_id: UUID) -> HttpResponse:
+        document = get_document(request, document_id)
+        key = storage.derived_key(document.organization_id, document.id, "visualization.html")
+        if not storage.exists(key):
+            raise not_available()
+        response = HttpResponse(storage.read(key), content_type="text/html; charset=utf-8")
+        response["Content-Security-Policy"] = VISUALIZATION_CSP
+        # The app shows this page in its own sandboxed iframe (HANDOFF section 4).
+        response["X-Frame-Options"] = "SAMEORIGIN"
+        return response
