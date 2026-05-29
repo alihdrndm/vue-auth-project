@@ -157,6 +157,12 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Inbox for supplier invoices: validation, extraction, checks and approval.",
     "VERSION": "0.1.0",
     "SERVE_INCLUDE_SCHEMA": False,
+    # Three different `status` fields; each gets its own enum name in the generated types.
+    "ENUM_NAME_OVERRIDES": {
+        "DocumentStatusEnum": "invoices.models.Document.Status",
+        "ValidationStatusEnum": ["valid", "warnings", "invalid", "not_applicable"],
+        "IbanStatusEnum": ["known", "confirmed", "new"],
+    },
     # Pinned instead of the default "@latest", so /docs loads a known build.
     "SWAGGER_UI_DIST": f"https://cdn.jsdelivr.net/npm/swagger-ui-dist@{SWAGGER_UI_VERSION}",
     "SWAGGER_UI_FAVICON_HREF": (
