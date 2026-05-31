@@ -6,6 +6,736 @@
         "description": "Inbox for supplier invoices: validation, extraction, checks and approval."
     },
     "paths": {
+        "/api/v1/auth/csrf": {
+            "get": {
+                "operationId": "api_v1_auth_csrf_retrieve",
+                "tags": [
+                    "auth"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Sets the csrftoken cookie."
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/login": {
+            "post": {
+                "operationId": "api_v1_auth_login_create",
+                "tags": [
+                    "auth"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Session"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/logout": {
+            "post": {
+                "operationId": "api_v1_auth_logout_create",
+                "tags": [
+                    "auth"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/me": {
+            "get": {
+                "operationId": "api_v1_auth_me_retrieve",
+                "tags": [
+                    "auth"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Session"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/documents": {
+            "get": {
+                "operationId": "api_v1_documents_list",
+                "description": "`GET /documents` lists; `POST /documents` uploads.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "einvoice",
+                        "schema": {
+                            "enum": [
+                                "true",
+                                "false"
+                            ],
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "description": "* `true` - true\n* `false` - false"
+                    },
+                    {
+                        "in": "query",
+                        "name": "format",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 100,
+                            "minLength": 1
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "kind",
+                        "schema": {
+                            "enum": [
+                                "xml",
+                                "hybrid_pdf",
+                                "legacy_zugferd1",
+                                "hybrid_pdf_unsupported",
+                                "pdf_text",
+                                "pdf_no_text"
+                            ],
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "description": "* `xml` - Xml\n* `hybrid_pdf` - Hybrid Pdf\n* `legacy_zugferd1` - Legacy Zugferd1\n* `hybrid_pdf_unsupported` - Hybrid Pdf Unsupported\n* `pdf_text` - Pdf Text\n* `pdf_no_text` - Pdf No Text"
+                    },
+                    {
+                        "in": "query",
+                        "name": "ordering",
+                        "schema": {
+                            "enum": [
+                                "-received_at",
+                                "received_at",
+                                "-gross_total",
+                                "due_date"
+                            ],
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "description": "* `-received_at` - -received_at\n* `received_at` - received_at\n* `-gross_total` - -gross_total\n* `due_date` - due_date"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "q",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 200,
+                            "minLength": 1
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "status",
+                        "schema": {
+                            "enum": [
+                                "received",
+                                "processing",
+                                "needs_review",
+                                "awaiting_approval",
+                                "approved",
+                                "rejected",
+                                "exported",
+                                "failed"
+                            ],
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "description": "* `received` - Received\n* `processing` - Processing\n* `needs_review` - Needs Review\n* `awaiting_approval` - Awaiting Approval\n* `approved` - Approved\n* `rejected` - Rejected\n* `exported` - Exported\n* `failed` - Failed"
+                    },
+                    {
+                        "in": "query",
+                        "name": "supplier",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentPage"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "api_v1_documents_create",
+                "description": "`GET /documents` lists; `POST /documents` uploads.",
+                "tags": [
+                    "documents"
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UploadRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UploadResponse"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "503": {
+                        "description": "TEMPORAL_UNAVAILABLE: stored, starts later"
+                    }
+                }
+            }
+        },
+        "/api/v1/documents/{document_id}": {
+            "get": {
+                "operationId": "api_v1_documents_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "document_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentDetail"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "api_v1_documents_destroy",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "document_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    },
+                    "409": {
+                        "description": "ALREADY_EXPORTED"
+                    }
+                }
+            }
+        },
+        "/api/v1/documents/{document_id}/file": {
+            "get": {
+                "operationId": "api_v1_documents_file_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "document_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/documents/{document_id}/text": {
+            "get": {
+                "operationId": "api_v1_documents_text_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "document_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/documents/{document_id}/visualization": {
+            "get": {
+                "operationId": "api_v1_documents_visualization_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "document_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/documents/{document_id}/xml": {
+            "get": {
+                "operationId": "api_v1_documents_xml_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "document_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/xml": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/members": {
+            "get": {
+                "operationId": "api_v1_members_list",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "tags": [
+                    "members"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MemberPage"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "api_v1_members_create",
+                "tags": [
+                    "members"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MemberCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MemberCreated"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/members/{member_id}": {
+            "patch": {
+                "operationId": "api_v1_members_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "member_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "members"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedMemberUpdate"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Member"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/organization": {
+            "get": {
+                "operationId": "api_v1_organization_retrieve",
+                "tags": [
+                    "organization"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Organization"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "api_v1_organization_partial_update",
+                "tags": [
+                    "organization"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedOrganizationUpdate"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Organization"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/sandbox": {
+            "post": {
+                "operationId": "api_v1_sandbox_create",
+                "tags": [
+                    "sandbox"
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Session"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "429": {
+                        "description": "SANDBOX_LIMIT"
+                    }
+                }
+            }
+        },
+        "/api/v1/suppliers": {
+            "get": {
+                "operationId": "api_v1_suppliers_list",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "q",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Part of the supplier name."
+                    }
+                ],
+                "tags": [
+                    "suppliers"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SupplierPage"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/suppliers/{supplier_id}": {
+            "get": {
+                "operationId": "api_v1_suppliers_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "supplier_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "suppliers"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SupplierDetail"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/healthz": {
             "get": {
                 "operationId": "healthz_retrieve",
@@ -52,6 +782,453 @@
     },
     "components": {
         "schemas": {
+            "AllowedAction": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "action": {
+                        "type": "string"
+                    },
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "reason_code": {
+                        "type": "string"
+                    },
+                    "reason": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "action",
+                    "enabled"
+                ]
+            },
+            "Approval": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "decision": {
+                        "$ref": "#/components/schemas/DecisionEnum"
+                    },
+                    "decided_by_name": {
+                        "type": "string"
+                    },
+                    "comment": {
+                        "type": "string"
+                    },
+                    "decided_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "comment",
+                    "decided_at",
+                    "decided_by_name",
+                    "decision"
+                ]
+            },
+            "Check": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "check_id": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "severity": {
+                        "$ref": "#/components/schemas/CheckSeverityEnum"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "details": {
+                        "type": "object",
+                        "additionalProperties": {}
+                    },
+                    "resolved_by_name": {
+                        "type": "string"
+                    },
+                    "resolved_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "resolution_note": {
+                        "type": "string"
+                    },
+                    "resolve": {
+                        "$ref": "#/components/schemas/Resolve"
+                    }
+                },
+                "required": [
+                    "check_id",
+                    "code",
+                    "details",
+                    "id",
+                    "message",
+                    "resolve",
+                    "severity"
+                ]
+            },
+            "CheckSeverityEnum": {
+                "enum": [
+                    "block",
+                    "warn",
+                    "info"
+                ],
+                "type": "string",
+                "description": "* `block` - Block\n* `warn` - Warn\n* `info` - Info"
+            },
+            "DecisionEnum": {
+                "enum": [
+                    "approved",
+                    "rejected"
+                ],
+                "type": "string",
+                "description": "* `approved` - approved\n* `rejected` - rejected"
+            },
+            "DocumentDetail": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "original_filename": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "type": "string"
+                    },
+                    "syntax": {
+                        "type": "string"
+                    },
+                    "profile": {
+                        "type": "string"
+                    },
+                    "format_label": {
+                        "type": "string"
+                    },
+                    "type_code": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/DocumentStatusEnum"
+                    },
+                    "processing_step": {
+                        "type": "string"
+                    },
+                    "received_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "invoice_number": {
+                        "type": "string"
+                    },
+                    "supplier_name": {
+                        "type": "string"
+                    },
+                    "gross_total": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "due_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "is_einvoice": {
+                        "type": "boolean"
+                    },
+                    "validation_status": {
+                        "type": "string"
+                    },
+                    "open_block_checks": {
+                        "type": "integer"
+                    },
+                    "open_warn_checks": {
+                        "type": "integer"
+                    },
+                    "payee_iban_last4": {
+                        "type": "string"
+                    },
+                    "iban_status": {
+                        "$ref": "#/components/schemas/IbanStatusEnum"
+                    },
+                    "reviewed_by_name": {
+                        "type": "string"
+                    },
+                    "allowed_actions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AllowedAction"
+                        }
+                    },
+                    "source": {
+                        "type": "string"
+                    },
+                    "size_bytes": {
+                        "type": "integer"
+                    },
+                    "failure_reason": {
+                        "type": "string"
+                    },
+                    "text_truncated": {
+                        "type": "boolean"
+                    },
+                    "invoice": {
+                        "$ref": "#/components/schemas/InvoiceDetail"
+                    },
+                    "lines": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Line"
+                        }
+                    },
+                    "validation": {
+                        "$ref": "#/components/schemas/Validation"
+                    },
+                    "checks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Check"
+                        }
+                    },
+                    "approvals": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Approval"
+                        }
+                    },
+                    "events": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Event"
+                        }
+                    }
+                },
+                "required": [
+                    "allowed_actions",
+                    "approvals",
+                    "checks",
+                    "events",
+                    "id",
+                    "lines",
+                    "open_block_checks",
+                    "open_warn_checks",
+                    "original_filename",
+                    "received_at",
+                    "size_bytes",
+                    "source",
+                    "status",
+                    "text_truncated"
+                ]
+            },
+            "DocumentPage": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "count": {
+                        "type": "integer"
+                    },
+                    "next": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true
+                    },
+                    "previous": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DocumentSummary"
+                        }
+                    }
+                },
+                "required": [
+                    "count",
+                    "next",
+                    "previous",
+                    "results"
+                ]
+            },
+            "DocumentStatusEnum": {
+                "enum": [
+                    "received",
+                    "processing",
+                    "needs_review",
+                    "awaiting_approval",
+                    "approved",
+                    "rejected",
+                    "exported",
+                    "failed"
+                ],
+                "type": "string",
+                "description": "* `received` - Received\n* `processing` - Processing\n* `needs_review` - Needs Review\n* `awaiting_approval` - Awaiting Approval\n* `approved` - Approved\n* `rejected` - Rejected\n* `exported` - Exported\n* `failed` - Failed"
+            },
+            "DocumentSummary": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "original_filename": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "type": "string"
+                    },
+                    "syntax": {
+                        "type": "string"
+                    },
+                    "profile": {
+                        "type": "string"
+                    },
+                    "format_label": {
+                        "type": "string"
+                    },
+                    "type_code": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/DocumentStatusEnum"
+                    },
+                    "processing_step": {
+                        "type": "string"
+                    },
+                    "received_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "invoice_number": {
+                        "type": "string"
+                    },
+                    "supplier_name": {
+                        "type": "string"
+                    },
+                    "gross_total": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "due_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "is_einvoice": {
+                        "type": "boolean"
+                    },
+                    "validation_status": {
+                        "type": "string"
+                    },
+                    "open_block_checks": {
+                        "type": "integer"
+                    },
+                    "open_warn_checks": {
+                        "type": "integer"
+                    },
+                    "payee_iban_last4": {
+                        "type": "string"
+                    },
+                    "iban_status": {
+                        "$ref": "#/components/schemas/IbanStatusEnum"
+                    },
+                    "reviewed_by_name": {
+                        "type": "string"
+                    },
+                    "allowed_actions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AllowedAction"
+                        }
+                    }
+                },
+                "required": [
+                    "allowed_actions",
+                    "id",
+                    "open_block_checks",
+                    "open_warn_checks",
+                    "original_filename",
+                    "received_at",
+                    "status"
+                ]
+            },
+            "DuplicateUpload": {
+                "type": "object",
+                "properties": {
+                    "filename": {
+                        "type": "string"
+                    },
+                    "existing_document_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "required": [
+                    "existing_document_id",
+                    "filename"
+                ]
+            },
+            "Event": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "actor_name": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "additionalProperties": {}
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "data",
+                    "type"
+                ]
+            },
+            "Explanation": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "plain_text": {
+                        "type": "string"
+                    },
+                    "fix_hint": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "fix_hint",
+                    "plain_text"
+                ]
+            },
             "HealthStatus": {
                 "type": "object",
                 "properties": {
@@ -62,6 +1239,509 @@
                 "required": [
                     "status"
                 ]
+            },
+            "IbanStatusEnum": {
+                "enum": [
+                    "known",
+                    "confirmed",
+                    "new"
+                ],
+                "type": "string",
+                "description": "* `known` - known\n* `confirmed` - confirmed\n* `new` - new"
+            },
+            "InvoiceDetail": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "is_einvoice": {
+                        "type": "boolean"
+                    },
+                    "type_code": {
+                        "type": "integer"
+                    },
+                    "issue_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "due_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "notes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "tax_breakdown": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {}
+                        }
+                    },
+                    "field_confidence": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    },
+                    "field_evidence": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string",
+                            "nullable": true
+                        }
+                    },
+                    "syntax": {
+                        "type": "string"
+                    },
+                    "profile": {
+                        "type": "string"
+                    },
+                    "spec_id": {
+                        "type": "string"
+                    },
+                    "extraction_method": {
+                        "type": "string"
+                    },
+                    "invoice_number": {
+                        "type": "string"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "buyer_reference": {
+                        "type": "string"
+                    },
+                    "order_reference": {
+                        "type": "string"
+                    },
+                    "seller_name": {
+                        "type": "string"
+                    },
+                    "seller_vat_id": {
+                        "type": "string"
+                    },
+                    "seller_tax_number": {
+                        "type": "string"
+                    },
+                    "seller_street": {
+                        "type": "string"
+                    },
+                    "seller_postcode": {
+                        "type": "string"
+                    },
+                    "seller_city": {
+                        "type": "string"
+                    },
+                    "seller_country_code": {
+                        "type": "string"
+                    },
+                    "seller_email": {
+                        "type": "string"
+                    },
+                    "buyer_name": {
+                        "type": "string"
+                    },
+                    "buyer_vat_id": {
+                        "type": "string"
+                    },
+                    "buyer_street": {
+                        "type": "string"
+                    },
+                    "buyer_postcode": {
+                        "type": "string"
+                    },
+                    "buyer_city": {
+                        "type": "string"
+                    },
+                    "buyer_country_code": {
+                        "type": "string"
+                    },
+                    "buyer_email": {
+                        "type": "string"
+                    },
+                    "payee_iban": {
+                        "type": "string"
+                    },
+                    "payee_bic": {
+                        "type": "string"
+                    },
+                    "payment_terms": {
+                        "type": "string"
+                    },
+                    "line_total": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$"
+                    },
+                    "allowance_total": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$"
+                    },
+                    "charge_total": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$"
+                    },
+                    "net_total": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$"
+                    },
+                    "tax_total": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$"
+                    },
+                    "gross_total": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$"
+                    },
+                    "prepaid_amount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$"
+                    },
+                    "payable_amount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$"
+                    }
+                },
+                "required": [
+                    "field_confidence",
+                    "field_evidence",
+                    "is_einvoice",
+                    "notes",
+                    "tax_breakdown"
+                ]
+            },
+            "Issue": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "rule_id": {
+                        "type": "string"
+                    },
+                    "severity": {
+                        "$ref": "#/components/schemas/IssueSeverityEnum"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "type": "string"
+                    },
+                    "test": {
+                        "type": "string"
+                    },
+                    "source": {
+                        "type": "string"
+                    },
+                    "explanation": {
+                        "$ref": "#/components/schemas/Explanation"
+                    }
+                },
+                "required": [
+                    "location",
+                    "message",
+                    "rule_id",
+                    "severity",
+                    "source",
+                    "test"
+                ]
+            },
+            "IssueSeverityEnum": {
+                "enum": [
+                    "fatal",
+                    "warning",
+                    "information"
+                ],
+                "type": "string",
+                "description": "* `fatal` - fatal\n* `warning` - warning\n* `information` - information"
+            },
+            "KindEnum": {
+                "enum": [
+                    "standard",
+                    "sandbox"
+                ],
+                "type": "string",
+                "description": "* `standard` - Standard\n* `sandbox` - Sandbox"
+            },
+            "Line": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "position": {
+                        "type": "integer"
+                    },
+                    "line_id": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "quantity": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,14}(?:\\.\\d{0,4})?$"
+                    },
+                    "unit_code": {
+                        "type": "string"
+                    },
+                    "unit_price": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,6})?$"
+                    },
+                    "net_amount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$"
+                    },
+                    "tax_category": {
+                        "type": "string"
+                    },
+                    "tax_rate": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,3}(?:\\.\\d{0,2})?$"
+                    }
+                },
+                "required": [
+                    "position"
+                ]
+            },
+            "LoginRequest": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "email",
+                    "password"
+                ]
+            },
+            "Member": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "$ref": "#/components/schemas/RoleEnum"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "email",
+                    "id",
+                    "is_active",
+                    "name",
+                    "role"
+                ]
+            },
+            "MemberCreate": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 254
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 200,
+                        "minLength": 1
+                    },
+                    "role": {
+                        "$ref": "#/components/schemas/RoleEnum"
+                    }
+                },
+                "required": [
+                    "email",
+                    "name",
+                    "role"
+                ]
+            },
+            "MemberCreated": {
+                "type": "object",
+                "description": "The create response: the only place the one-time password is ever returned.",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "$ref": "#/components/schemas/RoleEnum"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "one_time_password": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "email",
+                    "id",
+                    "is_active",
+                    "name",
+                    "one_time_password",
+                    "role"
+                ]
+            },
+            "MemberPage": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "count": {
+                        "type": "integer"
+                    },
+                    "next": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true
+                    },
+                    "previous": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Member"
+                        }
+                    }
+                },
+                "required": [
+                    "count",
+                    "next",
+                    "previous",
+                    "results"
+                ]
+            },
+            "Organization": {
+                "type": "object",
+                "description": "The body of `GET` and `PATCH /organization`.",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "pattern": "^[-a-zA-Z0-9_]+$"
+                    },
+                    "kind": {
+                        "$ref": "#/components/schemas/KindEnum"
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "vat_id": {
+                        "type": "string"
+                    },
+                    "four_eyes": {
+                        "type": "boolean"
+                    },
+                    "duplicate_window_days": {
+                        "type": "integer"
+                    },
+                    "reminder_after_days": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "duplicate_window_days",
+                    "four_eyes",
+                    "id",
+                    "kind",
+                    "name",
+                    "reminder_after_days",
+                    "slug"
+                ]
+            },
+            "PatchedMemberUpdate": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 200,
+                        "minLength": 1
+                    },
+                    "role": {
+                        "$ref": "#/components/schemas/RoleEnum"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "PatchedOrganizationUpdate": {
+                "type": "object",
+                "description": "Any subset of the editable settings; `vat_id: null` clears the VAT ID.",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 200,
+                        "minLength": 1
+                    },
+                    "vat_id": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 32
+                    },
+                    "four_eyes": {
+                        "type": "boolean"
+                    },
+                    "duplicate_window_days": {
+                        "type": "integer",
+                        "maximum": 365,
+                        "minimum": 1
+                    },
+                    "reminder_after_days": {
+                        "type": "integer",
+                        "maximum": 60,
+                        "minimum": 1
+                    }
+                }
             },
             "ReadyStatus": {
                 "type": "object",
@@ -78,6 +1758,390 @@
                     "checks",
                     "status"
                 ]
+            },
+            "Resolve": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "reason_code": {
+                        "type": "string"
+                    },
+                    "reason": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "enabled"
+                ]
+            },
+            "RoleEnum": {
+                "enum": [
+                    "admin",
+                    "accountant",
+                    "approver",
+                    "viewer"
+                ],
+                "type": "string",
+                "description": "* `admin` - Admin\n* `accountant` - Accountant\n* `approver` - Approver\n* `viewer` - Viewer"
+            },
+            "Session": {
+                "type": "object",
+                "description": "`{user, organization, role}`: the body of login, me and sandbox.",
+                "properties": {
+                    "user": {
+                        "$ref": "#/components/schemas/SessionUser"
+                    },
+                    "organization": {
+                        "$ref": "#/components/schemas/SessionOrganization"
+                    },
+                    "role": {
+                        "$ref": "#/components/schemas/RoleEnum"
+                    }
+                },
+                "required": [
+                    "organization",
+                    "role",
+                    "user"
+                ]
+            },
+            "SessionOrganization": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "$ref": "#/components/schemas/KindEnum"
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "vat_id": {
+                        "type": "string"
+                    },
+                    "four_eyes": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "four_eyes",
+                    "id",
+                    "kind",
+                    "name"
+                ]
+            },
+            "SessionUser": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "email",
+                    "id",
+                    "name"
+                ]
+            },
+            "Supplier": {
+                "type": "object",
+                "description": "One row of `GET /suppliers`.",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "vat_id": {
+                        "type": "string"
+                    },
+                    "invoice_count": {
+                        "type": "integer"
+                    },
+                    "first_seen_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "last_seen_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "first_seen_at",
+                    "id",
+                    "invoice_count",
+                    "last_seen_at",
+                    "name"
+                ]
+            },
+            "SupplierDetail": {
+                "type": "object",
+                "description": "One row of `GET /suppliers`.",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "vat_id": {
+                        "type": "string"
+                    },
+                    "invoice_count": {
+                        "type": "integer"
+                    },
+                    "first_seen_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "last_seen_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "ibans": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SupplierIban"
+                        }
+                    },
+                    "invoices": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SupplierInvoice"
+                        }
+                    }
+                },
+                "required": [
+                    "first_seen_at",
+                    "ibans",
+                    "id",
+                    "invoice_count",
+                    "invoices",
+                    "last_seen_at",
+                    "name"
+                ]
+            },
+            "SupplierIban": {
+                "type": "object",
+                "description": "One IBAN of the supplier's history; `status` and `trusted` come from suppliers.trust.",
+                "properties": {
+                    "iban": {
+                        "type": "string"
+                    },
+                    "first_seen_invoice_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "first_seen_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "last_seen_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "trusted": {
+                        "type": "boolean"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/IbanStatusEnum"
+                    },
+                    "confirmed_by_name": {
+                        "type": "string"
+                    },
+                    "confirmed_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "confirmation_note": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "first_seen_at",
+                    "first_seen_invoice_id",
+                    "iban",
+                    "last_seen_at",
+                    "status",
+                    "trusted"
+                ]
+            },
+            "SupplierInvoice": {
+                "type": "object",
+                "description": "One of the supplier's invoices; `status` is the document's status.",
+                "properties": {
+                    "document_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "invoice_number": {
+                        "type": "string"
+                    },
+                    "issue_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "gross_total": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/DocumentStatusEnum"
+                    },
+                    "received_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "document_id",
+                    "received_at",
+                    "status"
+                ]
+            },
+            "SupplierPage": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "count": {
+                        "type": "integer"
+                    },
+                    "next": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true
+                    },
+                    "previous": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Supplier"
+                        }
+                    }
+                },
+                "required": [
+                    "count",
+                    "next",
+                    "previous",
+                    "results"
+                ]
+            },
+            "UploadRequest": {
+                "type": "object",
+                "properties": {
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uri"
+                        }
+                    }
+                },
+                "required": [
+                    "files"
+                ]
+            },
+            "UploadResponse": {
+                "type": "object",
+                "properties": {
+                    "created": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DocumentSummary"
+                        }
+                    },
+                    "duplicates": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DuplicateUpload"
+                        }
+                    }
+                },
+                "required": [
+                    "created",
+                    "duplicates"
+                ]
+            },
+            "Validation": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "status": {
+                        "$ref": "#/components/schemas/ValidationStatusEnum"
+                    },
+                    "engine": {
+                        "type": "string"
+                    },
+                    "xsd_ok": {
+                        "type": "boolean"
+                    },
+                    "fatal_count": {
+                        "type": "integer"
+                    },
+                    "warning_count": {
+                        "type": "integer"
+                    },
+                    "issues": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Issue"
+                        }
+                    }
+                },
+                "required": [
+                    "engine",
+                    "fatal_count",
+                    "issues",
+                    "status",
+                    "warning_count"
+                ]
+            },
+            "ValidationStatusEnum": {
+                "enum": [
+                    "valid",
+                    "warnings",
+                    "invalid",
+                    "not_applicable"
+                ],
+                "type": "string",
+                "description": "* `valid` - valid\n* `warnings` - warnings\n* `invalid` - invalid\n* `not_applicable` - not_applicable"
+            }
+        },
+        "securitySchemes": {
+            "sessionAuth": {
+                "type": "apiKey",
+                "in": "cookie",
+                "name": "sessionid"
             }
         }
     }

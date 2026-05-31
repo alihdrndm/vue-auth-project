@@ -4,6 +4,264 @@
  */
 
 export interface paths {
+    "/api/v1/auth/csrf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_auth_csrf_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_auth_login_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_auth_logout_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_auth_me_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description `GET /documents` lists; `POST /documents` uploads. */
+        get: operations["api_v1_documents_list"];
+        put?: never;
+        /** @description `GET /documents` lists; `POST /documents` uploads. */
+        post: operations["api_v1_documents_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_documents_retrieve"];
+        put?: never;
+        post?: never;
+        delete: operations["api_v1_documents_destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_documents_file_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/text": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_documents_text_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/visualization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_documents_visualization_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/xml": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_documents_xml_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_members_list"];
+        put?: never;
+        post: operations["api_v1_members_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/members/{member_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["api_v1_members_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/organization": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_organization_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["api_v1_organization_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/sandbox": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_sandbox_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/suppliers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_suppliers_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/suppliers/{supplier_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_suppliers_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/healthz": {
         parameters: {
             query?: never;
@@ -40,8 +298,406 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        AllowedAction: {
+            action: string;
+            enabled: boolean;
+            reason_code?: string;
+            reason?: string;
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        Approval: {
+            decision: components["schemas"]["DecisionEnum"];
+            decided_by_name: string;
+            comment: string;
+            /** Format: date-time */
+            decided_at: string;
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        Check: {
+            /** Format: uuid */
+            id: string;
+            check_id: string;
+            code: string;
+            severity: components["schemas"]["CheckSeverityEnum"];
+            message: string;
+            details: {
+                [key: string]: unknown;
+            };
+            resolved_by_name?: string;
+            /** Format: date-time */
+            resolved_at?: string;
+            resolution_note?: string;
+            resolve: components["schemas"]["Resolve"];
+        };
+        /**
+         * @description * `block` - Block
+         *     * `warn` - Warn
+         *     * `info` - Info
+         * @enum {string}
+         */
+        CheckSeverityEnum: "block" | "warn" | "info";
+        /**
+         * @description * `approved` - approved
+         *     * `rejected` - rejected
+         * @enum {string}
+         */
+        DecisionEnum: "approved" | "rejected";
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        DocumentDetail: {
+            /** Format: uuid */
+            id: string;
+            original_filename: string;
+            kind?: string;
+            syntax?: string;
+            profile?: string;
+            format_label?: string;
+            type_code?: number;
+            status: components["schemas"]["DocumentStatusEnum"];
+            processing_step?: string;
+            /** Format: date-time */
+            received_at: string;
+            invoice_number?: string;
+            supplier_name?: string;
+            /** Format: decimal */
+            gross_total?: string;
+            currency?: string;
+            /** Format: date */
+            due_date?: string;
+            is_einvoice?: boolean;
+            validation_status?: string;
+            open_block_checks: number;
+            open_warn_checks: number;
+            payee_iban_last4?: string;
+            iban_status?: components["schemas"]["IbanStatusEnum"];
+            reviewed_by_name?: string;
+            allowed_actions: components["schemas"]["AllowedAction"][];
+            source: string;
+            size_bytes: number;
+            failure_reason?: string;
+            text_truncated: boolean;
+            invoice?: components["schemas"]["InvoiceDetail"];
+            lines: components["schemas"]["Line"][];
+            validation?: components["schemas"]["Validation"];
+            checks: components["schemas"]["Check"][];
+            approvals: components["schemas"]["Approval"][];
+            events: components["schemas"]["Event"][];
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        DocumentPage: {
+            count: number;
+            /** Format: uri */
+            next: string | null;
+            /** Format: uri */
+            previous: string | null;
+            results: components["schemas"]["DocumentSummary"][];
+        };
+        /**
+         * @description * `received` - Received
+         *     * `processing` - Processing
+         *     * `needs_review` - Needs Review
+         *     * `awaiting_approval` - Awaiting Approval
+         *     * `approved` - Approved
+         *     * `rejected` - Rejected
+         *     * `exported` - Exported
+         *     * `failed` - Failed
+         * @enum {string}
+         */
+        DocumentStatusEnum: "received" | "processing" | "needs_review" | "awaiting_approval" | "approved" | "rejected" | "exported" | "failed";
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        DocumentSummary: {
+            /** Format: uuid */
+            id: string;
+            original_filename: string;
+            kind?: string;
+            syntax?: string;
+            profile?: string;
+            format_label?: string;
+            type_code?: number;
+            status: components["schemas"]["DocumentStatusEnum"];
+            processing_step?: string;
+            /** Format: date-time */
+            received_at: string;
+            invoice_number?: string;
+            supplier_name?: string;
+            /** Format: decimal */
+            gross_total?: string;
+            currency?: string;
+            /** Format: date */
+            due_date?: string;
+            is_einvoice?: boolean;
+            validation_status?: string;
+            open_block_checks: number;
+            open_warn_checks: number;
+            payee_iban_last4?: string;
+            iban_status?: components["schemas"]["IbanStatusEnum"];
+            reviewed_by_name?: string;
+            allowed_actions: components["schemas"]["AllowedAction"][];
+        };
+        DuplicateUpload: {
+            filename: string;
+            /** Format: uuid */
+            existing_document_id: string;
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        Event: {
+            type: string;
+            actor_name?: string;
+            data: {
+                [key: string]: unknown;
+            };
+            /** Format: date-time */
+            created_at: string;
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        Explanation: {
+            plain_text: string;
+            fix_hint: string;
+        };
         HealthStatus: {
             status: string;
+        };
+        /**
+         * @description * `known` - known
+         *     * `confirmed` - confirmed
+         *     * `new` - new
+         * @enum {string}
+         */
+        IbanStatusEnum: "known" | "confirmed" | "new";
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        InvoiceDetail: {
+            is_einvoice: boolean;
+            type_code?: number;
+            /** Format: date */
+            issue_date?: string;
+            /** Format: date */
+            due_date?: string;
+            notes: string[];
+            tax_breakdown: {
+                [key: string]: unknown;
+            }[];
+            field_confidence: {
+                [key: string]: string;
+            };
+            field_evidence: {
+                [key: string]: string | null;
+            };
+            syntax?: string;
+            profile?: string;
+            spec_id?: string;
+            extraction_method?: string;
+            invoice_number?: string;
+            currency?: string;
+            buyer_reference?: string;
+            order_reference?: string;
+            seller_name?: string;
+            seller_vat_id?: string;
+            seller_tax_number?: string;
+            seller_street?: string;
+            seller_postcode?: string;
+            seller_city?: string;
+            seller_country_code?: string;
+            seller_email?: string;
+            buyer_name?: string;
+            buyer_vat_id?: string;
+            buyer_street?: string;
+            buyer_postcode?: string;
+            buyer_city?: string;
+            buyer_country_code?: string;
+            buyer_email?: string;
+            payee_iban?: string;
+            payee_bic?: string;
+            payment_terms?: string;
+            /** Format: decimal */
+            line_total?: string;
+            /** Format: decimal */
+            allowance_total?: string;
+            /** Format: decimal */
+            charge_total?: string;
+            /** Format: decimal */
+            net_total?: string;
+            /** Format: decimal */
+            tax_total?: string;
+            /** Format: decimal */
+            gross_total?: string;
+            /** Format: decimal */
+            prepaid_amount?: string;
+            /** Format: decimal */
+            payable_amount?: string;
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        Issue: {
+            rule_id: string;
+            severity: components["schemas"]["IssueSeverityEnum"];
+            message: string;
+            location: string;
+            test: string;
+            source: string;
+            explanation?: components["schemas"]["Explanation"];
+        };
+        /**
+         * @description * `fatal` - fatal
+         *     * `warning` - warning
+         *     * `information` - information
+         * @enum {string}
+         */
+        IssueSeverityEnum: "fatal" | "warning" | "information";
+        /**
+         * @description * `standard` - Standard
+         *     * `sandbox` - Sandbox
+         * @enum {string}
+         */
+        KindEnum: "standard" | "sandbox";
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        Line: {
+            position: number;
+            line_id?: string;
+            description?: string;
+            /** Format: decimal */
+            quantity?: string;
+            unit_code?: string;
+            /** Format: decimal */
+            unit_price?: string;
+            /** Format: decimal */
+            net_amount?: string;
+            tax_category?: string;
+            /** Format: decimal */
+            tax_rate?: string;
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        LoginRequest: {
+            /** Format: email */
+            email: string;
+            password: string;
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        Member: {
+            /** Format: uuid */
+            id: string;
+            /** Format: email */
+            email: string;
+            name: string;
+            role: components["schemas"]["RoleEnum"];
+            is_active: boolean;
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        MemberCreate: {
+            /** Format: email */
+            email: string;
+            name: string;
+            role: components["schemas"]["RoleEnum"];
+        };
+        /** @description The create response: the only place the one-time password is ever returned. */
+        MemberCreated: {
+            /** Format: uuid */
+            id: string;
+            /** Format: email */
+            email: string;
+            name: string;
+            role: components["schemas"]["RoleEnum"];
+            is_active: boolean;
+            one_time_password: string;
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        MemberPage: {
+            count: number;
+            /** Format: uri */
+            next: string | null;
+            /** Format: uri */
+            previous: string | null;
+            results: components["schemas"]["Member"][];
+        };
+        /** @description The body of `GET` and `PATCH /organization`. */
+        Organization: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            slug: string;
+            kind: components["schemas"]["KindEnum"];
+            /** Format: date-time */
+            expires_at?: string;
+            vat_id?: string;
+            four_eyes: boolean;
+            duplicate_window_days: number;
+            reminder_after_days: number;
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        PatchedMemberUpdate: {
+            name?: string;
+            role?: components["schemas"]["RoleEnum"];
+            is_active?: boolean;
+        };
+        /** @description Any subset of the editable settings; `vat_id: null` clears the VAT ID. */
+        PatchedOrganizationUpdate: {
+            name?: string;
+            vat_id?: string | null;
+            four_eyes?: boolean;
+            duplicate_window_days?: number;
+            reminder_after_days?: number;
         };
         ReadyStatus: {
             status: string;
@@ -49,6 +705,154 @@ export interface components {
                 [key: string]: unknown;
             };
         };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        Resolve: {
+            enabled: boolean;
+            reason_code?: string;
+            reason?: string;
+        };
+        /**
+         * @description * `admin` - Admin
+         *     * `accountant` - Accountant
+         *     * `approver` - Approver
+         *     * `viewer` - Viewer
+         * @enum {string}
+         */
+        RoleEnum: "admin" | "accountant" | "approver" | "viewer";
+        /** @description `{user, organization, role}`: the body of login, me and sandbox. */
+        Session: {
+            user: components["schemas"]["SessionUser"];
+            organization: components["schemas"]["SessionOrganization"];
+            role: components["schemas"]["RoleEnum"];
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        SessionOrganization: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            kind: components["schemas"]["KindEnum"];
+            /** Format: date-time */
+            expires_at?: string;
+            vat_id?: string;
+            four_eyes: boolean;
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        SessionUser: {
+            /** Format: uuid */
+            id: string;
+            /** Format: email */
+            email: string;
+            name: string;
+        };
+        /** @description One row of `GET /suppliers`. */
+        Supplier: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            vat_id?: string;
+            invoice_count: number;
+            /** Format: date-time */
+            first_seen_at: string;
+            /** Format: date-time */
+            last_seen_at: string;
+        };
+        /** @description One row of `GET /suppliers`. */
+        SupplierDetail: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            vat_id?: string;
+            invoice_count: number;
+            /** Format: date-time */
+            first_seen_at: string;
+            /** Format: date-time */
+            last_seen_at: string;
+            ibans: components["schemas"]["SupplierIban"][];
+            invoices: components["schemas"]["SupplierInvoice"][];
+        };
+        /** @description One IBAN of the supplier's history; `status` and `trusted` come from suppliers.trust. */
+        SupplierIban: {
+            iban: string;
+            /** Format: uuid */
+            first_seen_invoice_id: string;
+            /** Format: date-time */
+            first_seen_at: string;
+            /** Format: date-time */
+            last_seen_at: string;
+            trusted: boolean;
+            status: components["schemas"]["IbanStatusEnum"];
+            confirmed_by_name?: string;
+            /** Format: date-time */
+            confirmed_at?: string;
+            confirmation_note?: string;
+        };
+        /** @description One of the supplier's invoices; `status` is the document's status. */
+        SupplierInvoice: {
+            /** Format: uuid */
+            document_id: string;
+            invoice_number?: string;
+            /** Format: date */
+            issue_date?: string;
+            /** Format: decimal */
+            gross_total?: string;
+            currency?: string;
+            status: components["schemas"]["DocumentStatusEnum"];
+            /** Format: date-time */
+            received_at: string;
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        SupplierPage: {
+            count: number;
+            /** Format: uri */
+            next: string | null;
+            /** Format: uri */
+            previous: string | null;
+            results: components["schemas"]["Supplier"][];
+        };
+        UploadRequest: {
+            files: string[];
+        };
+        UploadResponse: {
+            created: components["schemas"]["DocumentSummary"][];
+            duplicates: components["schemas"]["DuplicateUpload"][];
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        Validation: {
+            status: components["schemas"]["ValidationStatusEnum"];
+            engine: string;
+            xsd_ok?: boolean;
+            fatal_count: number;
+            warning_count: number;
+            issues: components["schemas"]["Issue"][];
+        };
+        /**
+         * @description * `valid` - valid
+         *     * `warnings` - warnings
+         *     * `invalid` - invalid
+         *     * `not_applicable` - not_applicable
+         * @enum {string}
+         */
+        ValidationStatusEnum: "valid" | "warnings" | "invalid" | "not_applicable";
     };
     responses: never;
     parameters: never;
@@ -58,6 +862,483 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    api_v1_auth_csrf_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Sets the csrftoken cookie. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    api_v1_auth_login_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Session"];
+                };
+            };
+        };
+    };
+    api_v1_auth_logout_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    api_v1_auth_me_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Session"];
+                };
+            };
+        };
+    };
+    api_v1_documents_list: {
+        parameters: {
+            query?: {
+                /**
+                 * @description * `true` - true
+                 *     * `false` - false
+                 */
+                einvoice?: "true" | "false";
+                format?: string;
+                /**
+                 * @description * `xml` - Xml
+                 *     * `hybrid_pdf` - Hybrid Pdf
+                 *     * `legacy_zugferd1` - Legacy Zugferd1
+                 *     * `hybrid_pdf_unsupported` - Hybrid Pdf Unsupported
+                 *     * `pdf_text` - Pdf Text
+                 *     * `pdf_no_text` - Pdf No Text
+                 */
+                kind?: "xml" | "hybrid_pdf" | "legacy_zugferd1" | "hybrid_pdf_unsupported" | "pdf_text" | "pdf_no_text";
+                /**
+                 * @description * `-received_at` - -received_at
+                 *     * `received_at` - received_at
+                 *     * `-gross_total` - -gross_total
+                 *     * `due_date` - due_date
+                 */
+                ordering?: "-received_at" | "received_at" | "-gross_total" | "due_date";
+                page?: number;
+                q?: string;
+                /**
+                 * @description * `received` - Received
+                 *     * `processing` - Processing
+                 *     * `needs_review` - Needs Review
+                 *     * `awaiting_approval` - Awaiting Approval
+                 *     * `approved` - Approved
+                 *     * `rejected` - Rejected
+                 *     * `exported` - Exported
+                 *     * `failed` - Failed
+                 */
+                status?: "received" | "processing" | "needs_review" | "awaiting_approval" | "approved" | "rejected" | "exported" | "failed";
+                supplier?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentPage"];
+                };
+            };
+        };
+    };
+    api_v1_documents_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["UploadRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadResponse"];
+                };
+            };
+            /** @description TEMPORAL_UNAVAILABLE: stored, starts later */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    api_v1_documents_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentDetail"];
+                };
+            };
+        };
+    };
+    api_v1_documents_destroy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description ALREADY_EXPORTED */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    api_v1_documents_file_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/octet-stream": string;
+                };
+            };
+        };
+    };
+    api_v1_documents_text_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": string;
+                };
+            };
+        };
+    };
+    api_v1_documents_visualization_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/html": string;
+                };
+            };
+        };
+    };
+    api_v1_documents_xml_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/xml": string;
+                };
+            };
+        };
+    };
+    api_v1_members_list: {
+        parameters: {
+            query?: {
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberPage"];
+                };
+            };
+        };
+    };
+    api_v1_members_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MemberCreate"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberCreated"];
+                };
+            };
+        };
+    };
+    api_v1_members_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                member_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedMemberUpdate"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Member"];
+                };
+            };
+        };
+    };
+    api_v1_organization_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Organization"];
+                };
+            };
+        };
+    };
+    api_v1_organization_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedOrganizationUpdate"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Organization"];
+                };
+            };
+        };
+    };
+    api_v1_sandbox_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Session"];
+                };
+            };
+            /** @description SANDBOX_LIMIT */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    api_v1_suppliers_list: {
+        parameters: {
+            query?: {
+                page?: number;
+                /** @description Part of the supplier name. */
+                q?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierPage"];
+                };
+            };
+        };
+    };
+    api_v1_suppliers_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                supplier_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierDetail"];
+                };
+            };
+        };
+    };
     healthz_retrieve: {
         parameters: {
             query?: never;
