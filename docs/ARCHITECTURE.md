@@ -34,6 +34,27 @@ flowchart LR
 4. Unknown routes (404) and unhandled exceptions (500) are turned into problem+json by the same middleware. No internal detail reaches the client.
 5. The middleware writes one log line: method, path without the query string, status, duration, request id.
 
+## Request flow for an upload
+
+```mermaid
+sequenceDiagram
+    participant SPA
+    participant MW as UploadLimitMiddleware
+    participant API as POST /api/v1/documents
+    participant DB as PostgreSQL
+    participant ST as Storage
+    participant T as Temporal
+    SPA->>MW: multipart, X-CSRFToken
+    MW->>MW: Content-Length within 10 × 4 MB? install size-limited reader
+    MW->>API: session, CSRF, role (admin/accountant), 30/min/user
+    API->>API: type by content (PDF magic / safe XML), duplicates, sandbox quota
+    API->>DB: Document (received, workflow_id) + event
+    API->>ST: orgs/<org>/documents/<doc>/<sha256>.<ext>
+    API->>T: start ProcessInvoiceWorkflow (invoice-<doc>)
+    T-->>API: accepted, or unavailable → 503 TEMPORAL_UNAVAILABLE (stored anyway)
+    API-->>SPA: 201 {created, duplicates}
+```
+
 ## Where the rules live
 
 | Rule (HANDOFF.md) | Implemented in |
@@ -58,6 +79,18 @@ flowchart LR
 | SaxonC on one thread, stylesheets compiled once | `backend/src/einvoice/saxon.py`; warm-up in `backend/src/eingang/worker.py` |
 | Visualisation (UBL/CII → XR → static HTML) | `backend/src/einvoice/visualize.py` |
 | Sandbox sample set, manifest and precomputed data | `backend/tools/sample_data.py`, `backend/tools/build_samples.py`, `samples/` |
+| Custom user model (email), organisations, UUID v7 keys | `backend/src/accounts/models.py`, `backend/src/eingang/db.py` |
+| All other tables, constraints, append-only events | `backend/src/invoices/models.py`, `suppliers/models.py`, `exports/models.py`, `llm/models.py` |
+| Session auth (401 `Session`), sandbox expiry, CSRF code | `backend/src/accounts/authentication.py` |
+| One permission class per role rule; organisation scoping (IDOR) | `backend/src/accounts/permissions.py`, `backend/src/accounts/scoping.py` |
+| Rate limits, proxy hops | `backend/src/eingang/throttles.py`, `settings.py` (`TRUSTED_PROXY_HOPS`) |
+| Uploads: size while reading, type by content, quotas, duplicates | `backend/src/invoices/middleware.py`, `backend/src/invoices/uploads.py` |
+| `allowed_actions` and check resolvability | `backend/src/invoices/actions.py` |
+| Document list filters and ordering | `backend/src/invoices/queries.py` |
+| IBAN trust (known / confirmed / new) | `backend/src/suppliers/trust.py` |
+| Sandbox creation and limits | `backend/src/sandbox/services.py`, `backend/src/sandbox/api.py` |
+| Document storage keys and backends | `backend/src/eingang/storage.py`, `settings.py` (`STORAGES`) |
+| Starting processing; workflow names | `backend/src/eingang/temporal_client.py`, `backend/src/eingang/workflows/contracts.py` |
 
 ## The `einvoice` package
 
