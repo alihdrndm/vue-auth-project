@@ -249,3 +249,17 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - DRF checks sign-in and role before the HTTP method, so an anonymous request with a wrong method gets 401, not 405. Signed in, it gets `405 METHOD_NOT_ALLOWED`.
 - The CSRF check reads the request body, so a JSON body sent to the multipart-only `POST /documents` gets `415 UNSUPPORTED_MEDIA_TYPE` before the role check. With multipart, as the SPA always sends it, a viewer or approver gets `403 FORBIDDEN_ROLE`.
 - `tests/test_error_codes.py` pins this order, and checks that every code the code base uses is documented in `docs/ERRORS.md`.
+
+### M3 scope: which endpoints land now, which in M4 and M6
+- **Spec:** the M3 row names "documents/suppliers/organisation/members endpoints". The HTTP API table does not assign routes to milestones.
+- **Did (M3):** auth (csrf, login, logout, me), `POST /sandbox`, `POST`/`GET /documents`, `GET`/`DELETE /documents/{id}`, `/file`, `/xml`, `/text`, `/visualization`, suppliers list and detail, organisation `GET`/`PATCH`, members `GET`/`POST`/`PATCH`.
+- **Moved to M4:**
+  - `PATCH /documents/{id}/invoice`, `POST /checks/{id}/resolve`, `mark-reviewed`, `decision`, `send-back`, `reopen` and `retry`. They need the section 9 status machine, checks re-run on edit, and workflow signals (`retry` is signal-with-start), all of which are M4 deliverables.
+  - Exports, which need the `exported` transition and its signal.
+  - `/stats`, which needs C08 and the LLM ledger figures.
+  - `/rules/{id}`, which needs `seed_rules`.
+- **Moved to M6:** `/accuracy`, by its row.
+- **M4 owes:** API tests for those endpoints and their codes `BLOCKING_CHECKS`, `FOUR_EYES`, `CHECK_NOT_RESOLVABLE`, `INVALID_TRANSITION` and `NOTHING_TO_EXPORT`. In M3 these appear only as `allowed_actions` and resolve reason codes, which are tested.
+
+### `processing_step` is nullable
+- A document has no processing step until its workflow starts (`received`), so `processing_step` is NULL until then, and the API omits it.
