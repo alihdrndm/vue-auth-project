@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&amp;family=Familjen+Grotesk:wght@700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<script src="./eingang-ui.js"></script>
+<script>document.addEventListener('load', e => { const f = e.target; if (f && f.tagName === 'IFRAME') { try { const s = f.contentDocument.createElement('style'); s.textContent = '*{scrollbar-width:none!important}*::-webkit-scrollbar{display:none!important}'; f.contentDocument.head.appendChild(s); } catch (_) {} } }, true);</script>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:1200px;height:675px;overflow:hidden;background:#ebe4d6}
+body{color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+h1,p{margin:0}
+a{color:#2c4a8a}
+a:hover{color:#1f1c18}
+</style>
+</helmet>
+<div data-screen-label="Feature: evidence" style="position:relative;width:1200px;height:675px;overflow:hidden;background-color:#ebe4d6;background-image:linear-gradient(#3a2a140b 1px,transparent 1px),linear-gradient(90deg,#3a2a140b 1px,transparent 1px);background-size:32px 32px">
+<div style="position:absolute;left:48px;right:48px;top:36px;display:flex;align-items:center;justify-content:space-between;gap:24px"><h1 style="font:700 40px/1.1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Every AI value shows its source</h1><span style="flex:none;display:inline-flex;align-items:center;height:24px;padding:0 12px;border-radius:999px;font-size:13px;font-weight:500;color:#5f574d;border:1px dashed #5f574d;background:#fdfaf4">Sample data</span></div><div style="position:absolute;left:48px;top:112px;width:1104px;height:528px;overflow:hidden;border:1px solid #ebe3d6;border-radius:12px;background:#f7f2ea;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433"><iframe title="Eingang screen" src="Eingang App Review.dc.html?inv=8&amp;ev=iban" scrolling="no" tabindex="-1" style="position:absolute;left:-81.12px;top:-546px;width:1440px;height:1500px;border:0;transform:scale(0.78);transform-origin:0 0;pointer-events:none"></iframe></div>
+</div>
+</x-dc>
+</body>
+</html>

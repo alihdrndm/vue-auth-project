@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&amp;family=Familjen+Grotesk:wght@700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<script src="./eingang-ui.js"></script>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:1600px;height:1000px;overflow:hidden;background:#ebe4d6}
+body{color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+h1,p{margin:0}
+a{color:#2c4a8a}
+a:hover{color:#1f1c18}
+</style>
+</helmet>
+<div data-screen-label="Lifecycle" style="position:relative;width:1600px;height:1000px;overflow:hidden;background-color:#ebe4d6;background-image:linear-gradient(#3a2a140b 1px,transparent 1px),linear-gradient(90deg,#3a2a140b 1px,transparent 1px);background-size:32px 32px">
+  <div style="position:absolute;left:64px;top:48px;display:flex;align-items:center;gap:12px">
+    <span aria-hidden="true" style="width:1em;height:1em;font-size:32px;display:grid;place-items:center;border:0.0625em solid #2c4a8a;border-radius:0.15em;outline:0.025em solid #2c4a8a;outline-offset:-0.175em;background:#fffdf9;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1;filter:url(#eg-ink)"><span style="font-size:0.55em">E</span></span>
+    <h1 style="font:700 42px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">The life of one invoice</h1>
+  </div>
+
+  <div style="position:absolute;left:64px;top:136px;width:1472px;height:240px;background:#fdfaf4;border:1px solid #d6cbbb;border-radius:12px"></div>
+  <div style="position:absolute;left:64px;top:392px;width:1472px;height:236px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px"></div>
+  <div style="position:absolute;left:64px;top:644px;width:1472px;height:252px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px"></div>
+  <div style="position:absolute;left:88px;top:156px;display:grid;gap:4px"><span style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:#1f1c18"><e-icon name="refresh" size="16"></e-icon>Automatic</span><span style="font-size:12px;color:#746c61">the workflow</span></div>
+  <div style="position:absolute;left:88px;top:412px;display:grid;gap:4px"><span style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:#1f1c18"><e-icon name="user" size="16"></e-icon>Accountant</span><span style="font-size:12px;color:#746c61">a person</span></div>
+  <div style="position:absolute;left:88px;top:664px;display:grid;gap:4px"><span style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:#1f1c18"><e-icon name="user" size="16"></e-icon>Approver</span><span style="font-size:12px;color:#746c61">a different person</span></div>
+
+  <svg aria-hidden="true" width="1600" height="1000" viewBox="0 0 1600 1000" style="position:absolute;inset:0">
+    <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" style="fill:#3f3a33"></path></marker></defs>
+    <path d="M 348 264 L 398 264" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-end:url(#ah)"></path>
+    <path d="M 1000 264 L 1098 264" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-end:url(#ah)"></path>
+    <path d="M 1150 250 C 1150 168, 760 160, 720 194" style="fill:none;stroke:#3f3a33;stroke-width:1.5;stroke-dasharray:6 4;marker-end:url(#ah)"></path>
+    <path d="M 600 336 L 600 472" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-end:url(#ah)"></path>
+    <path d="M 900 336 L 900 724" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-end:url(#ah)"></path>
+    <path d="M 580 502 C 600 640, 760 680, 840 724" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-end:url(#ah)"></path>
+    <path d="M 812 768 C 560 780, 480 640, 526 504" style="fill:none;stroke:#3f3a33;stroke-width:1.5;stroke-dasharray:6 4;marker-end:url(#ah)"></path>
+    <path d="M 1000 744 C 1060 744, 1080 712, 1138 712" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-end:url(#ah)"></path>
+    <path d="M 1000 764 C 1060 764, 1080 812, 1138 812" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-end:url(#ah)"></path>
+    <path d="M 1196 698 C 1196 600, 1300 560, 1300 506" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-end:url(#ah)"></path>
+    <path d="M 1180 828 C 1120 900, 520 900, 420 760 C 380 680, 400 500, 516 486" style="fill:none;stroke:#3f3a33;stroke-width:1.5;stroke-dasharray:6 4;marker-end:url(#ah)"></path>
+  </svg>
+
+  <span style="position:absolute;left:240px;top:252px;display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500"><e-icon name="inbox" size="14"></e-icon>Received</span>
+
+  <div style="position:absolute;left:400px;top:196px;width:600px;height:140px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;padding:16px 20px;display:grid;gap:16px;align-content:start">
+    <span style="justify-self:start;display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e6eef7;color:#2f5d8a;font-size:12px;font-weight:500"><e-icon name="loader" size="14"></e-icon>Processing</span>
+    <div style="display:flex;align-items:center;gap:12px;font-size:13px;font-weight:500;color:#1f1c18">
+      <span style="display:inline-flex;align-items:center;gap:4px"><e-icon name="file-code" size="16" style="color:#2f5d8a"></e-icon>detect</span><span aria-hidden="true" style="flex:1;height:1px;background:#d6cbbb"></span>
+      <span style="display:inline-flex;align-items:center;gap:4px"><e-icon name="circle-check" size="16" style="color:#2f5d8a"></e-icon>validate</span><span aria-hidden="true" style="flex:1;height:1px;background:#d6cbbb"></span>
+      <span style="display:inline-flex;align-items:center;gap:4px"><e-icon name="eye" size="16" style="color:#2f5d8a"></e-icon>extract</span><span aria-hidden="true" style="flex:1;height:1px;background:#d6cbbb"></span>
+      <span style="display:inline-flex;align-items:center;gap:4px"><e-icon name="octagon" size="16" style="color:#2f5d8a"></e-icon>check</span>
+    </div>
+    <span style="font-size:12px;color:#746c61">Extract reads plain PDFs with AI; XML invoices skip it.</span>
+  </div>
+
+  <span style="position:absolute;left:1100px;top:252px;display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#fbe9e6;color:#b42318;font-size:12px;font-weight:500"><e-icon name="circle-alert" size="14"></e-icon>Failed</span>
+  <span style="position:absolute;left:880px;top:150px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;color:#1f1c18">retry, by a person</span>
+  <span style="position:absolute;left:1020px;top:270px;font-size:12px;color:#5f574d">can’t be read</span>
+
+  <span style="position:absolute;left:520px;top:476px;display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#fcefd8;color:#8a4a06;font-size:12px;font-weight:500"><e-icon name="eye" size="14" style="color:#c47408"></e-icon>Needs review</span><span style="position:absolute;left:300px;top:440px;width:210px;text-align:right;font-size:12px;color:#746c61">resolves checks, fixes fields</span>
+
+  <div style="position:absolute;left:812px;top:728px;display:grid;gap:8px;width:188px"><span style="justify-self:start;display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500"><e-icon name="hourglass" size="14"></e-icon>Awaiting approval</span></div>
+  <p style="position:absolute;left:760px;top:776px;width:230px;display:flex;gap:8px;align-items:flex-start;padding:8px 12px;border-radius:8px;background:#e8edf7;color:#2c4a8a;font-size:12px;font-weight:500"><e-icon name="lock" size="14"></e-icon>Four-eyes: whoever marked it reviewed can’t approve it.</p>
+
+  <span style="position:absolute;left:1140px;top:700px;display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#e4f1ed;color:#0f6e62;font-size:12px;font-weight:500"><e-icon name="circle-check" size="14"></e-icon>Approved</span>
+  <span style="position:absolute;left:1140px;top:800px;display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#fbe9e6;color:#b42318;font-size:12px;font-weight:500"><e-icon name="ban" size="14"></e-icon>Rejected</span>
+  <span style="position:absolute;left:1262px;top:480px;display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#f6f0e6;color:#746c61;font-size:12px;font-weight:500"><e-icon name="check" size="14"></e-icon>Exported</span>
+
+  <span style="position:absolute;left:612px;top:412px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;color:#1f1c18">or</span>
+  <span style="position:absolute;left:650px;top:636px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;color:#1f1c18">mark reviewed</span>
+  <span style="position:absolute;left:520px;top:680px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;color:#1f1c18">sent back</span>
+  <span style="position:absolute;left:1030px;top:690px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;color:#1f1c18">approve</span>
+  <span style="position:absolute;left:1004px;top:800px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;color:#1f1c18">reject, with a reason</span>
+  <span style="position:absolute;left:1258px;top:584px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;color:#1f1c18">export, by the Accountant</span>
+  <span style="position:absolute;left:780px;top:862px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;color:#1f1c18">reopened</span>
+
+  <div style="position:absolute;left:64px;bottom:40px;display:flex;align-items:center;gap:24px;font-size:13px;color:#3f3a33">
+    <span style="display:flex;align-items:center;gap:8px"><span style="width:32px;height:0;border-top:1.5px solid #3f3a33"></span>forward step</span>
+    <span style="display:flex;align-items:center;gap:8px"><span style="width:32px;height:0;border-top:1.5px dashed #3f3a33"></span>back to an earlier state</span>
+    <span>Status labels as they appear in the app.</span>
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>

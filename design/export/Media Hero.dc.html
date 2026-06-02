@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&amp;family=Caveat:wght@600&amp;family=Familjen+Grotesk:wght@700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<script src="./eingang-ui.js"></script>
+<script>window.OM_SCENES = '[{"name":"Stamp","dur":3,"desc":"Four documents are stamped into the inbox and each row lands with its verdict"},{"name":"Open","dur":3,"desc":"Invoice BN-88290 is open and its bank-account check is circled in red pen"},{"name":"Resolve","dur":3,"desc":"A note is typed, the check resolves, the tag turns Confirmed change, then Mark reviewed"},{"name":"Approve","dur":3,"desc":"Approve on the phone, the export drops into the folder, a short hold, then a fade back to the start"}]';</script>
+<script>window.OM_PLAYBACK = '{"mode":"loop"}';</script>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#ebe4d6}
+body{color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#2c4a8a}
+a:hover{color:#1f1c18}
+</style>
+</helmet>
+<x-import component-from-global-scope="HeroStage" from="./animations-v3.jsx ./media-hero.jsx" hint-size="100%,100%"></x-import>
+
+</x-dc>
+</body>
+</html>

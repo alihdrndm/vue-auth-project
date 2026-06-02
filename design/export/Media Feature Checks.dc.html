@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&amp;family=Familjen+Grotesk:wght@700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<script src="./eingang-ui.js"></script>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:1200px;height:675px;overflow:hidden;background:#ebe4d6}
+body{color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+h1,p{margin:0}
+a{color:#2c4a8a}
+a:hover{color:#1f1c18}
+</style>
+</helmet>
+<div data-screen-label="Feature: checks" style="position:relative;width:1200px;height:675px;overflow:hidden;background-color:#ebe4d6;background-image:linear-gradient(#3a2a140b 1px,transparent 1px),linear-gradient(90deg,#3a2a140b 1px,transparent 1px);background-size:32px 32px">
+<div style="position:absolute;left:48px;right:48px;top:36px;display:flex;align-items:center;justify-content:space-between;gap:24px"><h1 style="font:700 40px/1.1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Duplicates and new accounts, caught</h1><span style="flex:none;display:inline-flex;align-items:center;height:24px;padding:0 12px;border-radius:999px;font-size:13px;font-weight:500;color:#5f574d;border:1px dashed #5f574d;background:#fdfaf4">Sample data</span></div>
+<div style="position:absolute;left:48px;top:112px;width:1104px;height:528px;display:grid;grid-template-columns:1fr 1fr;gap:24px">
+  <section style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;overflow:hidden;display:grid;grid-template-rows:auto 1fr">
+    <div style="display:grid;gap:4px;padding:16px 24px;background:#f7f2ea;border-bottom:1px solid #ebe3d6"><span style="font:700 21px/1.2 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Elektro Kessler GmbH</span><span style="font:14px 'JetBrains Mono',monospace;color:#746c61">RE-2026-0412, received 09 Oct, 08:12</span></div>
+    <div style="display:grid;gap:16px;align-content:start;padding:24px">
+      <span style="display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:500;color:#b42318"><e-icon name="octagon" size="20"></e-icon>Block</span>
+      <span style="font-size:21px;font-weight:600;color:#1f1c18;line-height:1.3">Same invoice number as RE-2026-0412, received 07 Oct 2026</span>
+      <div style="display:grid;grid-template-columns:max-content 1fr;gap:12px 24px;font-size:16px"><span style="color:#746c61">First copy</span><span style="font-family:'JetBrains Mono',monospace;color:#1f1c18">07 Oct, 14:30, 1.190,00 €</span><span style="color:#746c61">This copy</span><span style="font-family:'JetBrains Mono',monospace;color:#1f1c18">09 Oct, 08:12, 1.190,00 €</span></div>
+      <span style="justify-self:start;display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:6px;font-size:16px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb">Resolve check</span>
+    </div>
+  </section>
+  <section style="background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;overflow:hidden;display:grid;grid-template-rows:auto 1fr">
+    <div style="display:grid;gap:4px;padding:16px 24px;background:#f7f2ea;border-bottom:1px solid #ebe3d6"><span style="font:700 21px/1.2 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Bürobedarf Nord KG</span><span style="font:14px 'JetBrains Mono',monospace;color:#746c61">BN-88290, received 07 Oct, 10:05</span></div>
+    <div style="display:grid;gap:16px;align-content:start;padding:24px">
+      <span style="display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:500;color:#b42318"><e-icon name="octagon" size="20"></e-icon>Block</span>
+      <span style="font-size:21px;font-weight:600;color:#1f1c18;line-height:1.3">Bank account differs from earlier invoices</span>
+      <div style="display:grid;grid-template-columns:max-content 1fr;gap:12px 24px;align-items:center;font-size:16px"><span style="color:#746c61">Before</span><span style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span style="font-family:'JetBrains Mono',monospace;color:#1f1c18">DE89 3704 0044 0532 0130 00</span><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#f6f0e6;color:#746c61;font-size:12px;font-weight:500"><e-icon name="check" size="14"></e-icon>Known account</span></span><span style="color:#746c61">Now</span><span style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span style="font-family:'JetBrains Mono',monospace;color:#1f1c18">DE02 1203 0000 0000 2020 51</span><span style="display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 8px;border-radius:999px;background:#fbe9e6;color:#b42318;font-size:12px;font-weight:500"><e-icon name="circle-alert" size="14"></e-icon>New account</span></span></div>
+      <span style="justify-self:start;display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:6px;font-size:16px;font-weight:500;background:#fffdf9;color:#1f1c18;border:1px solid #d6cbbb">Resolve check</span>
+    </div>
+  </section>
+</div>
+</div>
+</x-dc>
+</body>
+</html>

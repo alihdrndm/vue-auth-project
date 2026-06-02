@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&amp;family=Familjen+Grotesk:wght@700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<script src="./eingang-ui.js"></script>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#ebe4d6}
+body{color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+h1{margin:0}
+a{color:#2c4a8a}
+a:hover{color:#1f1c18}
+</style>
+</helmet>
+<div data-screen-label="Demo chapter" style="position:relative;width:1920px;height:1080px;overflow:hidden;background-color:#ebe4d6;background-image:linear-gradient(#3a2a140b 1px,transparent 1px),linear-gradient(90deg,#3a2a140b 1px,transparent 1px);background-size:48px 48px;display:grid;align-content:center;gap:40px;padding:0 160px">
+  <span style="font:500 40px/1 'JetBrains Mono',monospace;color:#5f574d">{{ n }} / 4</span>
+  <h1 style="font:700 112px/1.02 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18;max-width:1400px">{{ title }}</h1>
+  <div style="display:flex;align-items:center;gap:20px;margin-top:24px"><span aria-hidden="true" style="width:1em;height:1em;font-size:48px;display:grid;place-items:center;border:0.0625em solid #2c4a8a;border-radius:0.15em;outline:0.025em solid #2c4a8a;outline-offset:-0.175em;background:#fffdf9;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1;filter:url(#eg-ink)"><span style="font-size:0.55em">E</span></span><span style="font:700 36px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Eingang</span></div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;chapter&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;],&quot;default&quot;:&quot;1&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const T = ['Every format, one inbox', 'Where every value came from', 'Catch the expensive mistakes', 'Approve and export'];
+class Component extends DCLogic {
+  renderVals() {
+    const q = +new URLSearchParams(window.location.search).get('ch');
+    const i = Math.min(4, Math.max(1, q || +(this.props.chapter ?? 1))) - 1;
+    return { n: i + 1, title: T[i] };
+  }
+}
+
+</script>
+</body>
+</html>

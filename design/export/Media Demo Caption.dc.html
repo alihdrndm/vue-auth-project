@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:#ebe4d6}
+body{color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#2c4a8a}
+a:hover{color:#1f1c18}
+</style>
+</helmet>
+<div data-screen-label="Demo caption" style="position:relative;width:1920px;height:1080px;overflow:hidden;background-color:#ebe4d6;background-image:linear-gradient(#3a2a140b 1px,transparent 1px),linear-gradient(90deg,#3a2a140b 1px,transparent 1px);background-size:48px 48px">
+  <div style="position:absolute;left:96px;right:96px;top:72px;height:640px;display:grid;place-items:center;border:2px dashed #746c61;border-radius:12px;background:#f7f2ea"><span style="font:500 32px/1 'Instrument Sans',sans-serif;color:#5f574d">Screen recording of the running app</span></div>
+  <div style="position:absolute;left:96px;right:96px;top:744px;bottom:40px;display:grid;align-content:center;justify-items:center;gap:16px">
+    <sc-for list="{{ caps }}" as="c" hint-placeholder-count="3">
+      <div style="display:flex;align-items:center;gap:24px;padding:20px 40px;background:#1f1c18;border-radius:12px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433"><span style="font:500 24px/1 'JetBrains Mono',monospace;color:#d6cbbb">{{ c.n }}</span><span style="width:2px;height:36px;background:#3f3a33"></span><span style="font:600 44px/1.2 'Instrument Sans',sans-serif;color:#fffdf9">{{ c.t }}</span></div>
+    </sc-for>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const CAPS = [['04', 'Twelve invoices, each with a verdict'], ['07', 'Every AI value shows its source'], ['13', 'A second person approves']];
+class Component extends DCLogic {
+  renderVals() {
+    const q = +new URLSearchParams(window.location.search).get('c');
+    const list = q >= 1 && q <= 3 ? [CAPS[q - 1]] : CAPS;
+    return { caps: list.map((c, i) => ({ key: i, n: c[0], t: c[1] })) };
+  }
+}
+
+</script>
+</body>
+</html>

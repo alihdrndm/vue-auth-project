@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&amp;family=Familjen+Grotesk:wght@700&amp;family=Instrument+Sans:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<script src="./eingang-ui.js"></script>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:1600px;height:1000px;overflow:hidden;background:#ebe4d6}
+body{color:#3f3a33;font:400 14px/1.45 'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+h1,p,ul{margin:0}
+ul{padding:0;list-style:none}
+a{color:#2c4a8a}
+a:hover{color:#1f1c18}
+</style>
+</helmet>
+<div data-screen-label="Architecture" style="position:relative;width:1600px;height:1000px;overflow:hidden;background-color:#ebe4d6;background-image:linear-gradient(#3a2a140b 1px,transparent 1px),linear-gradient(90deg,#3a2a140b 1px,transparent 1px);background-size:32px 32px">
+  <div style="position:absolute;left:64px;top:48px;display:flex;align-items:center;gap:12px">
+    <span aria-hidden="true" style="width:1em;height:1em;font-size:32px;display:grid;place-items:center;border:0.0625em solid #2c4a8a;border-radius:0.15em;outline:0.025em solid #2c4a8a;outline-offset:-0.175em;background:#fffdf9;color:#2c4a8a;font-family:'Barlow Condensed',sans-serif;font-weight:700;line-height:1;filter:url(#eg-ink)"><span style="font-size:0.55em">E</span></span>
+    <h1 style="font:700 42px/1 'Familjen Grotesk',sans-serif;letter-spacing:-0.025em;color:#1f1c18">Architecture</h1>
+  </div>
+  <div style="position:absolute;right:64px;top:64px;display:flex;gap:24px;font-size:13px;color:#5f574d">
+    <span style="display:flex;align-items:center;gap:8px"><span style="width:28px;height:18px;border:1px solid #ebe3d6;border-radius:6px;background:#fffdf9;box-shadow:inset 0 6px 0 #f7f2ea"></span>Eingang service</span>
+    <span style="display:flex;align-items:center;gap:8px"><span style="width:28px;height:18px;border:1.5px solid #746c61;border-radius:6px"></span>Third party</span>
+  </div>
+
+  <svg aria-hidden="true" width="1600" height="1000" viewBox="0 0 1600 1000" style="position:absolute;inset:0">
+    <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" style="fill:#3f3a33"></path></marker></defs>
+    <path d="M 224 296 L 298 296" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-end:url(#ah)"></path>
+    <path d="M 560 296 L 638 296" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-end:url(#ah)"></path>
+    <path d="M 1022 262 L 1138 262" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-start:url(#ah);marker-end:url(#ah)"></path>
+    <path d="M 1330 332 L 1330 418" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-start:url(#ah);marker-end:url(#ah)"></path>
+    <path d="M 700 412 L 520 598" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-end:url(#ah)"></path>
+    <path d="M 860 412 L 860 598" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-end:url(#ah)"></path>
+    <path d="M 1140 655 L 982 655" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-end:url(#ah)"></path>
+    <path d="M 1140 736 L 460 736 L 460 712" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-end:url(#ah)"></path>
+    <path d="M 1330 752 L 1330 818" style="fill:none;stroke:#3f3a33;stroke-width:1.5;marker-end:url(#ah)"></path>
+  </svg>
+
+  <div style="position:absolute;left:64px;top:248px;width:160px;height:96px;display:grid;place-items:center;border:1.5px solid #746c61;border-radius:8px;font-size:16px;font-weight:600;color:#1f1c18">Browser</div>
+
+  <div style="position:absolute;left:300px;top:224px;width:260px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;overflow:hidden">
+    <div style="display:flex;align-items:center;gap:8px;height:32px;padding:0 12px;background:#f7f2ea;border-bottom:1px solid #ebe3d6;font-size:12px;font-weight:600;color:#746c61">Vercel</div>
+    <p style="padding:20px 16px;font-size:16px;font-weight:600;color:#1f1c18">Vue 3 app + /api proxy</p>
+  </div>
+
+  <div style="position:absolute;left:640px;top:200px;width:380px;height:212px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;overflow:hidden;display:grid;grid-template-rows:32px 1fr auto">
+    <div style="display:flex;align-items:center;gap:8px;padding:0 12px;background:#f7f2ea;border-bottom:1px solid #ebe3d6;font-size:12px;font-weight:600;color:#746c61">Railway<span style="font:500 12px 'JetBrains Mono',monospace;color:#1f1c18">api</span></div>
+    <div style="display:grid;gap:4px;padding:16px"><span style="font-size:16px;font-weight:600;color:#1f1c18">Django + DRF (gunicorn)</span><span style="font-size:14px">sessions, permissions, uploads</span></div>
+    <p style="display:flex;gap:8px;align-items:flex-start;margin:0 12px 12px;padding:8px 12px;border-radius:6px;background:#e6eef7;color:#2f5d8a;font-size:13px"><e-icon name="info" size="16"></e-icon>Never imports validation, PDF or AI code; heavy work runs in the worker.</p>
+  </div>
+
+  <div style="position:absolute;left:1140px;top:200px;width:380px;height:132px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;overflow:hidden">
+    <div style="display:flex;align-items:center;gap:8px;height:32px;padding:0 12px;background:#f7f2ea;border-bottom:1px solid #ebe3d6;font-size:12px;font-weight:600;color:#746c61">Railway<span style="font:500 12px 'JetBrains Mono',monospace;color:#1f1c18">temporal</span></div>
+    <div style="display:grid;gap:4px;padding:16px"><span style="font-size:16px;font-weight:600;color:#1f1c18">Temporal (workflow engine)</span><span style="display:flex;align-items:center;gap:4px;font-size:14px"><e-icon name="lock" size="14" style="color:#746c61"></e-icon>private network only</span></div>
+  </div>
+
+  <div style="position:absolute;left:1140px;top:420px;width:380px;height:332px;background:#fffdf9;border:1px solid #ebe3d6;border-radius:12px;box-shadow:0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;overflow:hidden">
+    <div style="display:flex;align-items:center;gap:8px;height:32px;padding:0 12px;background:#f7f2ea;border-bottom:1px solid #ebe3d6;font-size:12px;font-weight:600;color:#746c61">Railway<span style="font:500 12px 'JetBrains Mono',monospace;color:#1f1c18">worker</span></div>
+    <div style="display:grid;gap:12px;padding:16px">
+      <span style="font-size:16px;font-weight:600;color:#1f1c18">Temporal worker</span>
+      <ul style="display:grid;gap:8px;font-size:14px">
+        <li style="display:flex;gap:8px"><e-icon name="file-code" size="16" style="color:#746c61"></e-icon>detect format</li>
+        <li style="display:flex;gap:8px"><e-icon name="circle-check" size="16" style="color:#746c61"></e-icon>validate (XSD + official EN 16931 / XRechnung rules)</li>
+        <li style="display:flex;gap:8px"><e-icon name="file-text" size="16" style="color:#746c61"></e-icon>render visualisation</li>
+        <li style="display:flex;gap:8px"><e-icon name="eye" size="16" style="color:#746c61"></e-icon>read plain PDFs with AI (budget-capped)</li>
+        <li style="display:flex;gap:8px"><e-icon name="copy" size="16" style="color:#746c61"></e-icon>compare PDF vs XML</li>
+        <li style="display:flex;gap:8px"><e-icon name="octagon" size="16" style="color:#746c61"></e-icon>business checks <span style="font-family:'JetBrains Mono',monospace;font-size:13px">C01–C16</span></li>
+        <li style="display:flex;gap:8px"><e-icon name="clock" size="16" style="color:#746c61"></e-icon>reminders</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="position:absolute;left:300px;top:600px;width:320px;height:112px;display:grid;align-content:center;gap:4px;padding:0 20px;border:1.5px solid #746c61;border-radius:8px"><span style="font-size:16px;font-weight:600;color:#1f1c18">Supabase Postgres</span><span style="font-size:14px;color:#3f3a33">invoices, checks, events, AI cost ledger</span></div>
+  <div style="position:absolute;left:660px;top:600px;width:320px;height:112px;display:grid;align-content:center;gap:4px;padding:0 20px;border:1.5px solid #746c61;border-radius:8px"><span style="font-size:16px;font-weight:600;color:#1f1c18">Supabase Storage</span><span style="font-size:14px;color:#3f3a33">original files</span></div>
+  <div style="position:absolute;left:1140px;top:820px;width:380px;height:96px;display:grid;align-content:center;gap:4px;padding:0 20px;border:1.5px solid #746c61;border-radius:8px"><span style="font-size:16px;font-weight:600;color:#1f1c18">OpenAI API</span><span style="font-size:14px;color:#3f3a33">structured output, hard budget cap</span></div>
+
+  <span style="position:absolute;left:240px;top:264px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;color:#1f1c18">HTTPS</span>
+  <span style="position:absolute;left:572px;top:264px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;color:#1f1c18">upload</span>
+  <span style="position:absolute;left:1032px;top:274px;width:96px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;line-height:1.35;color:#1f1c18;text-align:center">start workflow / signals</span>
+  <span style="position:absolute;left:1344px;top:362px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;color:#1f1c18">task queue eingang-main (worker polls)</span>
+  <span style="position:absolute;left:574px;top:488px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;color:#1f1c18">SQL</span>
+  <span style="position:absolute;left:874px;top:488px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;color:#1f1c18">files</span>
+  <span style="position:absolute;left:1036px;top:628px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;color:#1f1c18">files</span>
+  <span style="position:absolute;left:780px;top:724px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;color:#1f1c18">SQL</span>
+  <span style="position:absolute;left:1344px;top:772px;padding:4px 8px;border:1px solid #d6cbbb;border-radius:6px;background:#fdfaf4;font-size:12px;color:#1f1c18">structured extraction</span>
+
+  <p style="position:absolute;left:64px;bottom:48px;display:flex;align-items:center;gap:8px;font-size:15px;color:#3f3a33"><e-icon name="sliders" size="16" style="color:#5f574d"></e-icon>Locally: Docker Compose (Postgres + Temporal), API, worker and frontend with hot reload.</p>
+</div>
+
+</x-dc>
+</body>
+</html>

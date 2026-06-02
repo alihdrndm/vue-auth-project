@@ -62,6 +62,7 @@
   }
   if (!customElements.get('e-icon')) customElements.define('e-icon', EIcon);
   window.EG_ICON_NAMES = Object.keys(P);
+  window.EG_ICON_PATHS = P;
   class EBars extends HTMLElement {
     static get observedAttributes() { return ['level']; }
     connectedCallback() { this.r(); }
