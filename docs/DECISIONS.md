@@ -244,3 +244,8 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - Each check's `resolve` uses `FORBIDDEN_ROLE` (C15 is admin-only), `CHECK_NOT_RESOLVABLE` (information-only or already resolved) and `INVALID_TRANSITION` (the document does not need review). These are the same codes `POST /checks/{id}/resolve` answers (M4).
 - `/file`, `/xml` and `/text` are sent as attachments with `Content-Security-Policy: sandbox; default-src 'none'`. `/visualization` gets the CSP of section 4 and `X-Frame-Options: SAMEORIGIN`. A representation the worker has not stored answers `404 NOT_AVAILABLE`.
 - Delete is a soft delete (`deleted_at`) with a `document.deleted` event. Exported documents answer `409 ALREADY_EXPORTED`. Documents still `received` or `processing` answer `409 INVALID_TRANSITION`, because `allowed_actions` offers no delete in those statuses. Signalling the running workflow (`deleted`) arrives with the workflows in M4.
+
+### Order of checks on requests that are wrong in several ways
+- DRF checks sign-in and role before the HTTP method, so an anonymous request with a wrong method gets 401, not 405. Signed in, it gets `405 METHOD_NOT_ALLOWED`.
+- The CSRF check reads the request body, so a JSON body sent to the multipart-only `POST /documents` gets `415 UNSUPPORTED_MEDIA_TYPE` before the role check. With multipart, as the SPA always sends it, a viewer or approver gets `403 FORBIDDEN_ROLE`.
+- `tests/test_error_codes.py` pins this order, and checks that every code the code base uses is documented in `docs/ERRORS.md`.
