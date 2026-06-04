@@ -37,9 +37,12 @@ def sample_buyer() -> SampleBuyer:
 
 
 def sandboxes_created_last_day() -> int:
-    since = clock.now() - timedelta(days=1)
+    # Read through expires_at (creation time + TTL, set from the injected clock) rather
+    # than created_at, which Django fills from the real clock.
+    ttl = timedelta(hours=get_settings().SANDBOX_TTL_HOURS)
+    created_since = clock.now() - timedelta(days=1)
     return Organization.objects.filter(
-        kind=Organization.Kind.SANDBOX, created_at__gte=since
+        kind=Organization.Kind.SANDBOX, expires_at__gte=created_since + ttl
     ).count()
 
 

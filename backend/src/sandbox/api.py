@@ -1,7 +1,5 @@
 """`POST /api/v1/sandbox`: open a sandbox and sign the visitor in."""
 
-from typing import Never
-
 from django.contrib.auth import login
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
@@ -34,9 +32,14 @@ class SandboxView(APIView):
     permission_classes = ()
     throttle_classes = (GeneralThrottle, SandboxPerIpThrottle)
 
-    def throttled(self, request: Request, wait: float | None) -> Never:
-        # The per-IP sandbox limit answers SANDBOX_LIMIT, not the generic RATE_LIMITED.
-        raise sandbox_limit(wait)
+    def check_throttles(self, request: Request) -> None:
+        # Only the sandbox limit answers SANDBOX_LIMIT; the general limit stays RATE_LIMITED.
+        for throttle in self.get_throttles():
+            if not throttle.allow_request(request, self):
+                if isinstance(throttle, SandboxPerIpThrottle):
+                    raise sandbox_limit(throttle.wait())
+                wait = throttle.wait()
+                self.throttled(request, wait if wait is not None else 0.0)
 
     @extend_schema(
         request=None,

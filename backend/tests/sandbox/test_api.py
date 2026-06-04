@@ -1,7 +1,8 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import TYPE_CHECKING
 
 import pytest
+from django.test import Client
 
 from accounts.models import Organization, User
 from eingang import clock
@@ -64,11 +65,49 @@ def test_SANDBOX_LIMIT_five_per_hour_per_ip(api: ApiClient) -> None:
     assert open_sandbox(api, ip="198.51.100.8").status_code == 201
 
 
+def make_sandboxes(count: int, created: datetime) -> None:
+    for number in range(count):
+        Organization.objects.create(
+            name="old",
+            slug=f"old-{created.timestamp():.0f}-{number}",
+            kind="sandbox",
+            expires_at=created + timedelta(hours=24),
+        )
+
+
 def test_SANDBOX_LIMIT_fifty_per_day_in_total(
     api: ApiClient, fixed_clock: clock.FixedClock
 ) -> None:
-    for number in range(50):
-        Organization.objects.create(name="old", slug=f"old-{number}", kind="sandbox")
+    make_sandboxes(50, fixed_clock.now() - timedelta(hours=23))
     response = open_sandbox(api, ip="198.51.100.9")
     assert response.status_code == 429
     assert response.json()["code"] == "SANDBOX_LIMIT"
+
+
+def test_sandboxes_older_than_a_day_no_longer_count(
+    api: ApiClient, fixed_clock: clock.FixedClock
+) -> None:
+    make_sandboxes(50, fixed_clock.now() - timedelta(hours=25))
+    assert open_sandbox(api, ip="198.51.100.10").status_code == 201
+
+
+def test_CSRF_FAILED_sandbox_without_token() -> None:
+    client = Client(enforce_csrf_checks=True)
+    response = client.post("/api/v1/sandbox", content_type="application/json")
+    assert response.status_code == 403
+    assert response.json()["code"] == "CSRF_FAILED"
+
+
+def test_general_rate_limit_on_sandbox_stays_RATE_LIMITED(
+    api: ApiClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from eingang.throttles import GeneralThrottle
+
+    token = api.csrf()  # fetched before the general limit is forced closed
+    monkeypatch.setattr(GeneralThrottle, "allow_request", lambda self, request, view: False)
+    monkeypatch.setattr(GeneralThrottle, "wait", lambda self: 30.0)
+    response = api.post(
+        "/api/v1/sandbox", content_type="application/json", headers={"X-CSRFToken": token}
+    )
+    assert response.status_code == 429
+    assert response.json()["code"] == "RATE_LIMITED"
