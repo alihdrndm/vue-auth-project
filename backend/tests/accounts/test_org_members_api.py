@@ -298,3 +298,18 @@ def test_NOT_FOUND_member_of_another_organization(
     assert response.json()["code"] == "NOT_FOUND"
     stranger.refresh_from_db()
     assert stranger.name == "Viewer"
+
+
+def test_member_email_can_be_changed_but_must_stay_unique(
+    signed_in: Callable[[str], ApiClient], make_user: MakeUser
+) -> None:
+    api = signed_in("admin")
+    member = make_user("viewer")
+    other = make_user("accountant")
+    url = f"/api/v1/members/{member.id}"
+    response = api.unsafe("patch", url, data={"email": "New.Name@Example.INVALID"})
+    assert response.status_code == 200
+    assert response.json()["email"] == "new.name@example.invalid"
+    clash = api.unsafe("patch", url, data={"email": other.email})
+    assert clash.status_code == 422
+    assert clash.json()["errors"][0]["path"] == "email"

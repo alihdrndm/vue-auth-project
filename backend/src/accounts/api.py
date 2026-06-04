@@ -205,6 +205,11 @@ class MemberDetailView(APIView):
         payload = MemberUpdateSerializer(data=request.data)
         payload.is_valid(raise_exception=True)
         changes = payload.validated_data
+        if "email" in changes:
+            changes["email"] = changes["email"].lower()
+            taken = User.objects.filter(email__iexact=changes["email"]).exclude(id=member.id)
+            if taken.exists():
+                raise ValidationError({"email": ["A user with this email address already exists."]})
         if member.id == request.user.pk:
             errors: dict[str, list[str]] = {}
             if changes.get("is_active", True) is False:

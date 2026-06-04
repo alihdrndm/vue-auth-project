@@ -263,3 +263,7 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 
 ### `processing_step` is nullable
 - A document has no processing step until its workflow starts (`received`), so `processing_step` is NULL until then, and the API omits it.
+
+### Member updates
+- `PATCH /members/{id}` accepts `email`, `name` and `role` (the spec's body), with the email lower-cased and unique across all organisations. It also accepts `is_active`: there is no delete endpoint, so deactivating is how an admin removes someone, and an inactive user cannot sign in. An admin cannot deactivate themselves or change their own role (422).
+- `GET /members` is paginated like every other list (25 per page).
