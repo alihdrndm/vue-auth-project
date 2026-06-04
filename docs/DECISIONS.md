@@ -209,7 +209,7 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - `Document.kind` and `format_label` are NULL until the worker has detected the file. The API process cannot detect: the api-stays-light contract keeps PDF libraries out of it.
 - `ValidationReport.xsd_ok` is nullable: `not_applicable` reports validated nothing.
 - Required user references (`Approval.decided_by`, `ExportBatch.created_by`) use `RESTRICT`, not `PROTECT`. A user with decisions or exports cannot be deleted on their own, but deleting a sandbox organisation still deletes everything in it. `PROTECT` blocked that cascade in testing.
-- The LLM ledger's `organization` is `SET_NULL`, so spend stays on record after a sandbox is deleted (spec "The ledger and the cache are never deleted").
+- The LLM ledger's `organization` uses `DB_SET_NULL` (Django 6.1): the database itself has `ON DELETE SET NULL`, so spend stays on record however a sandbox is deleted (spec "The ledger and the cache are never deleted"). A test deletes an organisation in raw SQL.
 - `Event` refuses updates and deletes through `save()`/`delete()`. Deleting the whole organisation or document still removes its events by cascade.
 
 ### Proxy hops for rate limits: `TRUSTED_PROXY_HOPS`

@@ -26,3 +26,18 @@ def test_deleting_an_organization_keeps_its_llm_ledger_rows() -> None:
     call.refresh_from_db()
     assert call.organization is None
     assert call.cost == Decimal("0.000420")
+
+
+@pytest.mark.django_db
+def test_ledger_survives_an_organisation_deleted_in_sql() -> None:
+    from django.db import connection
+
+    from accounts.models import Organization
+
+    organization = Organization.objects.create(name="Gone", slug="gone-sql", kind="sandbox")
+    call = LlmCall.objects.create(organization=organization, purpose="extract")
+    with connection.cursor() as cursor:
+        # Bypasses Django entirely: only the database's ON DELETE SET NULL can keep the row.
+        cursor.execute("DELETE FROM organizations WHERE id = %s", [organization.id])
+    call.refresh_from_db()
+    assert call.organization_id is None

@@ -18,10 +18,11 @@ class LlmCall(BaseModel):
         REFUSED_BUDGET = "refused_budget"
         REFUSED_DISABLED = "refused_disabled"
 
-    # SET_NULL, not CASCADE: deleting a sandbox keeps its spend on record.
+    # ON DELETE SET NULL in the database itself, not only in Django: deleting a sandbox,
+    # by any route, keeps its spend on record (spec: the ledger is never deleted).
     organization = models.ForeignKey(
         Organization,
-        on_delete=models.SET_NULL,
+        on_delete=models.DB_SET_NULL,
         null=True,
         blank=True,
         related_name="llm_calls",
