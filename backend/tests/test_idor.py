@@ -81,7 +81,7 @@ def test_IDOR_object_of_another_organization_is_not_found(
 ) -> None:
     response = OBJECT_ENDPOINTS[endpoint](signed_in("admin"), victim)
     assert response.status_code == 404, endpoint  # type: ignore[attr-defined]  # test response
-    assert response.json()["code"] == "NOT_FOUND"  # type: ignore[attr-defined]
+    assert response.json()["code"] == "NOT_FOUND"  # type: ignore[attr-defined]  # test response
     victim.document.refresh_from_db()
     victim.member.refresh_from_db()
     assert victim.document.deleted_at is None

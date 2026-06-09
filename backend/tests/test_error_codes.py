@@ -273,3 +273,19 @@ def test_docs_errors_md_lists_every_code_the_api_uses() -> None:
     # Guard against a regex that silently stops matching.
     assert {"NOT_AUTHENTICATED", "FORBIDDEN_ROLE", "UNSUPPORTED_FILE", "SANDBOX_LIMIT"} <= used
     assert used - documented == set()
+
+
+def test_order_anonymous_wrong_method_is_NOT_AUTHENTICATED_first(api: ApiClient) -> None:
+    # Sign-in is checked before the method (docs/DECISIONS.md, "Order of checks").
+    response = api.unsafe("put", "/api/v1/documents")
+    assert response.status_code == 401
+    assert response.json()["code"] == "NOT_AUTHENTICATED"
+
+
+def test_order_json_upload_is_UNSUPPORTED_MEDIA_TYPE_before_the_role_check(
+    signed_in: Callable[[str], ApiClient],
+) -> None:
+    # The CSRF check parses the body first; the SPA always sends multipart.
+    response = signed_in("viewer").unsafe("post", "/api/v1/documents", data={})
+    assert response.status_code == 415
+    assert response.json()["code"] == "UNSUPPORTED_MEDIA_TYPE"
