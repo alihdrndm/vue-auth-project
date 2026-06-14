@@ -82,7 +82,9 @@ class SizeLimitedUploadHandler(FileUploadHandler):
         self._size += len(raw_data)
         if self._size > self.limit:
             self.too_large = True
-            raise StopUpload(connection_reset=True)
+            # Stop storing, but let Django read the rest of the body so the client gets the 413
+            # response rather than a reset connection behind a proxy.
+            raise StopUpload(connection_reset=False)
         self._buffer.write(raw_data)
 
     def file_complete(self, file_size: int) -> InMemoryUploadedFile:
