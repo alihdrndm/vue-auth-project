@@ -267,3 +267,10 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 ### Member updates
 - `PATCH /members/{id}` accepts `email`, `name` and `role` (the spec's body), with the email lower-cased and unique across all organisations. It also accepts `is_active`: there is no delete endpoint, so deactivating is how an admin removes someone, and an inactive user cannot sign in. An admin cannot deactivate themselves or change their own role (422).
 - `GET /members` is paginated like every other list (25 per page).
+
+## 2026-10-09 — M4
+
+### One test database per test run
+- **Spec:** database tests run against a separate test database `eingang_test`.
+- **Did:** the test database is `eingang_test_<process id>`. pytest-django creates and drops it per run, and it is never the development database.
+- **Why:** this project runs several checks in parallel, for example a reviewer's `pnpm verify` next to a build. Two runs sharing one test database dropped it under each other.

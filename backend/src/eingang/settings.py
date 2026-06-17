@@ -1,6 +1,7 @@
 """Django settings. Every value comes from `eingang.config`, never from os.environ."""
 
 import logging.config
+import os
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
@@ -67,7 +68,9 @@ def _database_from_url(url: str) -> dict[str, object]:
         "PORT": str(parts.port or 5432),
         # Bounds a hung connection attempt; /readyz gives up after 2 s on its own.
         "OPTIONS": {"connect_timeout": 5},
-        "TEST": {"NAME": "eingang_test"},
+        # One test database per test run (process), so parallel runs never drop each
+        # other's database; pytest-django creates and drops it.
+        "TEST": {"NAME": f"eingang_test_{os.getpid()}"},
     }
 
 
