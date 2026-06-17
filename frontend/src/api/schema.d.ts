@@ -687,6 +687,8 @@ export interface components {
          *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
          */
         PatchedMemberUpdate: {
+            /** Format: email */
+            email?: string;
             name?: string;
             role?: components["schemas"]["RoleEnum"];
             is_active?: boolean;
