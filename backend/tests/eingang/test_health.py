@@ -69,3 +69,21 @@ def test_start_processing_raises_when_temporal_is_unreachable(
     temporal_client._get_loop_thread().forget_client()
     with pytest.raises(temporal_client.TemporalUnavailableError):
         temporal_client.start_processing(uuid.uuid4())
+
+
+def test_signal_never_raises_and_skips_seeded_documents(monkeypatch: pytest.MonkeyPatch) -> None:
+    unreachable = Settings(_env_file=None, TEMPORAL_ADDRESS="127.0.0.1:1")
+    monkeypatch.setattr(temporal_client, "get_settings", lambda: unreachable)
+    temporal_client._get_loop_thread().forget_client()
+    temporal_client.signal(uuid.uuid4(), "", "reviewed")  # seeded: nothing to do
+    temporal_client.signal(uuid.uuid4(), "invoice-x", "reviewed")  # unreachable: logged only
+
+
+def test_retry_processing_raises_when_temporal_is_unreachable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    unreachable = Settings(_env_file=None, TEMPORAL_ADDRESS="127.0.0.1:1")
+    monkeypatch.setattr(temporal_client, "get_settings", lambda: unreachable)
+    temporal_client._get_loop_thread().forget_client()
+    with pytest.raises(temporal_client.TemporalUnavailableError):
+        temporal_client.retry_processing(uuid.uuid4())

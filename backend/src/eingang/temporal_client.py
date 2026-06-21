@@ -6,6 +6,7 @@ event loops themselves. The client is created lazily and recreated after a failu
 """
 
 import asyncio
+import logging
 import threading
 from collections.abc import Coroutine
 from concurrent.futures import TimeoutError as FutureTimeoutError
@@ -17,11 +18,14 @@ from temporalio.exceptions import WorkflowAlreadyStartedError
 
 from eingang.config import get_settings
 from eingang.workflows.contracts import (
+    SIG_RETRY,
     TASK_QUEUE,
     WF_PROCESS_INVOICE,
     ProcessInvoiceInput,
     process_invoice_workflow_id,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class _LoopThread:
@@ -112,5 +116,51 @@ def start_processing(document_id: UUID) -> None:
     try:
         loop_thread.run(_start_processing(loop_thread, document_id), START_TIMEOUT_SECONDS)
     except Exception as error:  # any failure: the maintenance workflow starts it later
+        loop_thread.forget_client()
+        raise TemporalUnavailableError from error
+
+
+SIGNAL_TIMEOUT_SECONDS = 5.0
+
+
+async def _signal(loop_thread: _LoopThread, workflow_id: str, name: str) -> None:
+    client = await loop_thread.client()
+    await client.get_workflow_handle(workflow_id).signal(name)
+
+
+def signal(document_id: UUID, workflow_id: str, name: str) -> None:
+    """Wake the document's workflow. The database is the source of truth, so this never fails.
+
+    Seeded documents have an empty `workflow_id` and are skipped. A workflow that is no
+    longer running (or Temporal being down) is logged as a warning; the daily maintenance
+    re-syncs workflows whose phase differs from the document status.
+    """
+    if not workflow_id:
+        return
+    loop_thread = _get_loop_thread()
+    try:
+        loop_thread.run(_signal(loop_thread, workflow_id, name), SIGNAL_TIMEOUT_SECONDS)
+    except Exception:  # any failure: logged, never raised to the API caller
+        loop_thread.forget_client()
+        logger.warning("Could not signal %s to document %s", name, document_id)
+
+
+async def _retry(loop_thread: _LoopThread, document_id: UUID) -> None:
+    client = await loop_thread.client()
+    await client.start_workflow(
+        WF_PROCESS_INVOICE,
+        ProcessInvoiceInput(document_id=document_id),
+        id=process_invoice_workflow_id(document_id),
+        task_queue=TASK_QUEUE,
+        start_signal=SIG_RETRY,
+    )
+
+
+def retry_processing(document_id: UUID) -> None:
+    """Signal-with-start: works whether or not the workflow is still running."""
+    loop_thread = _get_loop_thread()
+    try:
+        loop_thread.run(_retry(loop_thread, document_id), START_TIMEOUT_SECONDS)
+    except Exception as error:  # any failure: the caller reports TEMPORAL_UNAVAILABLE
         loop_thread.forget_client()
         raise TemporalUnavailableError from error
