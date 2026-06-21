@@ -313,3 +313,18 @@ def test_member_email_can_be_changed_but_must_stay_unique(
     clash = api.unsafe("patch", url, data={"email": other.email})
     assert clash.status_code == 422
     assert clash.json()["errors"][0]["path"] == "email"
+
+
+def test_member_email_race_is_a_validation_error_not_500(
+    signed_in: Callable[[str], ApiClient], make_user: MakeUser, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from django.db.models import QuerySet
+
+    api = signed_in("admin")
+    member = make_user("viewer")
+    other = make_user("accountant")
+    # Simulate the race: the uniqueness pre-check sees no clash, the database index does.
+    monkeypatch.setattr(QuerySet, "exists", lambda self: False)
+    response = api.unsafe("patch", f"/api/v1/members/{member.id}", data={"email": other.email})
+    assert response.status_code == 422
+    assert response.json()["errors"][0]["path"] == "email"

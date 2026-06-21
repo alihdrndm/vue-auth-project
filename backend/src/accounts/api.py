@@ -220,5 +220,12 @@ class MemberDetailView(APIView):
                 raise ValidationError(errors)
         for field, value in changes.items():
             setattr(member, field, value)
-        member.save()
+        try:
+            with transaction.atomic():
+                member.save()
+        except IntegrityError as error:
+            # Two requests raced for the same address; the database's unique index decided.
+            raise ValidationError(
+                {"email": ["A user with this email address already exists."]}
+            ) from error
         return Response(MemberSerializer(member).data)
