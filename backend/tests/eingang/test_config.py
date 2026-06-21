@@ -46,3 +46,12 @@ def test_invalid_configuration_prints_every_problem_and_exits_1(
     printed = capsys.readouterr().err
     assert "MAX_UPLOAD_BYTES" in printed
     assert "STORAGE_BACKEND" in printed
+
+
+def test_llm_budget_defaults() -> None:
+    settings = Settings(_env_file=None)
+    assert str(settings.LLM_BUDGET_USD_LIFETIME) == "2.00"
+    assert str(settings.LLM_BUDGET_USD_MONTHLY) == "1.50"
+    assert str(settings.LLM_BUDGET_USD_DAILY_PUBLIC) == "0.10"
+    assert settings.LLM_MAX_CALLS_PER_SANDBOX == 3
+    assert str(settings.EVAL_BUDGET_USD) == "0.75"

@@ -5,6 +5,7 @@ asks for `get_settings()`.
 """
 
 import sys
+from decimal import Decimal
 from functools import cache
 from typing import Literal
 
@@ -58,6 +59,13 @@ class Settings(BaseSettings):
     MAILBOX_ORG_SLUG: str = ""
 
     LLM_ENABLED: bool = False
+    # Budgets in USD (HANDOFF "Budgets"); every LLM call is checked against them (M5).
+    LLM_BUDGET_USD_LIFETIME: Decimal = Decimal("2.00")
+    LLM_SPENT_ELSEWHERE_USD: Decimal | None = None
+    LLM_BUDGET_USD_MONTHLY: Decimal = Decimal("1.50")
+    LLM_BUDGET_USD_DAILY_PUBLIC: Decimal = Decimal("0.10")
+    LLM_MAX_CALLS_PER_SANDBOX: int = Field(default=3, ge=0)
+    EVAL_BUDGET_USD: Decimal = Decimal("0.75")
 
     @property
     def allowed_hosts(self) -> list[str]:
