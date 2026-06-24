@@ -19,6 +19,7 @@ dependencies = [
     "pydantic-settings>=2.15.0",
     "python-json-logger>=4.2.0",
     "python-stdnum>=2.2",
+    "rapidfuzz>=3.14.6",
     "temporalio>=1.34.0",
     "uuid-utils>=1.0.0",
 ]
