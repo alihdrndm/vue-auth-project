@@ -274,3 +274,13 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - **Spec:** database tests run against a separate test database `eingang_test`.
 - **Did:** the test database is `eingang_test_<process id>`. pytest-django creates and drops it per run, and it is never the development database.
 - **Why:** this project runs several checks in parallel, for example a reviewer's `pnpm verify` next to a build. Two runs sharing one test database dropped it under each other.
+
+### Business checks: where the spec is silent
+- **C01:** an empty VAT breakdown is "not given" and is not compared with the tax total. A missing `prepaid_amount` skips the payable comparison ("Fields that are None are skipped"). A line without a net amount skips the line sum.
+- **C02, C03:** `details.document_id` links the earliest matching earlier document. C03 needs a different normalised number; the window `duplicate_window_days` is inclusive.
+- **C04:** needs a supplier, so a scan without data gets no C04 yet (sandbox table, S09).
+- **C05:** an IBAN with no history row counts as not trusted.
+- **C11:** the message names the case (plain PDF, scan, legacy ZUGFeRD 1, unsupported hybrid PDF, or the profile) and links the European Commission page. The link is also in `details.source_url`.
+- **C14:** names are compared with `rapidfuzz.fuzz.token_set_ratio` after rapidfuzz's default processing (lower-case, punctuation removed), so an upper-cased buyer name is not "someone else". VAT IDs are compared upper-cased without spaces. Nothing fires when the organisation has no VAT ID and the invoice has a buyer VAT ID.
+- **Messages:** where the spec gives no exact text (C01–C04, C06–C09, C13–C16), the messages are written in plain English. C04's and C15's follow the design export's check cards.
+- **Supplier IBAN history:** an IBAN's first sighting is always its earliest received invoice, even when invoices are processed out of order, so trust ("on the supplier's first invoice") never depends on processing order.
