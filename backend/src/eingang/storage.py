@@ -54,3 +54,8 @@ def delete(key: str) -> None:
     storage = backend()
     if storage.exists(key):
         storage.delete(key)
+
+
+def export_key(organization_id: UUID, batch_id: UUID, filename: str) -> str:
+    """Where an export file lives: `orgs/<org_id>/exports/<batch_id>/<filename>`."""
+    return f"orgs/{organization_id}/exports/{batch_id}/{filename}"
