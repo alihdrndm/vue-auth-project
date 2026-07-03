@@ -6,7 +6,8 @@ from decimal import Decimal
 from itertools import count
 
 from accounts.models import Organization, User
-from invoices.models import Check, Document, Invoice
+from exports.models import ExportBatch
+from invoices.models import Approval, Check, Document, Invoice
 from suppliers.models import Supplier, SupplierIban
 
 RECEIVED = datetime(2026, 3, 1, 8, 0, tzinfo=UTC)
@@ -94,3 +95,26 @@ def add_check(document: Document, check_id: str = "C05", severity: str = "block"
         message="The bank account differs from earlier invoices from this supplier.",
         details={},
     )
+
+
+def add_approval(document: Document, decided_by: User, decision: str = "approved") -> Approval:
+    return Approval.objects.create(
+        document=document,
+        decision=decision,
+        decided_by=decided_by,
+        comment="",
+        decided_at=RECEIVED + timedelta(days=1),
+    )
+
+
+def make_export(organization: Organization, created_by: User) -> ExportBatch:
+    batch = ExportBatch(
+        organization=organization,
+        created_by=created_by,
+        format=ExportBatch.Format.CSV_INVOICES,
+        document_ids=[],
+        row_count=0,
+    )
+    batch.storage_key = f"orgs/{organization.id}/exports/{batch.id}/eingang-invoices-test.csv"
+    batch.save()
+    return batch
