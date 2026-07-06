@@ -17,7 +17,7 @@ from accounts.models import Organization, User
 from eingang import storage
 from invoices.models import Document
 from tests.conftest import PASSWORD, ApiClient
-from tests.factories import add_iban, make_document, make_invoice, make_supplier
+from tests.factories import add_iban, make_document, make_export, make_invoice, make_supplier
 
 pytestmark = pytest.mark.django_db
 
@@ -71,6 +71,9 @@ OBJECT_ENDPOINTS: dict[str, ObjectCall] = {
     "GET suppliers/{id}": lambda api, v: api.get(f"/api/v1/suppliers/{v.supplier_id}"),
     "PATCH members/{id}": lambda api, v: api.unsafe(
         "patch", f"/api/v1/members/{v.member.id}", data={"role": "admin", "is_active": False}
+    ),
+    "GET exports/{id}/download": lambda api, v: api.get(
+        f"/api/v1/exports/{make_export(v.document.organization, v.member).id}/download"
     ),
 }
 
@@ -128,4 +131,5 @@ def test_IDOR_every_object_route_is_covered() -> None:
         "documents/<uuid:document_id>/visualization",
         "suppliers/<uuid:supplier_id>",
         "members/<uuid:member_id>",
+        "exports/<uuid:export_id>/download",
     }
