@@ -17,13 +17,16 @@ logger = logging.getLogger("eingang.worker")
 
 
 def registered_workflows() -> Sequence[type]:
-    # Filled in as workflows are built (M4).
-    return ()
+    from eingang.workflows.process_invoice import ProcessInvoiceWorkflow
+
+    return (ProcessInvoiceWorkflow,)
 
 
 def registered_activities() -> Sequence[Callable[..., object]]:
-    # Filled in as activities are built (M2-M5).
-    return ()
+    # Activities touch the database, so they are imported after `django.setup()`.
+    from invoices.activities import PROCESS_INVOICE_ACTIVITIES
+
+    return tuple(PROCESS_INVOICE_ACTIVITIES)
 
 
 async def run() -> None:
@@ -32,9 +35,6 @@ async def run() -> None:
     settings = get_settings()
     workflows = registered_workflows()
     activities = registered_activities()
-    if not workflows and not activities:
-        logger.info("No workflows or activities are registered yet; the worker is not started.")
-        return
     client = await Client.connect(
         settings.TEMPORAL_ADDRESS,
         namespace=settings.TEMPORAL_NAMESPACE,

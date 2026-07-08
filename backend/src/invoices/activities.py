@@ -7,6 +7,7 @@ exists (M5).
 """
 
 import logging
+from collections.abc import Callable
 from typing import Any
 from uuid import UUID
 
@@ -347,7 +348,7 @@ def mark_failed(request: c.FailInput) -> None:
         transition(document, Status.FAILED, None, failure_reason=request.reason)
 
 
-PROCESS_INVOICE_ACTIVITIES = [
+PROCESS_INVOICE_ACTIVITIES: list[Callable[..., object]] = [
     begin_processing,
     set_step,
     detect_document,
