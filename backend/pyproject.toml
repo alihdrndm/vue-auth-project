@@ -101,6 +101,7 @@ fetch-corpus = "python tools/fetch_corpus.py"
 fetch-rules = "python tools/fetch_rules.py"
 build-samples = "python tools/build_samples.py"
 create-org = "python manage.py create_org"
+seed-rules = "python manage.py seed_rules"
 openapi = "python tools/export_openapi.py"
 openapi-check = "python tools/export_openapi.py --check"
 worker = { cmd = "python -m eingang.worker", env = { PYTHONPATH = "src" } }
