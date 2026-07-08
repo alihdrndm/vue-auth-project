@@ -1,0 +1,50 @@
+{
+  "BR-CL-23": {
+    "plain_text": "A unit of measure on the invoice lines uses a code that is not on the official UN/ECE list (Recommendation 20, with the Recommendation 21 extension). Receiving systems cannot tell reliably what unit the quantity is in.",
+    "fix_hint": "Ask the supplier to use standard UN/ECE unit codes on every line, for example C62 (one) or HUR (hour), and to resend the invoice."
+  },
+  "BR-DE-15": {
+    "plain_text": "The buyer reference (BT-10) is missing. XRechnung requires it on every invoice. It is the reference you gave the supplier for routing the invoice, such as a Leitweg-ID or an internal order or cost-centre reference.",
+    "fix_hint": "Ask the supplier to resend the invoice with your buyer reference filled in, for example your Leitweg-ID or purchase reference."
+  },
+  "BR-DE-TMP-32": {
+    "plain_text": "The invoice does not say when the goods were delivered or the service was performed: it has no delivery date (BT-72), no invoicing period (BG-14) and no period on every line (BG-26). XRechnung recommends one of them. This is a hint, not an error.",
+    "fix_hint": "If you need the delivery or service date, ask the supplier to include a delivery date or an invoicing period in the invoice."
+  },
+  "BR-IC-11": {
+    "plain_text": "The invoice uses the VAT category for intra-community supplies, but gives neither the actual delivery date (BT-72) nor an invoicing period (BG-14). EN 16931 requires one of them for this VAT category.",
+    "fix_hint": "Ask the supplier for a corrected invoice that states the delivery date or the invoicing period."
+  },
+  "BR-IC-12": {
+    "plain_text": "The invoice uses the VAT category for intra-community supplies, but does not say which country the goods were delivered to (BT-80). EN 16931 requires the delivery country for this VAT category.",
+    "fix_hint": "Ask the supplier for a corrected invoice that includes the delivery address with its country."
+  },
+  "BR-S-02": {
+    "plain_text": "At least one line is charged at the standard VAT rate, but the invoice gives no VAT ID or tax number for the seller (BT-31, BT-32) and no VAT ID of a tax representative (BT-63). EN 16931 requires at least one of them.",
+    "fix_hint": "Ask the supplier for a corrected invoice that includes their VAT ID or tax number."
+  },
+  "CII-DT-031": {
+    "plain_text": "Amounts in the XML carry a currency attribute (currencyID) where the CII format for EN 16931 does not allow one; only the tax total may have it. This is a technical error in how the file is built; it does not say the amounts are wrong.",
+    "fix_hint": "Ask the supplier to have their invoicing software fixed so it produces a valid EN 16931 file, and to resend this invoice."
+  },
+  "CII-SR-002": {
+    "plain_text": "The XML contains a test indicator (TestIndicator), which EN 16931 invoices should not include. It can mean that the file was created in a test mode of the supplier's software.",
+    "fix_hint": "Ask the supplier to confirm that this is a real invoice and not a test, and to leave the test indicator out in future."
+  },
+  "CII-SR-013": {
+    "plain_text": "The document header contains a document name (Name), which EN 16931 invoices should not include. It is extra information that receiving systems may ignore; the invoice data itself is not affected by this finding.",
+    "fix_hint": "Usually nothing. You may ask the supplier to stop sending the document name, which EN 16931 does not use."
+  },
+  "CII-SR-122": {
+    "plain_text": "A line's gross price carries a discount given as a percentage (CalculationPercent), which EN 16931 invoices should not include. Receiving systems may ignore the percentage and use only the discount amount.",
+    "fix_hint": "Usually nothing. If a line price looks wrong, ask the supplier to state price discounts as amounts only."
+  },
+  "CII-SR-123": {
+    "plain_text": "A line's gross price discount carries a base amount (BasisAmount), which EN 16931 invoices should not include. Receiving systems may ignore it and use only the discount amount.",
+    "fix_hint": "Usually nothing. If a line price looks wrong, ask the supplier to state price discounts as amounts only."
+  },
+  "XSD": {
+    "plain_text": "The XML file does not follow the official schema of its format (UBL or CII): an element is missing, in the wrong place or not allowed. Because the structure is broken, the invoice's content rules could not be checked.",
+    "fix_hint": "Ask the supplier to resend the invoice as a valid XML file; their invoicing software produced a file that breaks the format's schema."
+  }
+}
