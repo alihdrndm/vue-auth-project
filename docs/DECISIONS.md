@@ -284,3 +284,11 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - **C14:** names are compared with `rapidfuzz.fuzz.token_set_ratio` after rapidfuzz's default processing (lower-case, punctuation removed), so an upper-cased buyer name is not "someone else". VAT IDs are compared upper-cased without spaces. Nothing fires when the organisation has no VAT ID and the invoice has a buyer VAT ID.
 - **Messages:** where the spec gives no exact text (C01–C04, C06–C09, C13–C16), the messages are written in plain English. C04's and C15's follow the design export's check cards.
 - **Supplier IBAN history:** an IBAN's first sighting is always its earliest received invoice, even when invoices are processed out of order, so trust ("on the supplier's first invoice") never depends on processing order.
+
+### Exports: where the spec is silent
+- **Explicit `document_ids`:** ids that are not approved, are deleted, belong to another organisation or don't exist are left out silently. `409 NOTHING_TO_EXPORT` comes only when nothing is left, and an empty list counts as nothing.
+- **Credit notes:** in the invoices CSV the amounts are negated; in the lines CSV only `Netto` is. Quantity, unit price and rate keep their stored sign, and the JSON report keeps the canonical signs. Zero is written `0,00`, never `-0,00`.
+- **Numbers:** money has two places, rounded half up; quantity, unit price and rate are written exactly as stored. No thousands separator.
+- **`Freigegeben am`:** the date of the latest approving decision, in Europe/Berlin. `Validierung` is the raw report status.
+- **Rows:** oldest received first. The formula guard applies to every text cell, not to numbers or dates.
+- **Concurrency:** the approved rows are locked before building, so two exports at once can't both include a document; the second gets `NOTHING_TO_EXPORT`. The file is written before the batch row, so a later failure leaves an orphaned file and no batch.
