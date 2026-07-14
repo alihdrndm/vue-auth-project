@@ -628,3 +628,29 @@ def _c16_foreign_currency(invoice: Invoice) -> list[Finding]:
             message=f"The invoice is in {invoice.currency}, not EUR.",
         )
     ]
+
+
+def stored_context(document: Document) -> CheckContext:
+    """The processing-time context, rebuilt from the document's C09 and C12 checks.
+
+    The PDF comparison and the extraction refusal happen only while processing; a later
+    re-run (after an edit) keeps what they found instead of dropping those checks.
+    """
+    differences: list[dict[str, str]] = []
+    reason: str | None = None
+    for check in Check.objects.filter(document=document, check_id__in=["C09", "C12"]):
+        details: object = check.details
+        if not isinstance(details, dict):
+            continue
+        stored_differences = details.get("differences")
+        if check.check_id == "C09" and isinstance(stored_differences, list):
+            differences = [dict(item) for item in stored_differences if isinstance(item, dict)]
+        stored_reason = details.get("reason")
+        if check.check_id == "C12" and isinstance(stored_reason, str):
+            reason = stored_reason
+    return CheckContext(pdf_xml_differences=differences, extraction_unavailable_reason=reason)
+
+
+def recheck(document: Document) -> None:
+    """Run every check again with the stored context (after a person edits the invoice)."""
+    apply_findings(document, evaluate(document, stored_context(document)))
