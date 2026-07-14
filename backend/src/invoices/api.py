@@ -4,7 +4,6 @@ import logging
 from collections.abc import Sequence
 from uuid import UUID
 
-from django.db import transaction
 from django.http import Http404, HttpResponse
 from django.utils.http import content_disposition_header
 from drf_spectacular.types import OpenApiTypes
@@ -22,10 +21,11 @@ from rest_framework.views import APIView
 from accounts.models import User
 from accounts.permissions import AdminOnly, AdminOrAccountant, AnyMember, signed_in_user
 from accounts.scoping import scoped
-from eingang import clock, storage, temporal_client
+from eingang import storage, temporal_client
 from eingang.problem import ProblemError
 from eingang.throttles import GeneralThrottle, UploadThrottle
-from invoices.models import Document, Event
+from invoices import review
+from invoices.models import Document
 from invoices.queries import DocumentListQuerySerializer, filter_documents
 from invoices.serializers import (
     DocumentDetailSerializer,
@@ -218,16 +218,7 @@ class DocumentDetailView(APIView):
                 "Not possible now",
                 "A document cannot be deleted while it is being processed.",
             )
-        with transaction.atomic():
-            document.deleted_at = clock.now()
-            document.save(update_fields=["deleted_at", "updated_at"])
-            Event.objects.create(
-                organization=document.organization,
-                document=document,
-                actor=user,
-                type=Event.Type.DOCUMENT_DELETED,
-                data={},
-            )
+        review.mark_deleted(document, user)
         return Response(status=204)
 
 

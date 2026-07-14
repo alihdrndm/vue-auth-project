@@ -297,6 +297,21 @@ def _validation(document: Document) -> dict[str, Any] | None:  # boundary: drf d
     }
 
 
+def check_entry(check: Check, document: Document, user: User) -> dict[str, Any]:  # boundary
+    return {
+        "id": check.id,
+        "check_id": check.check_id,
+        "code": check.code,
+        "severity": check.severity,
+        "message": check.message,
+        "details": check.details,
+        "resolved_by_name": _name(check.resolved_by),
+        "resolved_at": check.resolved_at,
+        "resolution_note": check.resolution_note,
+        "resolve": check_resolvable(check, document, user).__dict__,
+    }
+
+
 def document_detail(document: Document, user: User) -> dict[str, Any]:  # boundary: drf data
     """Everything the review screen shows; needs `with_summary_data` on the queryset."""
     data = document_summary(document, user)
@@ -311,21 +326,7 @@ def document_detail(document: Document, user: User) -> dict[str, Any]:  # bounda
         "invoice": _invoice_detail(invoice) if invoice else None,
         "lines": list(invoice.lines.order_by("position").values(*LINE_FIELDS)) if invoice else [],
         "validation": _validation(document),
-        "checks": [
-            {
-                "id": check.id,
-                "check_id": check.check_id,
-                "code": check.code,
-                "severity": check.severity,
-                "message": check.message,
-                "details": check.details,
-                "resolved_by_name": _name(check.resolved_by),
-                "resolved_at": check.resolved_at,
-                "resolution_note": check.resolution_note,
-                "resolve": check_resolvable(check, document, user).__dict__,
-            }
-            for check in checks
-        ],
+        "checks": [check_entry(check, document, user) for check in checks],
         "approvals": [
             {
                 "decision": approval.decision,
