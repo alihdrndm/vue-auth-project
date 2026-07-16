@@ -53,6 +53,11 @@ type = forbidden
 source_modules =
     *.api
     *.serializers
+    invoices.review_api
+    invoices.rules_api
+    invoices.rules_serializers
+    invoices.stats_api
+    invoices.stats_serializers
 forbidden_modules =
     einvoice.validate
     einvoice.visualize
