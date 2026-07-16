@@ -149,10 +149,24 @@ class ReminderInput(_Payload):
     reminder_number: int
 
 
+class ResyncSummary(_Payload):
+    """What `resignal_inconsistent_documents` did.
+
+    `abandoned_workflows` counts open documents whose workflow is no longer running
+    (for example after the 180-day wait ended), so the daily maintenance can log them.
+    """
+
+    resignalled_documents: int = 0
+    abandoned_workflows: int = 0
+
+
 class MaintenanceSummary(_Payload):
     deleted_sandboxes: int = 0
     started_documents: int = 0
     resignalled_documents: int = 0
+    abandoned_workflows: int = 0
+    document_count: int = 0
+    failed_steps: list[str] = []
 
 
 class MailboxResult(_Payload):

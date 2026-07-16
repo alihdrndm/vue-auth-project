@@ -12,12 +12,14 @@ from collections.abc import Coroutine
 from concurrent.futures import TimeoutError as FutureTimeoutError
 from uuid import UUID
 
-from temporalio.client import Client
+from temporalio.client import Client, WorkflowExecutionStatus
 from temporalio.contrib.pydantic import pydantic_data_converter
 from temporalio.exceptions import WorkflowAlreadyStartedError
+from temporalio.service import RPCError, RPCStatusCode
 
 from eingang.config import get_settings
 from eingang.workflows.contracts import (
+    QUERY_PHASE,
     SIG_RETRY,
     TASK_QUEUE,
     WF_PROCESS_INVOICE,
@@ -162,5 +164,37 @@ def retry_processing(document_id: UUID) -> None:
     try:
         loop_thread.run(_retry(loop_thread, document_id), START_TIMEOUT_SECONDS)
     except Exception as error:  # any failure: the caller reports TEMPORAL_UNAVAILABLE
+        loop_thread.forget_client()
+        raise TemporalUnavailableError from error
+
+
+QUERY_TIMEOUT_SECONDS = 5.0
+
+
+async def _query_phase(loop_thread: _LoopThread, workflow_id: str) -> str | None:
+    client = await loop_thread.client()
+    handle = client.get_workflow_handle(workflow_id)
+    try:
+        description = await handle.describe()
+        if description.status != WorkflowExecutionStatus.RUNNING:
+            # A closed workflow could still answer a query by replay; only running ones count.
+            return None
+        phase = await handle.query(QUERY_PHASE, result_type=str)
+    except RPCError as error:
+        if error.status == RPCStatusCode.NOT_FOUND:
+            return None
+        raise
+    return str(phase)
+
+
+def query_phase(workflow_id: str) -> str | None:
+    """The `phase` of a running workflow; None when it is not found or no longer running.
+
+    Raises TemporalUnavailableError when Temporal does not answer, so callers can retry.
+    """
+    loop_thread = _get_loop_thread()
+    try:
+        return loop_thread.run(_query_phase(loop_thread, workflow_id), QUERY_TIMEOUT_SECONDS)
+    except Exception as error:  # any other failure: Temporal is unreachable or broken
         loop_thread.forget_client()
         raise TemporalUnavailableError from error
