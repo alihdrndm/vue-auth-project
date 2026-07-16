@@ -17,7 +17,14 @@ from accounts.models import Organization, User
 from eingang import storage
 from invoices.models import Document
 from tests.conftest import PASSWORD, ApiClient
-from tests.factories import add_iban, make_document, make_export, make_invoice, make_supplier
+from tests.factories import (
+    add_check,
+    add_iban,
+    make_document,
+    make_export,
+    make_invoice,
+    make_supplier,
+)
 
 pytestmark = pytest.mark.django_db
 
@@ -75,6 +82,29 @@ OBJECT_ENDPOINTS: dict[str, ObjectCall] = {
     "GET exports/{id}/download": lambda api, v: api.get(
         f"/api/v1/exports/{make_export(v.document.organization, v.member).id}/download"
     ),
+    "PATCH documents/{id}/invoice": lambda api, v: api.unsafe(
+        "patch", f"/api/v1/documents/{v.document.id}/invoice", data={"invoice_number": "X"}
+    ),
+    "POST documents/{id}/mark-reviewed": lambda api, v: api.unsafe(
+        "post", f"/api/v1/documents/{v.document.id}/mark-reviewed"
+    ),
+    "POST documents/{id}/decision": lambda api, v: api.unsafe(
+        "post", f"/api/v1/documents/{v.document.id}/decision", data={"decision": "approved"}
+    ),
+    "POST documents/{id}/send-back": lambda api, v: api.unsafe(
+        "post", f"/api/v1/documents/{v.document.id}/send-back", data={"comment": "Not ours."}
+    ),
+    "POST documents/{id}/reopen": lambda api, v: api.unsafe(
+        "post", f"/api/v1/documents/{v.document.id}/reopen"
+    ),
+    "POST documents/{id}/retry": lambda api, v: api.unsafe(
+        "post", f"/api/v1/documents/{v.document.id}/retry"
+    ),
+    "POST checks/{id}/resolve": lambda api, v: api.unsafe(
+        "post",
+        f"/api/v1/checks/{add_check(v.document, 'C04', 'warn').id}/resolve",
+        data={"note": "Resolved from elsewhere."},
+    ),
 }
 
 
@@ -88,6 +118,9 @@ def test_IDOR_object_of_another_organization_is_not_found(
     victim.document.refresh_from_db()
     victim.member.refresh_from_db()
     assert victim.document.deleted_at is None
+    assert victim.document.status == "needs_review"
+    assert victim.document.invoice.invoice_number != "X"
+    assert not victim.document.checks.filter(resolved_at__isnull=False).exists()
     assert (victim.member.role, victim.member.is_active) == ("viewer", True)
 
 
@@ -132,4 +165,11 @@ def test_IDOR_every_object_route_is_covered() -> None:
         "suppliers/<uuid:supplier_id>",
         "members/<uuid:member_id>",
         "exports/<uuid:export_id>/download",
+        "documents/<uuid:document_id>/invoice",
+        "documents/<uuid:document_id>/mark-reviewed",
+        "documents/<uuid:document_id>/decision",
+        "documents/<uuid:document_id>/send-back",
+        "documents/<uuid:document_id>/reopen",
+        "documents/<uuid:document_id>/retry",
+        "checks/<uuid:check_id>/resolve",
     }

@@ -37,9 +37,10 @@ SOME_ID = UUID("01960000-0000-7000-8000-000000000001")
 ALL_ROLES = ("admin", "accountant", "approver", "viewer")
 ADMIN = frozenset({"admin"})
 ADMIN_OR_ACCOUNTANT = frozenset({"admin", "accountant"})
+ADMIN_OR_APPROVER = frozenset({"admin", "approver"})
 ANY_ROLE = frozenset(ALL_ROLES)
 
-# Every M3 endpoint that needs a session, with the roles the endpoint table allows.
+# Every endpoint that needs a session, with the roles the endpoint table allows.
 SESSION_ENDPOINTS: list[tuple[str, str, frozenset[str]]] = [
     ("post", "/api/v1/auth/logout", ANY_ROLE),
     ("get", "/api/v1/auth/me", ANY_ROLE),
@@ -58,6 +59,18 @@ SESSION_ENDPOINTS: list[tuple[str, str, frozenset[str]]] = [
     ("get", "/api/v1/members", ADMIN),
     ("post", "/api/v1/members", ADMIN),
     ("patch", f"/api/v1/members/{SOME_ID}", ADMIN),
+    ("get", "/api/v1/stats", ANY_ROLE),
+    ("get", "/api/v1/rules/BR-DE-15", ANY_ROLE),
+    ("patch", f"/api/v1/documents/{SOME_ID}/invoice", ADMIN_OR_ACCOUNTANT),
+    ("post", f"/api/v1/checks/{SOME_ID}/resolve", ADMIN_OR_ACCOUNTANT),
+    ("post", f"/api/v1/documents/{SOME_ID}/mark-reviewed", ADMIN_OR_ACCOUNTANT),
+    ("post", f"/api/v1/documents/{SOME_ID}/decision", ADMIN_OR_APPROVER),
+    ("post", f"/api/v1/documents/{SOME_ID}/send-back", ADMIN_OR_ACCOUNTANT),
+    ("post", f"/api/v1/documents/{SOME_ID}/reopen", ADMIN_OR_ACCOUNTANT),
+    ("post", f"/api/v1/documents/{SOME_ID}/retry", ADMIN_OR_ACCOUNTANT),
+    ("get", "/api/v1/exports", ANY_ROLE),
+    ("post", "/api/v1/exports", ADMIN_OR_ACCOUNTANT),
+    ("get", f"/api/v1/exports/{SOME_ID}/download", ANY_ROLE),
 ]
 
 
