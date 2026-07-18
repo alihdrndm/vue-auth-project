@@ -118,3 +118,14 @@ def make_export(organization: Organization, created_by: User) -> ExportBatch:
     batch.storage_key = f"orgs/{organization.id}/exports/{batch.id}/eingang-invoices-test.csv"
     batch.save()
     return batch
+
+
+def make_sandbox(expires_at: datetime) -> Organization:
+    number = next(_sequence)
+    return Organization.objects.create(
+        name="Holzwerk Brandt GmbH",
+        slug=f"sandbox-test-{number}",
+        kind=Organization.Kind.SANDBOX,
+        four_eyes=False,
+        expires_at=expires_at,
+    )
