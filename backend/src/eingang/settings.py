@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "rest_framework",
     "drf_spectacular",
+    "eingang",
     "accounts",
     "invoices",
     "suppliers",
