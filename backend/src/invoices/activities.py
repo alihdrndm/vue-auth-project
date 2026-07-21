@@ -36,10 +36,18 @@ logger = logging.getLogger(__name__)
 Status = Document.Status
 
 
-def _document(document_id: UUID) -> Document:
+def _find(document_id: UUID) -> Document | None:
     # Activities run on worker threads; drop connections Django considers stale first.
     close_old_connections()
-    return Document.objects.select_related("organization").get(id=document_id)
+    return Document.objects.select_related("organization").filter(id=document_id).first()
+
+
+def _document(document_id: UUID) -> Document:
+    """The document; gone for good (its sandbox expired) is a permanent error, not retried."""
+    document = _find(document_id)
+    if document is None:
+        raise PermanentError("The document no longer exists.")
+    return document
 
 
 def _xml_of(document: Document) -> bytes:
@@ -318,7 +326,9 @@ def finish_processing(ref: c.DocumentRef) -> str:
 
 @activity.defn(name=c.ACT_READ_STATUS)
 def read_status(ref: c.DocumentRef) -> c.StatusSnapshot:
-    document = _document(ref.document_id)
+    document = _find(ref.document_id)
+    if document is None:  # removed with its expired sandbox: the workflow ends
+        return c.StatusSnapshot(status="", reminder_after_days=1, deleted=True)
     return c.StatusSnapshot(
         status=document.status,
         reminder_after_days=document.organization.reminder_after_days,
@@ -343,8 +353,8 @@ def send_reminder(request: c.ReminderInput) -> None:
 
 @activity.defn(name=c.ACT_MARK_FAILED)
 def mark_failed(request: c.FailInput) -> None:
-    document = _document(request.document_id)
-    if document.status == Status.PROCESSING:
+    document = _find(request.document_id)
+    if document is not None and document.status == Status.PROCESSING:
         transition(document, Status.FAILED, None, failure_reason=request.reason)
 
 
