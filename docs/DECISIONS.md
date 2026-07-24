@@ -292,3 +292,23 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - **`Freigegeben am`:** the date of the latest approving decision, in Europe/Berlin. `Validierung` is the raw report status.
 - **Rows:** oldest received first. The formula guard applies to every text cell, not to numbers or dates.
 - **Concurrency:** the approved rows are locked before building, so two exports at once can't both include a document; the second gets `NOTHING_TO_EXPORT`. The file is written before the batch row, so a later failure leaves an orphaned file and no batch.
+
+### Review endpoints
+- **Editable fields:** every scalar canonical field (number, type code, dates, currency, references, party fields, payment fields, totals). `notes` and the VAT breakdown are not editable; lines are replaced as a whole list and renumbered from 1. An empty string clears a field.
+- **Audit trail:** one `invoice.fields_edited` event per changed field. A replaced line list is logged as field `lines` with the old and new line counts. The IBAN's values are never logged, only `"change": "changed"`.
+- **Re-running checks after an edit:** C09 and C12 come from processing (the PDF comparison and the extraction refusal), so the re-run rebuilds that context from the stored C09/C12 checks instead of dropping them.
+- **Resolving C05** confirms the supplier's IBAN (`confirmed_by`, `confirmed_at`, `confirmation_note`) unless it is already confirmed.
+- **Retry:** `failed → processing` is committed first, then the workflow gets signal-with-start `retry`; the workflow re-reads the status, so the commit must come first. If Temporal can't be reached, a system transition moves the document back to `failed` with its old reason and the answer is `503 TEMPORAL_UNAVAILABLE`.
+- **Delete** now signals `deleted` after the commit, like every other action.
+- **A document that no longer exists** (its sandbox expired while a workflow ran) is a permanent error for the processing activities; `read_status` reports it as deleted, so the workflow ends instead of failing.
+
+### Stats and rule explanations
+- `blocked`, `overdue` and `awaiting_my_approval` count the same set as `by_status`: the organisation's non-deleted documents. Any `reminder.sent` event marks an `awaiting_approval` document overdue, including one from an earlier approval round.
+- `seed_rules` keeps an explanation that came from the LLM (a stored rule is never re-explained) and checks the whole file before writing anything.
+
+### Maintenance
+- The maintenance activities live in `eingang/maintenance_activities.py` (they span several apps), and `ensure_schedules` in the `eingang` app, which is now in `INSTALLED_APPS` (it has no models).
+- One failing step doesn't stop the others; the summary lists the failed steps.
+- The resync step skips `exported` (final) and `received` (handled by `start_unstarted_documents`). It describes each workflow before querying it, so only running workflows are compared; open documents without a running workflow (for example after the 180-day wait) are counted and logged as abandoned.
+- A sandbox is expired when `expires_at <= now`. Its running workflows get `deleted` first; then its files (originals, derived files, exports) and the organisation (cascade) are deleted.
+- The mailbox schedule exists only when `MAILBOX_ENABLED` is true and the worker registers the mailbox workflow; otherwise `ensure_schedules` removes it. Schedules are tested with a recording fake client, because the time-skipping test server doesn't implement schedules.
