@@ -134,8 +134,8 @@ INVOICE_TEXT_FIELDS = (
     "syntax", "profile", "spec_id", "extraction_method", "invoice_number", "currency",
     "buyer_reference", "order_reference", "seller_name", "seller_vat_id", "seller_tax_number",
     "seller_street", "seller_postcode", "seller_city", "seller_country_code", "seller_email",
-    "buyer_name", "buyer_vat_id", "buyer_street", "buyer_postcode", "buyer_city",
-    "buyer_country_code", "buyer_email", "payee_iban", "payee_bic", "payment_terms",
+    "buyer_name", "buyer_vat_id", "buyer_tax_number", "buyer_street", "buyer_postcode",
+    "buyer_city", "buyer_country_code", "buyer_email", "payee_iban", "payee_bic", "payment_terms",
 )  # fmt: skip
 INVOICE_MONEY_FIELDS = (
     "line_total", "allowance_total", "charge_total", "net_total", "tax_total", "gross_total",
