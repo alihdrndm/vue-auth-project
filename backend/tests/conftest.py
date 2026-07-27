@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 from django.core.cache import cache
+from django.core.files.storage import storages
 from django.test import Client, override_settings
 
 from accounts.models import Organization, User
@@ -23,6 +24,17 @@ NOW = datetime(2026, 3, 10, 9, 30, tzinfo=UTC)
 def _fast_password_hashing() -> Iterator[None]:
     # Production hashing is slow on purpose; tests only need a working hasher.
     with override_settings(PASSWORD_HASHERS=["django.contrib.auth.hashers.MD5PasswordHasher"]):
+        yield
+
+
+@pytest.fixture(autouse=True)
+def _temporary_document_storage(tmp_path_factory: pytest.TempPathFactory) -> Iterator[None]:
+    # No test writes into the development storage folder.
+    documents = {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {"location": str(tmp_path_factory.mktemp("documents")), "allow_overwrite": True},
+    }
+    with override_settings(STORAGES={**storages.backends, "documents": documents}):
         yield
 
 
