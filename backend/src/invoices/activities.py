@@ -8,7 +8,6 @@ exists (M5).
 
 import logging
 from collections.abc import Callable
-from typing import Any
 from uuid import UUID
 
 from django.db import close_old_connections, transaction
@@ -19,7 +18,6 @@ from eingang.temporal_errors import BudgetExceededError, PermanentError
 from eingang.workflows import contracts as c
 from einvoice.detect import Detection, Kind, Profile, Syntax, detect, format_label
 from einvoice.errors import CorruptPdfError, InvoiceParseError, UnsupportedFileError
-from einvoice.model import CanonicalInvoice
 from einvoice.namespaces import UBL_CREDIT_NOTE_ROOT
 from einvoice.parse_cii import parse_cii
 from einvoice.parse_ubl import parse_ubl
@@ -27,8 +25,8 @@ from einvoice.pdf import extract_text
 from einvoice.validate import validate_xml
 from einvoice.visualize import applies_to, to_html
 from einvoice.xmlsafe import parse_xml
-from invoices import checks
-from invoices.models import Document, Event, Invoice, InvoiceLine, RuleExplanation, ValidationReport
+from invoices import checks, persist
+from invoices.models import Document, Event, Invoice, RuleExplanation, ValidationReport
 from invoices.status import processing_outcome, transition
 from suppliers import matching
 
@@ -144,33 +142,6 @@ def validate_document(detected: c.DetectedDocument) -> str:
     return report.status
 
 
-def _invoice_columns(invoice: CanonicalInvoice) -> dict[str, Any]:  # boundary: model fields
-    columns: dict[str, Any] = {  # boundary: model fields
-        "invoice_number": invoice.invoice_number,
-        "type_code": invoice.type_code,
-        "issue_date": invoice.issue_date,
-        "due_date": invoice.due_date,
-        "currency": invoice.currency,
-        "buyer_reference": invoice.buyer_reference,
-        "order_reference": invoice.order_reference,
-        "payee_iban": invoice.payee_iban,
-        "payee_bic": invoice.payee_bic,
-        "payment_terms": invoice.payment_terms,
-        "notes": invoice.notes,
-        "tax_breakdown": [row.model_dump(mode="json") for row in invoice.tax_breakdown],
-    }
-    for party_name, party in (("seller", invoice.seller), ("buyer", invoice.buyer)):
-        for field in ("name", "vat_id", "street", "postcode", "city", "country_code", "email"):
-            columns[f"{party_name}_{field}"] = getattr(party, field)
-    columns["seller_tax_number"] = invoice.seller.tax_number
-    for field in (
-        "line_total", "allowance_total", "charge_total", "net_total", "tax_total",
-        "gross_total", "prepaid_amount", "payable_amount",
-    ):  # fmt: skip
-        columns[field] = getattr(invoice, field)
-    return columns
-
-
 @activity.defn(name=c.ACT_PARSE_STRUCTURED)
 def parse_structured(detected: c.DetectedDocument) -> None:
     document = _document(detected.document_id)
@@ -182,24 +153,13 @@ def parse_structured(detected: c.DetectedDocument) -> None:
     except (InvoiceParseError, UnsupportedFileError) as error:
         raise PermanentError(f"The invoice XML cannot be read: {error}") from error
     with transaction.atomic():
-        invoice, _created = Invoice.objects.update_or_create(
-            document=document,
-            defaults={
-                "organization": document.organization,
-                "syntax": summary.syntax,
-                "profile": summary.profile,
-                "spec_id": summary.spec_id,
-                "is_einvoice": summary.is_einvoice,
-                "extraction_method": Invoice.ExtractionMethod.XML,
-                **_invoice_columns(canonical),
-            },
-        )
-        invoice.lines.all().delete()
-        InvoiceLine.objects.bulk_create(
-            [
-                InvoiceLine(invoice=invoice, position=position, **line.model_dump())
-                for position, line in enumerate(canonical.lines, start=1)
-            ]
+        persist.save_structured(
+            document,
+            canonical,
+            syntax=summary.syntax,
+            profile=summary.profile,
+            spec_id=summary.spec_id,
+            is_einvoice=summary.is_einvoice,
         )
         detection = Detection(
             kind=Kind(summary.kind),
@@ -250,15 +210,7 @@ def extract_with_llm(ref: c.DocumentRef) -> None:
 @activity.defn(name=c.ACT_CREATE_EMPTY_INVOICE)
 def create_empty_invoice(request: c.EmptyInvoiceInput) -> None:
     """An invoice without data, for a person to fill in (scans, refused extraction)."""
-    document = _document(request.document_id)
-    Invoice.objects.get_or_create(
-        document=document,
-        defaults={
-            "organization": document.organization,
-            "extraction_method": Invoice.ExtractionMethod.MANUAL,
-            "is_einvoice": request.is_einvoice,
-        },
-    )
+    persist.save_empty(_document(request.document_id), is_einvoice=request.is_einvoice)
 
 
 @activity.defn(name=c.ACT_RECORD_NOTE)
