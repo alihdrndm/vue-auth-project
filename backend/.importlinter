@@ -58,6 +58,7 @@ source_modules =
     invoices.rules_serializers
     invoices.stats_api
     invoices.stats_serializers
+    sandbox.seed
 forbidden_modules =
     einvoice.validate
     einvoice.visualize
