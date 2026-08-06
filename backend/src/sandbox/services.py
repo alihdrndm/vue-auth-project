@@ -1,7 +1,7 @@
 """Creating a sandbox: a temporary demo organisation for one website visitor (section 12).
 
-It makes no LLM call and starts no workflow. The sample documents are added by the seed
-(M4); this module creates the organisation, the visitor and the two sample people.
+It makes no LLM call and starts no workflow: the organisation, the visitor, the two sample
+people and the twelve sample documents (`sandbox.seed`) are created in one transaction.
 """
 
 import json
@@ -16,6 +16,7 @@ from django.db import transaction
 from accounts.models import Organization, User
 from eingang import clock
 from eingang.config import get_settings
+from sandbox.seed import SamplePeople, seed_samples
 
 SAMPLE_PEOPLE = (
     ("anna-weber", "Anna Weber (sample)", User.Role.ACCOUNTANT),
@@ -68,9 +69,9 @@ def create_sandbox() -> User:
         role=User.Role.ADMIN,
         name="Sandbox visitor",
     )
-    for handle, name, role in SAMPLE_PEOPLE:
+    people = {
         # Inactive, so they appear in the history but can never sign in.
-        User.objects.create_user(
+        role: User.objects.create_user(
             f"{handle}-{organization.id.hex}@example.invalid",
             None,
             organization=organization,
@@ -78,4 +79,10 @@ def create_sandbox() -> User:
             name=name,
             is_active=False,
         )
+        for handle, name, role in SAMPLE_PEOPLE
+    }
+    seed_samples(
+        organization,
+        SamplePeople(accountant=people[User.Role.ACCOUNTANT], approver=people[User.Role.APPROVER]),
+    )
     return visitor
