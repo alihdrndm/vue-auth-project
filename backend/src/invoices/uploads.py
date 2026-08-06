@@ -167,6 +167,56 @@ class UploadResult:
     duplicates: list[Duplicate]
 
 
+def is_duplicate(organization: Organization, sha256: str) -> bool:
+    """An identical file the organisation still has (deleted documents do not count)."""
+    return Document.objects.filter(
+        organization=organization, sha256=sha256, deleted_at__isnull=True
+    ).exists()
+
+
+def store_document(
+    organization: Organization,
+    name: str,
+    data: bytes,
+    kind: FileType,
+    *,
+    sha256: str,
+    source: str,
+    actor: User | None,
+    sender_email: str | None = None,
+) -> Document:
+    """Save one checked file as a `received` document with its file and `document.received`.
+
+    The workflow ID is set here so the maintenance can start the document if starting its
+    workflow fails. Used by the upload API and by the mailbox intake.
+    """
+    document = Document(
+        organization=organization,
+        source=source,
+        original_filename=name[:255],
+        content_type=kind.content_type,
+        size_bytes=len(data),
+        sha256=sha256,
+        received_at=clock.now(),
+        status=Document.Status.RECEIVED,
+        sender_email=sender_email,
+    )
+    document.storage_key = storage.original_key(
+        organization.id, document.id, sha256, kind.extension
+    )
+    document.workflow_id = process_invoice_workflow_id(document.id)
+    document.save()
+    storage.write(document.storage_key, data)
+    Event.objects.create(
+        organization=organization,
+        document=document,
+        actor=actor,
+        type=Event.Type.DOCUMENT_RECEIVED,
+        data={"source": source, "size_bytes": len(data)},
+    )
+    return document
+
+
 @transaction.atomic
 def store_uploads(user: User, files: list[tuple[str, bytes]]) -> UploadResult:
     """Store new files as `received` documents; exact duplicates are reported, not stored."""
@@ -177,10 +227,7 @@ def store_uploads(user: User, files: list[tuple[str, bytes]]) -> UploadResult:
     new_files: dict[str, tuple[str, bytes, FileType]] = {}  # sha256 -> first copy
     for name, data, kind in typed:
         sha256 = hashlib.sha256(data).hexdigest()
-        known = Document.objects.filter(
-            organization=organization, sha256=sha256, deleted_at__isnull=True
-        ).exists()
-        if known or sha256 in new_files:
+        if is_duplicate(organization, sha256) or sha256 in new_files:
             duplicates.append((name, len(data), sha256))
         else:
             new_files[sha256] = (name, data, kind)
@@ -188,30 +235,17 @@ def store_uploads(user: User, files: list[tuple[str, bytes]]) -> UploadResult:
         organization, len(new_files), sum(len(item[1]) for item in new_files.values())
     )
     for sha256, (name, data, kind) in new_files.items():
-        document = Document(
-            organization=organization,
-            source=Document.Source.UPLOAD,
-            original_filename=name[:255],
-            content_type=kind.content_type,
-            size_bytes=len(data),
-            sha256=sha256,
-            received_at=clock.now(),
-            status=Document.Status.RECEIVED,
+        created.append(
+            store_document(
+                organization,
+                name,
+                data,
+                kind,
+                sha256=sha256,
+                source=Document.Source.UPLOAD,
+                actor=user,
+            )
         )
-        document.storage_key = storage.original_key(
-            organization.id, document.id, sha256, kind.extension
-        )
-        document.workflow_id = process_invoice_workflow_id(document.id)
-        document.save()
-        storage.write(document.storage_key, data)
-        Event.objects.create(
-            organization=organization,
-            document=document,
-            actor=user,
-            type=Event.Type.DOCUMENT_RECEIVED,
-            data={"source": Document.Source.UPLOAD, "size_bytes": len(data)},
-        )
-        created.append(document)
     reported = []
     for name, size, sha256 in duplicates:
         existing = Document.objects.get(
