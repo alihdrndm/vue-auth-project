@@ -112,9 +112,14 @@ def test_running_twice_updates_instead_of_failing() -> None:
     )
 
 
+def test_the_worker_runs_the_mailbox_workflow() -> None:
+    assert c.WF_MAILBOX_POLL in schedules.registered_workflow_names()
+
+
 def test_mailbox_schedule_is_skipped_while_the_worker_lacks_its_workflow(
-    caplog: pytest.LogCaptureFixture,
+    caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    monkeypatch.setattr(schedules, "registered_workflow_names", lambda: {c.WF_MAINTENANCE})
     fake = FakeScheduleClient()
     with caplog.at_level(logging.WARNING, logger="eingang.schedules"):
         assert ensure(fake, mailbox=True) == [c.SCHEDULE_DAILY_MAINTENANCE]

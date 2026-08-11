@@ -17,18 +17,23 @@ logger = logging.getLogger("eingang.worker")
 
 
 def registered_workflows() -> Sequence[type]:
+    # MailboxPollWorkflow is always registered: it only runs when the `mailbox-poll` schedule
+    # exists, which `ensure_schedules` creates only when MAILBOX_ENABLED=true; a manual run
+    # while disabled fails at once with a PermanentError.
+    from eingang.workflows.mailbox import MailboxPollWorkflow
     from eingang.workflows.maintenance import MaintenanceWorkflow
     from eingang.workflows.process_invoice import ProcessInvoiceWorkflow
 
-    return (ProcessInvoiceWorkflow, MaintenanceWorkflow)
+    return (ProcessInvoiceWorkflow, MaintenanceWorkflow, MailboxPollWorkflow)
 
 
 def registered_activities() -> Sequence[Callable[..., object]]:
     # Activities touch the database, so they are imported after `django.setup()`.
+    from eingang.mailbox_activities import MAILBOX_ACTIVITIES
     from eingang.maintenance_activities import MAINTENANCE_ACTIVITIES
     from invoices.activities import PROCESS_INVOICE_ACTIVITIES
 
-    return (*PROCESS_INVOICE_ACTIVITIES, *MAINTENANCE_ACTIVITIES)
+    return (*PROCESS_INVOICE_ACTIVITIES, *MAINTENANCE_ACTIVITIES, *MAILBOX_ACTIVITIES)
 
 
 async def run() -> None:

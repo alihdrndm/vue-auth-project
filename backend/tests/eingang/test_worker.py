@@ -14,7 +14,7 @@ def test_worker_registers_every_workflow_and_every_activity_they_call() -> None:
     activities = {
         activity._Definition.must_from_callable(fn).name for fn in worker.registered_activities()
     }
-    assert workflows == {c.WF_PROCESS_INVOICE, c.WF_MAINTENANCE}
+    assert workflows == {c.WF_PROCESS_INVOICE, c.WF_MAINTENANCE, c.WF_MAILBOX_POLL}
     assert {
         c.ACT_BEGIN_PROCESSING,
         c.ACT_DETECT_DOCUMENT,
@@ -28,6 +28,7 @@ def test_worker_registers_every_workflow_and_every_activity_they_call() -> None:
         c.ACT_START_UNSTARTED_DOCUMENTS,
         c.ACT_RESIGNAL_INCONSISTENT_DOCUMENTS,
         c.ACT_LOG_DAILY_STATS,
+        c.ACT_FETCH_MAIL,
     } <= activities
     assert worker.TASK_QUEUE == "eingang-main"
 
