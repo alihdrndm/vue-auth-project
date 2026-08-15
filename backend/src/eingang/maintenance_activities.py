@@ -38,7 +38,8 @@ def _document_keys(document: Document) -> Iterable[str]:
         yield storage.derived_key(document.organization_id, document.id, name)
 
 
-def _delete_sandbox(organization: Organization) -> None:
+def delete_organization(organization: Organization) -> None:
+    """Delete an organisation with its stored files, after waking its running workflows."""
     documents = list(Document.objects.filter(organization=organization))
     # Wake the running workflows first so they end; the database row is the source of truth.
     for document in documents:
@@ -64,7 +65,7 @@ def delete_expired_sandboxes() -> int:
     ).order_by("expires_at")
     count = 0
     for organization in expired:
-        _delete_sandbox(organization)
+        delete_organization(organization)
         count += 1
     if count:
         logger.info("Deleted %d expired sandboxes", count)
