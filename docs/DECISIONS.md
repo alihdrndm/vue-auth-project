@@ -312,3 +312,15 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - The resync step skips `exported` (final) and `received` (handled by `start_unstarted_documents`). It describes each workflow before querying it, so only running workflows are compared; open documents without a running workflow (for example after the 180-day wait) are counted and logged as abandoned.
 - A sandbox is expired when `expires_at <= now`. Its running workflows get `deleted` first; then its files (originals, derived files, exports) and the organisation (cascade) are deleted.
 - The mailbox schedule exists only when `MAILBOX_ENABLED` is true and the worker registers the mailbox workflow; otherwise `ensure_schedules` removes it. Schedules are tested with a recording fake client, because the time-skipping test server doesn't implement schedules.
+
+### Sandbox seed
+- The seed reads detection, validation, invoice and text from `samples/precomputed/`, then runs supplier matching, the checks and the status rule with the workflow's own functions (`invoices/persist.py` is shared with the activities). Hybrid PDFs get the timeline note "Visible PDF not compared", as a real run without the LLM writes; S04 is a hybrid PDF too, so it gets the note as well.
+- History dates: rows are created at seed time, then each document's events are dated one second apart from its `received_at`, and the two sample decisions (S11, S12) a day after arrival. Only the seed rewrites dates, and only of rows it just created.
+- `seed_dev` resets the local organisation by deleting it with its files (the same code that deletes expired sandboxes) and creating it again. Its name is "Holzwerk Brandt GmbH (local)" with the buyer's VAT ID, so C14 doesn't fire.
+- Every test writes stored files into a temporary folder (an autouse fixture), never into the development storage.
+
+### Mailbox intake
+- `fetch_mail` uses IMAP UID commands, reads at most 20 messages per poll with `BODY.PEEK[]`, and marks a message seen only after its attachments are stored in one transaction. The activity timeout is 120 s; each socket operation times out after 30 s.
+- Attachments get the upload rules (size, type by content, DOCTYPE refused); a message larger than twice the upload limit plus 256 KiB is marked seen without downloading. Duplicates are skipped and only logged. A crash between storing and marking seen is repaired by the maintenance, which starts documents left in `received`.
+- A refused login, a disabled mailbox or an unknown organisation is a permanent error; other IMAP errors are retried. Logs contain counts and document IDs only.
+- The mailbox workflow is always registered in the worker; `MAILBOX_ENABLED` alone decides whether the schedule exists.

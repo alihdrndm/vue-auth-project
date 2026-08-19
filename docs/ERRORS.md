@@ -93,7 +93,7 @@ Each code has its own section, so `type` links straight to it.
 `409`. The document's current status does not allow this action.
 
 ### BLOCKING_CHECKS
-`409`, from `mark-reviewed`. Unresolved blocking checks remain; they are listed in the response.
+`409`, from `mark-reviewed`. Unresolved blocking checks remain; their IDs are listed in the response's `checks` field.
 
 ### CHECK_NOT_RESOLVABLE
 `409`. The check is information only, or it is already resolved.
@@ -108,4 +108,4 @@ Each code has its own section, so `type` links straight to it.
 `404`. The document has no such representation (visualisation, XML or extracted text).
 
 ### TEMPORAL_UNAVAILABLE
-`503`. The upload was stored, but processing could not be started because Temporal is unreachable. It starts automatically when Temporal is back.
+`503`. The upload was stored, but processing could not be started because Temporal is unreachable. It starts automatically when Temporal is back. From `retry`: processing could not be restarted; the document stays `failed`, so try again later.
