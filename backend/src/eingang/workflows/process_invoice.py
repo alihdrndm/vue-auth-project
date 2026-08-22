@@ -73,7 +73,6 @@ class ProcessInvoiceWorkflow:
     def __init__(self) -> None:
         self._phase = "received"
         self._woken = False
-        self._retry = False
 
     # --- signals and query ------------------------------------------------------
 
@@ -110,7 +109,6 @@ class ProcessInvoiceWorkflow:
 
     @workflow.signal(name=c.SIG_RETRY)
     def retry(self) -> None:
-        self._retry = True
         self._wake()
 
     @workflow.query(name=c.QUERY_PHASE)
@@ -123,7 +121,6 @@ class ProcessInvoiceWorkflow:
     async def run(self, request: c.ProcessInvoiceInput) -> str:
         ref = c.DocumentRef(document_id=request.document_id)
         while True:
-            self._retry = False
             self._phase = await self._process(ref)
             outcome = await self._wait(ref)
             if outcome != "retry":
@@ -203,13 +200,15 @@ class ProcessInvoiceWorkflow:
                 c.ACT_COMPARE_PDF_TO_XML, ref, c.ComparisonResult, LLM_TIMEOUT, LLM_RETRY
             )
         except ActivityError:
-            workflow.logger.info("PDF-versus-XML comparison skipped")
+            workflow.logger.info("PDF-versus-XML comparison failed")
             await self._activity(
                 c.ACT_RECORD_NOTE,
                 c.NoteInput(document_id=ref.document_id, note=c.NOTE_PDF_NOT_COMPARED),
             )
             return []
-        return list(_expect(result, c.ComparisonResult).differences)
+        comparison = _expect(result, c.ComparisonResult)
+        # Switched off (COMPARE_HYBRID_PDF=false): skipped silently, without a note.
+        return list(comparison.differences) if comparison.compared else []
 
     async def _extract(self, ref: c.DocumentRef) -> str | None:
         """None when extraction worked; otherwise the reason for check C12."""
@@ -247,9 +246,10 @@ class ProcessInvoiceWorkflow:
                 return "deleted"
             if snapshot.status in END_STATUSES:
                 return snapshot.status
-            if self._retry and snapshot.status == "processing":
+            if snapshot.status == "processing":
+                # Only a retry moves a waiting document back to processing, so the status
+                # alone restarts it: a retry signal that was lost or raced still works.
                 return "retry"
-            self._retry = False
             remaining = MAX_WAIT - (workflow.now() - status_since)
             if remaining <= timedelta(0):
                 workflow.logger.info("Stopped waiting after 180 days")
@@ -257,14 +257,24 @@ class ProcessInvoiceWorkflow:
             remind = snapshot.status == "awaiting_approval" and reminders < MAX_REMINDERS
             timeout = remaining
             if remind:
-                timeout = min(remaining, timedelta(days=snapshot.reminder_after_days))
+                # Every N days from when approval began; a wake-up in between doesn't move it.
+                every = timedelta(days=snapshot.reminder_after_days)
+                due = status_since + every * (reminders + 1)
+                timeout = min(remaining, due - workflow.now())
+                if timeout <= timedelta(0):
+                    reminders += 1
+                    await self._send_reminder(ref, reminders)
+                    continue
             try:
                 await workflow.wait_condition(lambda: self._woken, timeout=timeout)
             except TimeoutError:
                 if remind and timeout < remaining:
                     reminders += 1
-                    await self._activity(
-                        c.ACT_SEND_REMINDER,
-                        c.ReminderInput(document_id=ref.document_id, reminder_number=reminders),
-                    )
+                    await self._send_reminder(ref, reminders)
                 # Otherwise 180 days have passed; the next turn of the loop ends it.
+
+    async def _send_reminder(self, ref: c.DocumentRef, number: int) -> None:
+        await self._activity(
+            c.ACT_SEND_REMINDER,
+            c.ReminderInput(document_id=ref.document_id, reminder_number=number),
+        )

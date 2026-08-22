@@ -14,6 +14,7 @@ from django.db import close_old_connections, transaction
 from temporalio import activity
 
 from eingang import clock, storage
+from eingang.config import get_settings
 from eingang.temporal_errors import BudgetExceededError, PermanentError
 from eingang.workflows import contracts as c
 from einvoice.detect import Detection, Kind, Profile, Syntax, detect, format_label
@@ -197,6 +198,8 @@ def render_visualization(detected: c.DetectedDocument) -> bool:
 
 @activity.defn(name=c.ACT_COMPARE_PDF_TO_XML)
 def compare_pdf_to_xml(ref: c.DocumentRef) -> c.ComparisonResult:
+    if not get_settings().COMPARE_HYBRID_PDF:
+        return c.ComparisonResult(compared=False)
     # The LLM layer arrives in M5; until then every LLM call is refused as disabled.
     raise BudgetExceededError("disabled")
 

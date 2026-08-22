@@ -125,6 +125,8 @@ class FieldDifference(_Payload):
 
 class ComparisonResult(_Payload):
     differences: list[FieldDifference] = []
+    # False when COMPARE_HYBRID_PDF is off: nothing was compared and nothing is noted.
+    compared: bool = True
 
 
 class ChecksInput(_Payload):

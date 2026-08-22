@@ -2,6 +2,7 @@
 
 from collections.abc import Iterator
 from pathlib import Path
+from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
@@ -506,3 +507,12 @@ def test_unreadable_stored_xml_is_permanent_and_has_no_visualisation(
     assert not Invoice.objects.filter(document=document).exists()
     assert activities.render_visualization(detection) is False
     assert not storage.exists(derived(document, "visualization.html"))
+
+
+def test_compare_pdf_to_xml_switched_off_compares_nothing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    switched_off = SimpleNamespace(COMPARE_HYBRID_PDF=False)
+    monkeypatch.setattr(activities, "get_settings", lambda: switched_off)
+    result = activities.compare_pdf_to_xml(c.DocumentRef(document_id=uuid4()))
+    assert result == c.ComparisonResult(compared=False)

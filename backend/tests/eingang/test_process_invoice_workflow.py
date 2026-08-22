@@ -29,6 +29,7 @@ class FakeDocument:
     reminder_after_days: int = 3
     deleted: bool = False
     extraction: str = "ok"  # ok | refused | broken
+    comparison_switched_off: bool = False
     fail_detection_times: int = 0
     calls: list[str] = field(default_factory=list)
     checks_input: c.ChecksInput | None = None
@@ -81,6 +82,8 @@ def fake_activities(
     @activity.defn(name=c.ACT_COMPARE_PDF_TO_XML)
     async def compare(ref: c.DocumentRef) -> c.ComparisonResult:
         record("compare")
+        if doc.comparison_switched_off:
+            return c.ComparisonResult(compared=False)
         raise BudgetExceededError("disabled")
 
     @activity.defn(name=c.ACT_EXTRACT_WITH_LLM)
@@ -246,6 +249,45 @@ def test_hybrid_pdf_not_compared_is_noted_on_the_timeline() -> None:
     doc = FakeDocument(kind="hybrid_pdf")
     run(doc, delete_when_reviewable)  # the fake sends hybrid PDFs to needs_review
     assert doc.notes == [c.NOTE_PDF_NOT_COMPARED]
+
+
+def test_comparison_switched_off_is_skipped_without_a_note() -> None:
+    doc = FakeDocument(kind="hybrid_pdf", comparison_switched_off=True)
+    run(doc, delete_when_reviewable)
+    assert "compare" in doc.calls
+    assert doc.notes == []
+
+
+def test_a_wake_up_does_not_move_the_next_reminder() -> None:
+    doc = FakeDocument(kind="xml", reminder_after_days=3)
+
+    async def scenario(
+        handle: WorkflowHandle[Any, str], doc: FakeDocument, env: WorkflowEnvironment
+    ) -> None:
+        await until(lambda: doc.status == "awaiting_approval", env)
+        await env.sleep(timedelta(days=2))
+        await handle.signal(c.SIG_SYNC)
+        await env.sleep(timedelta(days=1, hours=12))
+        assert doc.reminders == [1]  # day 3, not day 5
+        doc.status = "exported"
+        await handle.signal(c.SIG_EXPORTED)
+
+    assert run(doc, scenario) == "exported"
+
+
+def test_retry_is_recovered_by_sync_when_the_retry_signal_is_lost() -> None:
+    doc = FakeDocument(kind="xml", fail_detection_times=1)
+
+    async def scenario(
+        handle: WorkflowHandle[Any, str], doc: FakeDocument, env: WorkflowEnvironment
+    ) -> None:
+        await until(lambda: doc.status == "failed", env)
+        doc.status = "processing"  # the API committed the retry; its signal never arrived
+        await handle.signal(c.SIG_SYNC)  # the daily maintenance
+        await export_when_awaiting(handle, doc, env)
+
+    assert run(doc, scenario) == "exported"
+    assert doc.calls.count("detect") == 2
 
 
 def test_reminder_fires_three_times_and_stops() -> None:
