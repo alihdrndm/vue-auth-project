@@ -16,6 +16,7 @@ from accounts.models import User
 from eingang import clock, temporal_client
 from eingang.problem import ProblemError
 from eingang.workflows import contracts as c
+from einvoice.fields import compact_upper
 from invoices import checks
 from invoices.actions import check_resolvable
 from invoices.models import Check, Document, Event, Invoice, InvoiceLine
@@ -39,6 +40,8 @@ LINE_FIELDS = (
     "line_id", "description", "quantity", "unit_code", "unit_price", "net_amount",
     "tax_category", "tax_rate",
 )  # fmt: skip
+# Stored upper-case without spaces (section 2), like the parsed values they are compared to.
+COMPACTED_FIELDS = frozenset({"payee_iban", "payee_bic", "seller_vat_id", "buyer_vat_id"})
 # The audit trail never stores these values, only that they changed.
 UNLOGGED_VALUES = frozenset({"payee_iban"})
 NOTE_MIN, NOTE_MAX = 5, 500
@@ -117,6 +120,8 @@ def _apply_fields(
             continue
         old: FieldValue = getattr(invoice, name)
         new = fields[name]
+        if name in COMPACTED_FIELDS and isinstance(new, str):
+            new = compact_upper(new)  # as section 2 stores them, so the IBAN history matches
         if old == new:
             continue
         setattr(invoice, name, new)

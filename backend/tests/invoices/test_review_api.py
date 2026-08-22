@@ -411,3 +411,18 @@ def test_delete_signals_the_workflow(
         response = api.unsafe("delete", f"/api/v1/documents/{document.id}")
     assert response.status_code == 204
     assert signals == [(document.id, document.workflow_id, "deleted")]
+
+
+def test_edit_stores_iban_and_vat_id_compacted(
+    signed_in: Callable[[str], ApiClient], organization: Organization
+) -> None:
+    api = signed_in("admin")
+    document = document_in(organization, Status.NEEDS_REVIEW)
+    make_invoice(document)
+    api.unsafe(
+        "patch",
+        url(document, "invoice"),
+        data={"payee_iban": "de89 3704 0044 0532 0130 00", "seller_vat_id": "de 123456789"},
+    )
+    invoice = Invoice.objects.get(document=document)
+    assert (invoice.payee_iban, invoice.seller_vat_id) == ("DE89370400440532013000", "DE123456789")
