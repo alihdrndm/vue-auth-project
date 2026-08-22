@@ -92,6 +92,55 @@
                 }
             }
         },
+        "/api/v1/checks/{check_id}/resolve": {
+            "post": {
+                "operationId": "api_v1_checks_resolve_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "check_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Note"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Check"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "409": {
+                        "description": "CHECK_NOT_RESOLVABLE or INVALID_TRANSITION"
+                    }
+                }
+            }
+        },
         "/api/v1/documents": {
             "get": {
                 "operationId": "api_v1_documents_list",
@@ -321,6 +370,55 @@
                 }
             }
         },
+        "/api/v1/documents/{document_id}/decision": {
+            "post": {
+                "operationId": "api_v1_documents_decision_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "document_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Decision"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentDetail"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "description": "FOUR_EYES"
+                    }
+                }
+            }
+        },
         "/api/v1/documents/{document_id}/file": {
             "get": {
                 "operationId": "api_v1_documents_file_retrieve",
@@ -350,6 +448,213 @@
                                 "schema": {
                                     "type": "string",
                                     "format": "binary"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/documents/{document_id}/invoice": {
+            "patch": {
+                "operationId": "api_v1_documents_invoice_partial_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "document_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedInvoiceEdit"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentDetail"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "409": {
+                        "description": "INVALID_TRANSITION"
+                    }
+                }
+            }
+        },
+        "/api/v1/documents/{document_id}/mark-reviewed": {
+            "post": {
+                "operationId": "api_v1_documents_mark_reviewed_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "document_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentDetail"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "409": {
+                        "description": "BLOCKING_CHECKS"
+                    }
+                }
+            }
+        },
+        "/api/v1/documents/{document_id}/reopen": {
+            "post": {
+                "operationId": "api_v1_documents_reopen_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "document_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentDetail"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/documents/{document_id}/retry": {
+            "post": {
+                "operationId": "api_v1_documents_retry_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "document_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentDetail"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "503": {
+                        "description": "TEMPORAL_UNAVAILABLE"
+                    }
+                }
+            }
+        },
+        "/api/v1/documents/{document_id}/send-back": {
+            "post": {
+                "operationId": "api_v1_documents_send_back_create",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "document_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "documents"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Comment"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DocumentDetail"
                                 }
                             }
                         },
@@ -458,6 +763,121 @@
                             "application/xml": {
                                 "schema": {
                                     "type": "string"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/exports": {
+            "get": {
+                "operationId": "api_v1_exports_list",
+                "description": "`GET /exports` lists (newest first); `POST /exports` creates one.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "tags": [
+                    "exports"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExportPage"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "api_v1_exports_create",
+                "description": "`GET /exports` lists (newest first); `POST /exports` creates one.",
+                "tags": [
+                    "exports"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ExportCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ExportCreated"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "409": {
+                        "description": "NOTHING_TO_EXPORT"
+                    }
+                }
+            }
+        },
+        "/api/v1/exports/{export_id}/download": {
+            "get": {
+                "operationId": "api_v1_exports_download_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "export_id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "exports"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            },
+                            "application/zip": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
                                 }
                             }
                         },
@@ -635,6 +1055,41 @@
                 }
             }
         },
+        "/api/v1/rules/{rule_id}": {
+            "get": {
+                "operationId": "api_v1_rules_retrieve",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "rule_id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "rules"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RuleExplanation"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/sandbox": {
             "post": {
                 "operationId": "api_v1_sandbox_create",
@@ -654,6 +1109,31 @@
                     },
                     "429": {
                         "description": "SANDBOX_LIMIT"
+                    }
+                }
+            }
+        },
+        "/api/v1/stats": {
+            "get": {
+                "operationId": "api_v1_stats_retrieve",
+                "tags": [
+                    "stats"
+                ],
+                "security": [
+                    {
+                        "sessionAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Stats"
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -885,6 +1365,30 @@
                 ],
                 "type": "string",
                 "description": "* `block` - Block\n* `warn` - Warn\n* `info` - Info"
+            },
+            "Comment": {
+                "type": "object",
+                "properties": {
+                    "comment": {
+                        "type": "string",
+                        "default": ""
+                    }
+                }
+            },
+            "Decision": {
+                "type": "object",
+                "properties": {
+                    "decision": {
+                        "$ref": "#/components/schemas/DecisionEnum"
+                    },
+                    "comment": {
+                        "type": "string",
+                        "default": ""
+                    }
+                },
+                "required": [
+                    "decision"
+                ]
             },
             "DecisionEnum": {
                 "enum": [
@@ -1229,6 +1733,124 @@
                     "plain_text"
                 ]
             },
+            "Export": {
+                "type": "object",
+                "description": "One row of `GET /exports`.",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "format": {
+                        "$ref": "#/components/schemas/FormatEnum"
+                    },
+                    "row_count": {
+                        "type": "integer"
+                    },
+                    "download_url": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_by_name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "created_by_name",
+                    "download_url",
+                    "format",
+                    "id",
+                    "row_count"
+                ]
+            },
+            "ExportCreate": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "format": {
+                        "$ref": "#/components/schemas/FormatEnum"
+                    },
+                    "document_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                },
+                "required": [
+                    "format"
+                ]
+            },
+            "ExportCreated": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "format": {
+                        "$ref": "#/components/schemas/FormatEnum"
+                    },
+                    "row_count": {
+                        "type": "integer"
+                    },
+                    "download_url": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "download_url",
+                    "format",
+                    "id",
+                    "row_count"
+                ]
+            },
+            "ExportPage": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "count": {
+                        "type": "integer"
+                    },
+                    "next": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true
+                    },
+                    "previous": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Export"
+                        }
+                    }
+                },
+                "required": [
+                    "count",
+                    "next",
+                    "previous",
+                    "results"
+                ]
+            },
+            "FormatEnum": {
+                "enum": [
+                    "csv_invoices",
+                    "csv_lines",
+                    "zip_bundle"
+                ],
+                "type": "string",
+                "description": "* `csv_invoices` - Csv Invoices\n* `csv_lines` - Csv Lines\n* `zip_bundle` - Zip Bundle"
+            },
             "HealthStatus": {
                 "type": "object",
                 "properties": {
@@ -1345,6 +1967,9 @@
                         "type": "string"
                     },
                     "buyer_vat_id": {
+                        "type": "string"
+                    },
+                    "buyer_tax_number": {
                         "type": "string"
                     },
                     "buyer_street": {
@@ -1516,6 +2141,89 @@
                     "position"
                 ]
             },
+            "LineEdit": {
+                "type": "object",
+                "properties": {
+                    "line_id": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 100
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "quantity": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,14}(?:\\.\\d{0,4})?$",
+                        "nullable": true
+                    },
+                    "unit_code": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 16
+                    },
+                    "unit_price": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,6})?$",
+                        "nullable": true
+                    },
+                    "net_amount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "tax_category": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 8
+                    },
+                    "tax_rate": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,3}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    }
+                }
+            },
+            "LlmStats": {
+                "type": "object",
+                "description": "LLM spend and budgets in USD, as strings with 2 decimals.",
+                "properties": {
+                    "lifetime_spent_usd": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "lifetime_budget_usd": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "month_spent_usd": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "month_budget_usd": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,12}(?:\\.\\d{0,2})?$"
+                    },
+                    "sandbox_calls_left": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "lifetime_budget_usd",
+                    "lifetime_spent_usd",
+                    "month_budget_usd",
+                    "month_spent_usd"
+                ]
+            },
             "LoginRequest": {
                 "type": "object",
                 "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
@@ -1652,6 +2360,17 @@
                     "results"
                 ]
             },
+            "Note": {
+                "type": "object",
+                "properties": {
+                    "note": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "note"
+                ]
+            },
             "Organization": {
                 "type": "object",
                 "description": "The body of `GET` and `PATCH /organization`.",
@@ -1696,6 +2415,195 @@
                     "reminder_after_days",
                     "slug"
                 ]
+            },
+            "PatchedInvoiceEdit": {
+                "type": "object",
+                "properties": {
+                    "invoice_number": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 200
+                    },
+                    "type_code": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "nullable": true
+                    },
+                    "issue_date": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "due_date": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "currency": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 3
+                    },
+                    "buyer_reference": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 200
+                    },
+                    "order_reference": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 200
+                    },
+                    "seller_name": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 500
+                    },
+                    "seller_vat_id": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 32
+                    },
+                    "seller_tax_number": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 64
+                    },
+                    "seller_street": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 500
+                    },
+                    "seller_postcode": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 32
+                    },
+                    "seller_city": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 200
+                    },
+                    "seller_country_code": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 2
+                    },
+                    "seller_email": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 254
+                    },
+                    "buyer_name": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 500
+                    },
+                    "buyer_vat_id": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 32
+                    },
+                    "buyer_tax_number": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 64
+                    },
+                    "buyer_street": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 500
+                    },
+                    "buyer_postcode": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 32
+                    },
+                    "buyer_city": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 200
+                    },
+                    "buyer_country_code": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 2
+                    },
+                    "buyer_email": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 254
+                    },
+                    "payee_iban": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 34
+                    },
+                    "payee_bic": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 11
+                    },
+                    "payment_terms": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "line_total": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "allowance_total": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "charge_total": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "net_total": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "tax_total": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "gross_total": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "prepaid_amount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "payable_amount": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,16}(?:\\.\\d{0,2})?$",
+                        "nullable": true
+                    },
+                    "lines": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/LineEdit"
+                        }
+                    }
+                }
             },
             "PatchedMemberUpdate": {
                 "type": "object",
@@ -1792,6 +2700,32 @@
                 "type": "string",
                 "description": "* `admin` - Admin\n* `accountant` - Accountant\n* `approver` - Approver\n* `viewer` - Viewer"
             },
+            "RuleExplanation": {
+                "type": "object",
+                "properties": {
+                    "rule_id": {
+                        "type": "string",
+                        "maxLength": 128
+                    },
+                    "plain_text": {
+                        "type": "string",
+                        "maxLength": 300
+                    },
+                    "fix_hint": {
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "source": {
+                        "$ref": "#/components/schemas/SourceEnum"
+                    }
+                },
+                "required": [
+                    "fix_hint",
+                    "plain_text",
+                    "rule_id",
+                    "source"
+                ]
+            },
             "Session": {
                 "type": "object",
                 "description": "`{user, organization, role}`: the body of login, me and sandbox.",
@@ -1864,6 +2798,82 @@
                     "email",
                     "id",
                     "name"
+                ]
+            },
+            "SourceEnum": {
+                "enum": [
+                    "curated",
+                    "llm"
+                ],
+                "type": "string",
+                "description": "* `curated` - Curated\n* `llm` - Llm"
+            },
+            "Stats": {
+                "type": "object",
+                "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
+                "properties": {
+                    "by_status": {
+                        "$ref": "#/components/schemas/StatusCounts"
+                    },
+                    "blocked": {
+                        "type": "integer"
+                    },
+                    "overdue": {
+                        "type": "integer"
+                    },
+                    "awaiting_my_approval": {
+                        "type": "integer"
+                    },
+                    "llm": {
+                        "$ref": "#/components/schemas/LlmStats"
+                    }
+                },
+                "required": [
+                    "awaiting_my_approval",
+                    "blocked",
+                    "by_status",
+                    "llm",
+                    "overdue"
+                ]
+            },
+            "StatusCounts": {
+                "type": "object",
+                "description": "Non-deleted documents of the organisation per status; every status is present.",
+                "properties": {
+                    "received": {
+                        "type": "integer"
+                    },
+                    "processing": {
+                        "type": "integer"
+                    },
+                    "needs_review": {
+                        "type": "integer"
+                    },
+                    "awaiting_approval": {
+                        "type": "integer"
+                    },
+                    "approved": {
+                        "type": "integer"
+                    },
+                    "rejected": {
+                        "type": "integer"
+                    },
+                    "exported": {
+                        "type": "integer"
+                    },
+                    "failed": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "approved",
+                    "awaiting_approval",
+                    "exported",
+                    "failed",
+                    "needs_review",
+                    "processing",
+                    "received",
+                    "rejected"
                 ]
             },
             "Supplier": {

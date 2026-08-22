@@ -68,6 +68,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/checks/{check_id}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_checks_resolve_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/documents": {
         parameters: {
             query?: never;
@@ -102,6 +118,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/documents/{document_id}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_documents_decision_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/documents/{document_id}/file": {
         parameters: {
             query?: never;
@@ -112,6 +144,86 @@ export interface paths {
         get: operations["api_v1_documents_file_retrieve"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/invoice": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["api_v1_documents_invoice_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/mark-reviewed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_documents_mark_reviewed_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/reopen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_documents_reopen_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_documents_retry_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/documents/{document_id}/send-back": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["api_v1_documents_send_back_create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -158,6 +270,40 @@ export interface paths {
             cookie?: never;
         };
         get: operations["api_v1_documents_xml_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description `GET /exports` lists (newest first); `POST /exports` creates one. */
+        get: operations["api_v1_exports_list"];
+        put?: never;
+        /** @description `GET /exports` lists (newest first); `POST /exports` creates one. */
+        post: operations["api_v1_exports_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exports/{export_id}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_exports_download_retrieve"];
         put?: never;
         post?: never;
         delete?: never;
@@ -214,6 +360,22 @@ export interface paths {
         patch: operations["api_v1_organization_partial_update"];
         trace?: never;
     };
+    "/api/v1/rules/{rule_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_rules_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/sandbox": {
         parameters: {
             query?: never;
@@ -224,6 +386,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["api_v1_sandbox_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_stats_retrieve"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -349,6 +527,15 @@ export interface components {
          * @enum {string}
          */
         CheckSeverityEnum: "block" | "warn" | "info";
+        Comment: {
+            /** @default  */
+            comment: string;
+        };
+        Decision: {
+            decision: components["schemas"]["DecisionEnum"];
+            /** @default  */
+            comment: string;
+        };
         /**
          * @description * `approved` - approved
          *     * `rejected` - rejected
@@ -486,6 +673,58 @@ export interface components {
             plain_text: string;
             fix_hint: string;
         };
+        /** @description One row of `GET /exports`. */
+        Export: {
+            /** Format: uuid */
+            id: string;
+            format: components["schemas"]["FormatEnum"];
+            row_count: number;
+            download_url: string;
+            /** Format: date-time */
+            created_at: string;
+            created_by_name: string;
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        ExportCreate: {
+            format: components["schemas"]["FormatEnum"];
+            document_ids?: string[];
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        ExportCreated: {
+            /** Format: uuid */
+            id: string;
+            format: components["schemas"]["FormatEnum"];
+            row_count: number;
+            download_url: string;
+        };
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        ExportPage: {
+            count: number;
+            /** Format: uri */
+            next: string | null;
+            /** Format: uri */
+            previous: string | null;
+            results: components["schemas"]["Export"][];
+        };
+        /**
+         * @description * `csv_invoices` - Csv Invoices
+         *     * `csv_lines` - Csv Lines
+         *     * `zip_bundle` - Zip Bundle
+         * @enum {string}
+         */
+        FormatEnum: "csv_invoices" | "csv_lines" | "zip_bundle";
         HealthStatus: {
             status: string;
         };
@@ -536,6 +775,7 @@ export interface components {
             seller_email?: string;
             buyer_name?: string;
             buyer_vat_id?: string;
+            buyer_tax_number?: string;
             buyer_street?: string;
             buyer_postcode?: string;
             buyer_city?: string;
@@ -608,6 +848,32 @@ export interface components {
             /** Format: decimal */
             tax_rate?: string;
         };
+        LineEdit: {
+            line_id?: string | null;
+            description?: string | null;
+            /** Format: decimal */
+            quantity?: string | null;
+            unit_code?: string | null;
+            /** Format: decimal */
+            unit_price?: string | null;
+            /** Format: decimal */
+            net_amount?: string | null;
+            tax_category?: string | null;
+            /** Format: decimal */
+            tax_rate?: string | null;
+        };
+        /** @description LLM spend and budgets in USD, as strings with 2 decimals. */
+        LlmStats: {
+            /** Format: decimal */
+            lifetime_spent_usd: string;
+            /** Format: decimal */
+            lifetime_budget_usd: string;
+            /** Format: decimal */
+            month_spent_usd: string;
+            /** Format: decimal */
+            month_budget_usd: string;
+            sandbox_calls_left?: number;
+        };
         /**
          * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
          *
@@ -667,6 +933,9 @@ export interface components {
             previous: string | null;
             results: components["schemas"]["Member"][];
         };
+        Note: {
+            note: string;
+        };
         /** @description The body of `GET` and `PATCH /organization`. */
         Organization: {
             /** Format: uuid */
@@ -680,6 +949,53 @@ export interface components {
             four_eyes: boolean;
             duplicate_window_days: number;
             reminder_after_days: number;
+        };
+        PatchedInvoiceEdit: {
+            invoice_number?: string | null;
+            type_code?: number | null;
+            /** Format: date */
+            issue_date?: string | null;
+            /** Format: date */
+            due_date?: string | null;
+            currency?: string | null;
+            buyer_reference?: string | null;
+            order_reference?: string | null;
+            seller_name?: string | null;
+            seller_vat_id?: string | null;
+            seller_tax_number?: string | null;
+            seller_street?: string | null;
+            seller_postcode?: string | null;
+            seller_city?: string | null;
+            seller_country_code?: string | null;
+            seller_email?: string | null;
+            buyer_name?: string | null;
+            buyer_vat_id?: string | null;
+            buyer_tax_number?: string | null;
+            buyer_street?: string | null;
+            buyer_postcode?: string | null;
+            buyer_city?: string | null;
+            buyer_country_code?: string | null;
+            buyer_email?: string | null;
+            payee_iban?: string | null;
+            payee_bic?: string | null;
+            payment_terms?: string | null;
+            /** Format: decimal */
+            line_total?: string | null;
+            /** Format: decimal */
+            allowance_total?: string | null;
+            /** Format: decimal */
+            charge_total?: string | null;
+            /** Format: decimal */
+            net_total?: string | null;
+            /** Format: decimal */
+            tax_total?: string | null;
+            /** Format: decimal */
+            gross_total?: string | null;
+            /** Format: decimal */
+            prepaid_amount?: string | null;
+            /** Format: decimal */
+            payable_amount?: string | null;
+            lines?: components["schemas"]["LineEdit"][];
         };
         /**
          * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
@@ -725,6 +1041,12 @@ export interface components {
          * @enum {string}
          */
         RoleEnum: "admin" | "accountant" | "approver" | "viewer";
+        RuleExplanation: {
+            rule_id: string;
+            plain_text: string;
+            fix_hint: string;
+            source: components["schemas"]["SourceEnum"];
+        };
         /** @description `{user, organization, role}`: the body of login, me and sandbox. */
         Session: {
             user: components["schemas"]["SessionUser"];
@@ -757,6 +1079,35 @@ export interface components {
             /** Format: email */
             email: string;
             name: string;
+        };
+        /**
+         * @description * `curated` - Curated
+         *     * `llm` - Llm
+         * @enum {string}
+         */
+        SourceEnum: "curated" | "llm";
+        /**
+         * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
+         *
+         *     Use it only on serializers whose fields are never nullable by design (HANDOFF "JSON").
+         */
+        Stats: {
+            by_status: components["schemas"]["StatusCounts"];
+            blocked: number;
+            overdue: number;
+            awaiting_my_approval: number;
+            llm: components["schemas"]["LlmStats"];
+        };
+        /** @description Non-deleted documents of the organisation per status; every status is present. */
+        StatusCounts: {
+            received: number;
+            processing: number;
+            needs_review: number;
+            awaiting_approval: number;
+            approved: number;
+            rejected: number;
+            exported: number;
+            failed: number;
         };
         /** @description One row of `GET /suppliers`. */
         Supplier: {
@@ -942,6 +1293,38 @@ export interface operations {
             };
         };
     };
+    api_v1_checks_resolve_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                check_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Note"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Check"];
+                };
+            };
+            /** @description CHECK_NOT_RESOLVABLE or INVALID_TRANSITION */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     api_v1_documents_list: {
         parameters: {
             query?: {
@@ -1076,6 +1459,38 @@ export interface operations {
             };
         };
     };
+    api_v1_documents_decision_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Decision"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentDetail"];
+                };
+            };
+            /** @description FOUR_EYES */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     api_v1_documents_file_retrieve: {
         parameters: {
             query?: never;
@@ -1093,6 +1508,140 @@ export interface operations {
                 };
                 content: {
                     "application/octet-stream": string;
+                };
+            };
+        };
+    };
+    api_v1_documents_invoice_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedInvoiceEdit"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentDetail"];
+                };
+            };
+            /** @description INVALID_TRANSITION */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    api_v1_documents_mark_reviewed_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentDetail"];
+                };
+            };
+            /** @description BLOCKING_CHECKS */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    api_v1_documents_reopen_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentDetail"];
+                };
+            };
+        };
+    };
+    api_v1_documents_retry_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentDetail"];
+                };
+            };
+            /** @description TEMPORAL_UNAVAILABLE */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    api_v1_documents_send_back_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                document_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["Comment"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentDetail"];
                 };
             };
         };
@@ -1156,6 +1705,79 @@ export interface operations {
                 };
                 content: {
                     "application/xml": string;
+                };
+            };
+        };
+    };
+    api_v1_exports_list: {
+        parameters: {
+            query?: {
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExportPage"];
+                };
+            };
+        };
+    };
+    api_v1_exports_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExportCreate"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExportCreated"];
+                };
+            };
+            /** @description NOTHING_TO_EXPORT */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    api_v1_exports_download_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                export_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": string;
+                    "application/zip": string;
                 };
             };
         };
@@ -1271,6 +1893,27 @@ export interface operations {
             };
         };
     };
+    api_v1_rules_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                rule_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RuleExplanation"];
+                };
+            };
+        };
+    };
     api_v1_sandbox_create: {
         parameters: {
             query?: never;
@@ -1294,6 +1937,25 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    api_v1_stats_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Stats"];
+                };
             };
         };
     };
