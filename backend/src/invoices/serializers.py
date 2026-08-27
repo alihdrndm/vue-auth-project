@@ -297,7 +297,9 @@ def _validation(document: Document) -> dict[str, Any] | None:  # boundary: drf d
     }
 
 
-def check_entry(check: Check, document: Document, user: User) -> dict[str, Any]:  # boundary
+def check_entry(
+    check: Check, document: Document, user: User
+) -> dict[str, Any]:  # boundary: drf data
     return {
         "id": check.id,
         "check_id": check.check_id,
