@@ -324,3 +324,11 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - Attachments get the upload rules (size, type by content, DOCTYPE refused); a message larger than twice the upload limit plus 256 KiB is marked seen without downloading. Duplicates are skipped and only logged. A crash between storing and marking seen is repaired by the maintenance, which starts documents left in `received`.
 - A refused login, a disabled mailbox or an unknown organisation is a permanent error; other IMAP errors are retried. Logs contain counts and document IDs only.
 - The mailbox workflow is always registered in the worker; `MAILBOX_ENABLED` alone decides whether the schedule exists.
+
+### Workflow signals and review fixes
+- **Signals carry no payload:** `temporal_client.signal(document_id, workflow_id, name)` sends only the name, and `decided` carries no decision. Every signal only wakes the loop, which re-reads the status (the decision is in the database), so a payload could only disagree with the database. The workflow ID is passed in so seeded documents (empty ID) are skipped without a query.
+- **Retry by status:** a waiting workflow that reads `processing` processes again, with or without the `retry` signal. Only a retry moves a waiting document back to `processing`, so a lost or raced signal is recovered by the next wake (at the latest the daily `sync`).
+- **Reminders** fall every `reminder_after_days` from when approval began; a wake in between doesn't move them.
+- **`COMPARE_HYBRID_PDF=false`:** the comparison activity answers "not compared" without a call, and the workflow skips it silently, with no timeline note. The note is for a comparison that was tried and failed.
+- **Edits store IBAN, BIC and VAT IDs upper-case without spaces**, as parsing does, so an IBAN typed with spaces matches the supplier's history.
+- **ZIP entry names:** originals are stored as `originals/<Eingang-ID>-<name>`, with the name reduced to `[A-Za-z0-9._-]` (other characters become `_`). An uploaded name is untrusted and must be safe in every unzip tool; the Eingang-ID keeps it unique and traceable.
