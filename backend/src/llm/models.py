@@ -6,6 +6,7 @@ Nothing in the application deletes rows of either table: they protect real money
 from django.db import models
 
 from accounts.models import Organization
+from eingang import clock
 from eingang.db import BaseModel
 
 
@@ -37,6 +38,11 @@ class LlmCall(BaseModel):
     latency_ms = models.PositiveIntegerField(default=0)
     cache_hit = models.BooleanField(default=False)
     status = models.CharField(max_length=20, choices=Status.choices)
+    # Made for a demo (sandbox) visitor. Stored, because a deleted sandbox's spend must
+    # still count against today's public budget.
+    is_public = models.BooleanField(default=False)
+    # From the injected clock, so the monthly and daily budget windows can be tested.
+    created_at = models.DateTimeField(default=clock.now)
 
     class Meta:
         db_table = "llm_calls"

@@ -104,6 +104,7 @@ build-samples = "python tools/build_samples.py"
 create-org = "python manage.py create_org"
 seed-rules = "python manage.py seed_rules"
 ensure-schedules = "python manage.py ensure_schedules"
+llm-spend = "python manage.py llm_spend"
 openapi = "python tools/export_openapi.py"
 openapi-check = "python tools/export_openapi.py --check"
 worker = { cmd = "python -m eingang.worker", env = { PYTHONPATH = "src" } }

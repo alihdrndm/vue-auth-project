@@ -59,6 +59,15 @@ class Settings(BaseSettings):
     MAILBOX_ORG_SLUG: str = ""
 
     LLM_ENABLED: bool = False
+    # OpenAI (HANDOFF "Provider and API"); required when LLM_ENABLED is true. No model default.
+    OPENAI_API_KEY: str = ""
+    OPENAI_MODEL: str = ""
+    # Empty for a non-reasoning model; the lowest accepted value for a reasoning model.
+    OPENAI_REASONING_EFFORT: str = ""
+    # USD per million tokens, from the official pricing page.
+    OPENAI_PRICE_INPUT_PER_MTOK: Decimal | None = None
+    OPENAI_PRICE_CACHED_INPUT_PER_MTOK: Decimal | None = None
+    OPENAI_PRICE_OUTPUT_PER_MTOK: Decimal | None = None
     # Budgets in USD (HANDOFF "Budgets"); every LLM call is checked against them (M5).
     LLM_BUDGET_USD_LIFETIME: Decimal = Decimal("2.00")
     LLM_SPENT_ELSEWHERE_USD: Decimal | None = None
@@ -98,6 +107,21 @@ class Settings(BaseSettings):
                 f"{name} is required when MAILBOX_ENABLED=true"
                 for name, value in required.items()
                 if not value
+            ]
+        if self.LLM_ENABLED:
+            llm_required: dict[str, object] = {
+                "OPENAI_API_KEY": self.OPENAI_API_KEY,
+                "OPENAI_MODEL": self.OPENAI_MODEL,
+                "OPENAI_PRICE_INPUT_PER_MTOK": self.OPENAI_PRICE_INPUT_PER_MTOK,
+                "OPENAI_PRICE_CACHED_INPUT_PER_MTOK": self.OPENAI_PRICE_CACHED_INPUT_PER_MTOK,
+                "OPENAI_PRICE_OUTPUT_PER_MTOK": self.OPENAI_PRICE_OUTPUT_PER_MTOK,
+                # A production deploy must not forget the spend recorded elsewhere.
+                "LLM_SPENT_ELSEWHERE_USD": self.LLM_SPENT_ELSEWHERE_USD,
+            }
+            problems += [
+                f"{name} is required when LLM_ENABLED=true"
+                for name, value in llm_required.items()
+                if value is None or value == ""
             ]
         if problems:
             raise ValueError("; ".join(problems))
