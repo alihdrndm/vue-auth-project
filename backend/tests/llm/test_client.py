@@ -1,6 +1,5 @@
 """The one LLM door: refusals, budgets, cache, ledger rows and costs (no network)."""
 
-from dataclasses import dataclass, field
 from datetime import timedelta
 from decimal import Decimal
 from types import SimpleNamespace
@@ -20,6 +19,8 @@ from llm import budget, client
 from llm.models import LlmCache, LlmCall
 from llm.prompts import Prompt, fenced
 from tests.factories import make_sandbox
+from tests.llm import fakes
+from tests.llm.fakes import FakeSdk
 
 pytestmark = pytest.mark.django_db
 PRIVATE_TEXT = "Rechnung Nr. GEHEIM-4711 an Holzwerk Brandt"
@@ -29,56 +30,11 @@ class Answer(BaseModel):
     invoice_number: str | None
 
 
-@dataclass
-class FakeSdk:
-    """Serves queued responses (or raises queued errors) and records each request."""
-
-    replies: list[Any] = field(default_factory=list)
-    requests: list[dict[str, Any]] = field(default_factory=list)
-
-    @property
-    def responses(self) -> "FakeSdk":
-        return self
-
-    def parse(self, **kwargs: Any) -> Any:
-        self.requests.append(kwargs)
-        reply = self.replies.pop(0)
-        if isinstance(reply, Exception):
-            raise reply
-        return reply
+def reply(parsed: BaseModel | None = None, **usage: Any) -> SimpleNamespace:
+    return fakes.reply(parsed if parsed is not None else Answer(invoice_number="RE-1"), **usage)
 
 
-def reply(
-    parsed: BaseModel | None = None,
-    *,
-    status: str = "completed",
-    input_tokens: int = 1000,
-    cached: int = 200,
-    output: int = 100,
-) -> SimpleNamespace:
-    return SimpleNamespace(
-        status=status,
-        output_parsed=parsed if parsed is not None else Answer(invoice_number="RE-1"),
-        usage=SimpleNamespace(
-            input_tokens=input_tokens,
-            input_tokens_details=SimpleNamespace(cached_tokens=cached),
-            output_tokens=output,
-        ),
-    )
-
-
-def settings(**overrides: Any) -> Settings:
-    values: dict[str, Any] = {
-        "LLM_ENABLED": True,
-        "OPENAI_API_KEY": "test-key",
-        "OPENAI_MODEL": "test-model",
-        "OPENAI_PRICE_INPUT_PER_MTOK": Decimal("0.10"),
-        "OPENAI_PRICE_CACHED_INPUT_PER_MTOK": Decimal("0.01"),
-        "OPENAI_PRICE_OUTPUT_PER_MTOK": Decimal("0.40"),
-        "LLM_SPENT_ELSEWHERE_USD": Decimal("0.00"),
-        **overrides,
-    }
-    return Settings(**values)
+settings = fakes.enabled_settings
 
 
 @pytest.fixture
