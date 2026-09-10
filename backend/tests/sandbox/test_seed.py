@@ -1,14 +1,20 @@
 """The sandbox seed: the twelve samples end with exactly the manifest's checks and statuses."""
 
+import json
+import shutil
 from datetime import timedelta
+from pathlib import Path
 
 import pytest
+from django.conf import settings
+from django.test import override_settings
 
 from accounts.models import Organization, User
 from eingang import clock, storage
 from eingang.workflows.contracts import NOTE_PDF_NOT_COMPARED
 from invoices.models import Approval, Check, Document, Event
 from llm.models import LlmCall
+from llm.schemas import ComparedValues, ExtractedInvoice
 from sandbox.seed import DECISION_DELAY, Sample, manifest
 from sandbox.services import create_sandbox
 
@@ -115,3 +121,53 @@ def test_two_sandboxes_get_separate_documents(fixed_clock: clock.FixedClock) -> 
     second = create_sandbox().organization
     assert Document.objects.filter(organization=first).count() == 12
     assert Document.objects.filter(organization=second).count() == 12
+
+
+def test_seed_uses_precomputed_llm_answers_when_present(
+    tmp_path: Path, fixed_clock: clock.FixedClock
+) -> None:
+    samples = tmp_path / "samples"
+    shutil.copytree(settings.SAMPLES_DIR, samples)
+    s08 = samples / "precomputed" / "S08.json"
+    data = json.loads(s08.read_text(encoding="utf-8"))
+    answer: dict[str, object] = dict.fromkeys(ExtractedInvoice.model_fields)
+    answer.update(
+        tax_breakdown=[],
+        lines=[],
+        invoice_number="2026-1043",
+        invoice_number_evidence="Rechnungsnummer: 2026-1043",
+        seller_name="Druckerei Sommer GmbH",
+        seller_name_evidence="Druckerei Sommer GmbH",
+        seller_vat_id="DE360588120",
+        seller_vat_id_evidence="USt-IdNr.: DE360588120",
+        gross_total="1547.00",
+        gross_total_evidence="Brutto: 1.547,00 EUR",
+        payee_iban="DE29100100100987654321",
+        payee_iban_evidence="Bank: DE29100100100987654321",  # not in the text: graded low
+    )
+    data["extraction"] = {"prompt_version": "extract_invoice.v1", "answer": answer}
+    s08.write_text(json.dumps(data), encoding="utf-8")
+    s10 = samples / "precomputed" / "S10.json"
+    data = json.loads(s10.read_text(encoding="utf-8"))
+    shown: dict[str, object] = dict.fromkeys(ComparedValues.model_fields)
+    shown.update(gross_total="1190.00", gross_total_evidence="Brutto: 1.190,00 EUR")
+    data["comparison"] = {"prompt_version": "compare_pdf_xml.v1", "answer": shown}
+    s10.write_text(json.dumps(data), encoding="utf-8")
+
+    with override_settings(SAMPLES_DIR=samples):
+        organization = create_sandbox().organization
+    documents = by_number(organization)
+    s08_checks = set(
+        Check.objects.filter(document=documents["S08"]).values_list("check_id", flat=True)
+    )
+    assert s08_checks == {"C04", "C11", "C13"}
+    assert documents["S08"].invoice.extraction_method == "llm"
+    assert documents["S08"].invoice.prompt_version == "extract_invoice.v1"
+    assert documents["S08"].status == "needs_review"
+    s10_checks = set(
+        Check.objects.filter(document=documents["S10"]).values_list("check_id", flat=True)
+    )
+    assert s10_checks == {"C04", "C09"}
+    assert documents["S10"].status == "needs_review"
+    note = {"note": NOTE_PDF_NOT_COMPARED}
+    assert not Event.objects.filter(document=documents["S10"], data=note).exists()

@@ -21,9 +21,10 @@ from accounts.models import Organization, User
 from eingang import clock, storage
 from eingang.workflows.contracts import NOTE_PDF_NOT_COMPARED
 from einvoice.model import CanonicalInvoice
-from invoices import checks, persist
+from invoices import checks, extraction, persist
 from invoices.models import Approval, Document, Event, ValidationReport
 from invoices.status import SYSTEM, processing_outcome, transition
+from llm.schemas import ComparedValues, ExtractedInvoice
 from suppliers.matching import match_supplier
 
 Status = Document.Status
@@ -31,7 +32,7 @@ Kind = Document.Kind
 
 STRUCTURED_KINDS = frozenset({Kind.XML, Kind.HYBRID_PDF})
 EXTRACTED_KINDS = frozenset({Kind.PDF_TEXT, Kind.LEGACY_ZUGFERD1, Kind.HYBRID_PDF_UNSUPPORTED})
-# Until M5 every LLM call is refused as disabled, so extraction leaves check C12.
+# Without a precomputed answer, extraction is refused as disabled and leaves check C12.
 EXTRACTION_REASON = "disabled"
 # The two sample decisions of the sandbox table, made a day after the invoice arrived.
 DECISIONS = {
@@ -164,6 +165,7 @@ def _process(document: Document, precomputed: dict[str, Any]) -> None:  # bounda
     detection = precomputed["detection"]
     _step(document, "detect")
     reason: str | None = None
+    differences: list[dict[str, str]] | None = None
     if document.kind in STRUCTURED_KINDS:
         _step(document, "validate")
         report = precomputed["validation"]
@@ -177,29 +179,61 @@ def _process(document: Document, precomputed: dict[str, Any]) -> None:  # bounda
             warning_count=report["warning_count"],
             ran_at=clock.now(),
         )
+        invoice_xml = CanonicalInvoice.model_validate(precomputed["invoice"])
         invoice = persist.save_structured(
             document,
-            CanonicalInvoice.model_validate(precomputed["invoice"]),
+            invoice_xml,
             syntax=detection["syntax"],
             profile=detection["profile"],
             spec_id=detection["spec_id"],
             is_einvoice=detection["is_einvoice"],
         )
         if document.kind == Kind.HYBRID_PDF:
-            # The comparison needs the LLM (M5); a real run records that it was skipped.
-            _event(document, Event.Type.PROCESSING_STEP, {"note": NOTE_PDF_NOT_COMPARED})
+            differences = _precomputed_differences(precomputed, invoice_xml)
+            if differences is None:
+                # Not precomputed: a real run without the LLM records that it was skipped.
+                _event(document, Event.Type.PROCESSING_STEP, {"note": NOTE_PDF_NOT_COMPARED})
     elif document.kind in EXTRACTED_KINDS:
         _step(document, "extract")
-        invoice = persist.save_empty(document)
-        reason = EXTRACTION_REASON
+        stored = precomputed.get("extraction")
+        if stored is None:
+            invoice = persist.save_empty(document)
+            reason = EXTRACTION_REASON
+        else:
+            # The precomputed LLM answer (`precompute-samples`), graded like a live one.
+            text = str(precomputed.get("text") or "")
+            cut = text[: extraction.TEXT_LIMIT]
+            invoice = persist.save_extracted(
+                document,
+                extraction.post_process(ExtractedInvoice.model_validate(stored["answer"]), cut),
+                truncated=len(text) > extraction.TEXT_LIMIT,
+                prompt_version=str(stored["prompt_version"]),
+            )
     else:  # a scan: a person types the fields in (check C10)
         invoice = persist.save_empty(document)
     _step(document, "check")
     match_supplier(invoice)
-    context = checks.CheckContext(extraction_unavailable_reason=reason, today=clock.today())
+    context = checks.CheckContext(
+        pdf_xml_differences=differences or [],
+        extraction_unavailable_reason=reason,
+        today=clock.today(),
+    )
     checks.apply_findings(document, checks.evaluate(document, context))
     _step(document, "done")
     transition(document, processing_outcome(document), SYSTEM)
+
+
+def _precomputed_differences(
+    precomputed: dict[str, Any],
+    invoice_xml: CanonicalInvoice,  # boundary: JSON file
+) -> list[dict[str, str]] | None:
+    """The C09 differences from the precomputed comparison, or None when there is none."""
+    stored = precomputed.get("comparison")
+    if stored is None:
+        return None
+    shown = ComparedValues.model_validate(stored["answer"])
+    text = str(precomputed.get("text") or "")[: extraction.TEXT_LIMIT]
+    return extraction.compare(invoice_xml, shown, text)
 
 
 def _decide(document: Document, people: SamplePeople, decision: str, comment: str) -> None:
