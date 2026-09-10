@@ -15,7 +15,7 @@ from temporalio import activity
 
 from eingang import clock, storage
 from eingang.config import get_settings
-from eingang.temporal_errors import BudgetExceededError, PermanentError
+from eingang.temporal_errors import PermanentError
 from eingang.workflows import contracts as c
 from einvoice.detect import Detection, Kind, Profile, Syntax, detect, format_label
 from einvoice.errors import CorruptPdfError, InvoiceParseError, UnsupportedFileError
@@ -26,12 +26,19 @@ from einvoice.pdf import extract_text
 from einvoice.validate import validate_xml
 from einvoice.visualize import applies_to, to_html
 from einvoice.xmlsafe import parse_xml
-from invoices import checks, persist
+from invoices import checks, extraction, persist
 from invoices.models import Document, Event, Invoice, RuleExplanation, ValidationReport
 from invoices.status import processing_outcome, transition
+from llm import client as llm_client
+from llm import prompts
+from llm.schemas import ComparedValues, ExtractedInvoice, RuleExplanationOut
 from suppliers import matching
 
 logger = logging.getLogger(__name__)
+# max_output_tokens per LLM feature (HANDOFF "LLM features in Eingang").
+EXTRACT_MAX_OUTPUT_TOKENS = 2500
+COMPARE_MAX_OUTPUT_TOKENS = 600
+EXPLAIN_MAX_OUTPUT_TOKENS = 400
 Status = Document.Status
 
 
@@ -196,18 +203,64 @@ def render_visualization(detected: c.DetectedDocument) -> bool:
     return True
 
 
+def _visible_text(document: Document) -> tuple[str, bool]:
+    """The stored PDF text (first six pages), cut at 12,000 characters, and whether it was cut."""
+    if not document.text_storage_key:
+        raise PermanentError("The document has no extracted text.")
+    text = storage.read(document.text_storage_key).decode("utf-8")
+    return text[: extraction.TEXT_LIMIT], len(text) > extraction.TEXT_LIMIT
+
+
 @activity.defn(name=c.ACT_COMPARE_PDF_TO_XML)
 def compare_pdf_to_xml(ref: c.DocumentRef) -> c.ComparisonResult:
+    """Read five values from the visible PDF and list where they differ from the XML (section 6)."""
     if not get_settings().COMPARE_HYBRID_PDF:
         return c.ComparisonResult(compared=False)
-    # The LLM layer arrives in M5; until then every LLM call is refused as disabled.
-    raise BudgetExceededError("disabled")
+    document = _document(ref.document_id)
+    text, _truncated = _visible_text(document)
+    xml = _xml_of(document)
+    try:
+        canonical = parse_cii(xml)  # hybrid PDFs carry CII (detection rule D2)
+    except (InvoiceParseError, UnsupportedFileError) as error:
+        raise PermanentError(f"The invoice XML cannot be read: {error}") from error
+    shown = llm_client.call(
+        llm_client.Request(
+            purpose="compare",
+            prompt=prompts.load("compare_pdf_xml", 1),
+            data=prompts.fenced("document", text),
+            output=ComparedValues,
+            max_output_tokens=COMPARE_MAX_OUTPUT_TOKENS,
+            organization=document.organization,
+        )
+    )
+    differences = extraction.compare(canonical, shown, text)
+    return c.ComparisonResult(
+        differences=[c.FieldDifference(**difference) for difference in differences]
+    )
 
 
 @activity.defn(name=c.ACT_EXTRACT_WITH_LLM)
 def extract_with_llm(ref: c.DocumentRef) -> None:
-    # The LLM layer arrives in M5; until then every LLM call is refused as disabled.
-    raise BudgetExceededError("disabled")
+    """Read the invoice fields from the PDF text and grade each one (section 5)."""
+    document = _document(ref.document_id)
+    text, truncated = _visible_text(document)
+    prompt = prompts.load("extract_invoice", 1)
+    answer = llm_client.call(
+        llm_client.Request(
+            purpose="extract",
+            prompt=prompt,
+            data=prompts.fenced("document", text),
+            output=ExtractedInvoice,
+            max_output_tokens=EXTRACT_MAX_OUTPUT_TOKENS,
+            organization=document.organization,
+        )
+    )
+    persist.save_extracted(
+        document,
+        extraction.post_process(answer, text),
+        truncated=truncated,
+        prompt_version=prompt.label,
+    )
 
 
 @activity.defn(name=c.ACT_CREATE_EMPTY_INVOICE)
@@ -254,18 +307,52 @@ def run_checks(request: c.ChecksInput) -> int:
 
 @activity.defn(name=c.ACT_EXPLAIN_RULES)
 def explain_rules(ref: c.DocumentRef) -> int:
-    """Rule IDs of the report without a stored explanation; explaining them needs the LLM."""
+    """Explain, once ever, each rule of the report that has no stored explanation (section 7).
+
+    Each explanation is stored as soon as it arrives, so a refusal part-way keeps the
+    earlier ones; a refused or failed call ends the activity (the official message is
+    shown alone).
+    """
     document = _document(ref.document_id)
     report = ValidationReport.objects.filter(document=document).first()
     if report is None:
         return 0
-    rule_ids = {issue.get("rule_id") for issue in report.issues if issue.get("rule_id")}
+    issues = {issue["rule_id"]: issue for issue in report.issues if issue.get("rule_id")}
     known = set(
-        RuleExplanation.objects.filter(rule_id__in=rule_ids).values_list("rule_id", flat=True)
+        RuleExplanation.objects.filter(rule_id__in=issues).values_list("rule_id", flat=True)
     )
-    if rule_ids - known:
-        raise BudgetExceededError("disabled")
-    return 0
+    prompt = prompts.load("explain_rule", 1)
+    explained = 0
+    for rule_id in sorted(set(issues) - known):
+        issue = issues[rule_id]
+        rule = "\n".join(
+            [
+                f"Rule ID: {rule_id}",
+                f"Official message: {issue.get('message', '')}",
+                f"Source: {issue.get('source', '')}",
+            ]
+        )
+        answer = llm_client.call(
+            llm_client.Request(
+                purpose="explain",
+                prompt=prompt,
+                data=prompts.fenced("rule", rule),
+                output=RuleExplanationOut,
+                max_output_tokens=EXPLAIN_MAX_OUTPUT_TOKENS,
+                organization=document.organization,
+            )
+        ).clipped()
+        _created = RuleExplanation.objects.get_or_create(
+            rule_id=rule_id,
+            defaults={
+                "plain_text": answer.plain_text,
+                "fix_hint": answer.fix_hint,
+                "source": RuleExplanation.Source.LLM,
+                "prompt_version": prompt.label,
+            },
+        )
+        explained += 1
+    return explained
 
 
 @activity.defn(name=c.ACT_FINISH_PROCESSING)

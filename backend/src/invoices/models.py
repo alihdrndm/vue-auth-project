@@ -145,6 +145,8 @@ class Invoice(BaseModel):
     field_confidence = models.JSONField(default=dict, blank=True)
     field_evidence = models.JSONField(default=dict, blank=True)
     text_truncated = models.BooleanField(default=False)
+    # The prompt that produced an LLM extraction (`extract_invoice.v1`); null otherwise.
+    prompt_version = models.CharField(max_length=64, null=True, blank=True)
     supplier = models.ForeignKey(
         "suppliers.Supplier",
         on_delete=models.SET_NULL,

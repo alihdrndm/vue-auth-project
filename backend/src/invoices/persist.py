@@ -9,6 +9,7 @@ from typing import Any
 from django.db import transaction
 
 from einvoice.model import CanonicalInvoice
+from invoices.extraction import Extraction
 from invoices.models import Document, Invoice, InvoiceLine
 
 PARTY_FIELDS = (
@@ -93,4 +94,35 @@ def save_empty(document: Document, *, is_einvoice: bool = False) -> Invoice:
             "is_einvoice": is_einvoice,
         },
     )
+    return invoice
+
+
+def save_extracted(
+    document: Document, extraction: Extraction, *, truncated: bool, prompt_version: str
+) -> Invoice:
+    """Create or replace the invoice read by the LLM (`extraction_method = llm`) and its lines.
+
+    Not an e-invoice: the data comes from the visible text, graded field by field.
+    """
+    with transaction.atomic():
+        invoice, _created = Invoice.objects.update_or_create(
+            document=document,
+            defaults={
+                "organization": document.organization,
+                "is_einvoice": False,
+                "extraction_method": Invoice.ExtractionMethod.LLM,
+                "field_confidence": extraction.confidence,
+                "field_evidence": extraction.evidence,
+                "text_truncated": truncated,
+                "prompt_version": prompt_version,
+                **extraction.columns,
+            },
+        )
+        invoice.lines.all().delete()
+        InvoiceLine.objects.bulk_create(
+            [
+                InvoiceLine(invoice=invoice, position=position, **line.model_dump())
+                for position, line in enumerate(extraction.lines, start=1)
+            ]
+        )
     return invoice
