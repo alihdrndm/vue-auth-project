@@ -332,3 +332,21 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - **`COMPARE_HYBRID_PDF=false`:** the comparison activity answers "not compared" without a call, and the workflow skips it silently, with no timeline note. The note is for a comparison that was tried and failed.
 - **Edits store IBAN, BIC and VAT IDs upper-case without spaces**, as parsing does, so an IBAN typed with spaces matches the supplier's history.
 - **ZIP entry names:** originals are stored as `originals/<Eingang-ID>-<name>`, with the name reduced to `[A-Za-z0-9._-]` (other characters become `_`). An uploaded name is untrusted and must be safe in every unzip tool; the Eingang-ID keeps it unique and traceable.
+
+### The LLM client
+- **One lock for budgeted calls:** the budget check, the call and its ledger row run while a Postgres advisory lock is held, so two workers can't both pass the same last check. Calls are rare, so serialising them costs little.
+- **Ledger rows survive errors:** the call's transaction commits its ledger row first; the refusal or error is raised afterwards.
+- **Errors:** a refused request (HTTP 400) is permanent; timeouts, rate limits, server errors and unparsable output are recorded and left to Temporal's two attempts; an incomplete answer is paid for, recorded and refused as permanent.
+- **Per-sandbox cap:** every call that reaches the API counts (including failed ones); cache hits don't, because they cost nothing. Calls for a sandbox are marked `is_public` in the ledger, so a deleted sandbox's spend still counts against today's public budget.
+- **Ledger time** comes from the injected clock, so the monthly and daily windows are testable.
+- **Cache key:** model, prompt version, the exact two input messages (instructions, fenced data) and the output schema. `store=false` is sent, so OpenAI keeps no copy of the conversation.
+- **Fences:** a closing tag inside untrusted text is broken up (`</ document>`), so the text can't end its fence.
+- **Prompt version on results:** an LLM-extracted invoice stores `prompt_version` (new column); rule explanations already did.
+
+### Extraction grading (section 5)
+- A value the model left null gets no confidence entry, so C13 doesn't fire for it: a value that isn't printed isn't a doubtful value.
+- A value that can't be stored as read (unparseable, more than two decimals, longer than its column) is stored as null but keeps `low` and its evidence, so C13 asks for it. A storable value that fails its validator (IBAN checksum, VAT ID, date range, currency) is kept as read and `low`, so C06/C07 can name the problem.
+- Evidence must appear verbatim (case-sensitive, whitespace collapsed); the 80-character limit is not enforced, because long values such as payment terms couldn't meet it.
+- Numbers: day-first dates (month-first only when day-first is impossible), German and English amount formats, a single mark followed by exactly three digits means thousands. ISO 4217 is a fixed list of active codes.
+- Rule explanations longer than 300/200 characters are cut at a word break with "…", because strict Structured Outputs can't enforce a maximum length.
+- The comparison counts a PDF value only when its evidence is in the visible text; a value the model didn't find is not a difference.
