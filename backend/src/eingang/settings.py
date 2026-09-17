@@ -89,6 +89,8 @@ STATIC_URL = "static/"
 LOCAL_MEDIA_DIR = BASE_DIR / ".local-media"
 # The committed sandbox sample set (manifest, files, precomputed data).
 SAMPLES_DIR = BASE_DIR.parent / "samples"
+# The headline evaluation numbers served by GET /accuracy (bundled into the API image).
+EVALS_LATEST = BASE_DIR.parent / "evals" / "latest.json"
 
 
 def _documents_storage() -> dict[str, object]:

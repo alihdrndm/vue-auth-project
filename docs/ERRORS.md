@@ -105,7 +105,7 @@ Each code has its own section, so `type` links straight to it.
 `409`. No approved, not-yet-exported invoices match the export request.
 
 ### NOT_AVAILABLE
-`404`. The document has no such representation (visualisation, XML or extracted text).
+`404`. The document has no such representation (visualisation, XML or extracted text), or, for `GET /accuracy`, no evaluation results have been published yet.
 
 ### TEMPORAL_UNAVAILABLE
 `503`. The upload was stored, but processing could not be started because Temporal is unreachable. It starts automatically when Temporal is back. From `retry`: processing could not be restarted; the document stays `failed`, so try again later.

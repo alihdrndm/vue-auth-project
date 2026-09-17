@@ -1,6 +1,7 @@
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView
 
+from eingang.accuracy_api import AccuracyView
 from eingang.docs_view import DocsView
 from eingang.health import HealthzView, ReadyzView
 
@@ -14,6 +15,7 @@ urlpatterns = [
     path("api/v1/", include("exports.urls")),
     path("api/v1/", include("invoices.rules_urls")),
     path("api/v1/", include("invoices.stats_urls")),
+    path("api/v1/accuracy", AccuracyView.as_view(), name="accuracy"),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("docs", DocsView.as_view(url_name="schema"), name="docs"),
 ]
