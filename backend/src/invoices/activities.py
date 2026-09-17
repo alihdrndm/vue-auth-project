@@ -30,15 +30,10 @@ from invoices import checks, extraction, persist
 from invoices.models import Document, Event, Invoice, RuleExplanation, ValidationReport
 from invoices.status import processing_outcome, transition
 from llm import client as llm_client
-from llm import prompts
-from llm.schemas import ComparedValues, ExtractedInvoice, RuleExplanationOut
+from llm import requests as llm_requests
 from suppliers import matching
 
 logger = logging.getLogger(__name__)
-# max_output_tokens per LLM feature (HANDOFF "LLM features in Eingang").
-EXTRACT_MAX_OUTPUT_TOKENS = 2500
-COMPARE_MAX_OUTPUT_TOKENS = 600
-EXPLAIN_MAX_OUTPUT_TOKENS = 400
 Status = Document.Status
 
 
@@ -223,16 +218,7 @@ def compare_pdf_to_xml(ref: c.DocumentRef) -> c.ComparisonResult:
         canonical = parse_cii(xml)  # hybrid PDFs carry CII (detection rule D2)
     except (InvoiceParseError, UnsupportedFileError) as error:
         raise PermanentError(f"The invoice XML cannot be read: {error}") from error
-    shown = llm_client.call(
-        llm_client.Request(
-            purpose="compare",
-            prompt=prompts.load("compare_pdf_xml", 1),
-            data=prompts.fenced("document", text),
-            output=ComparedValues,
-            max_output_tokens=COMPARE_MAX_OUTPUT_TOKENS,
-            organization=document.organization,
-        )
-    )
+    shown = llm_client.call(llm_requests.comparison_request(text, document.organization))
     differences = extraction.compare(canonical, shown, text)
     return c.ComparisonResult(
         differences=[c.FieldDifference(**difference) for difference in differences]
@@ -244,22 +230,13 @@ def extract_with_llm(ref: c.DocumentRef) -> None:
     """Read the invoice fields from the PDF text and grade each one (section 5)."""
     document = _document(ref.document_id)
     text, truncated = _visible_text(document)
-    prompt = prompts.load("extract_invoice", 1)
-    answer = llm_client.call(
-        llm_client.Request(
-            purpose="extract",
-            prompt=prompt,
-            data=prompts.fenced("document", text),
-            output=ExtractedInvoice,
-            max_output_tokens=EXTRACT_MAX_OUTPUT_TOKENS,
-            organization=document.organization,
-        )
-    )
+    request = llm_requests.extraction_request(text, document.organization)
+    answer = llm_client.call(request)
     persist.save_extracted(
         document,
         extraction.post_process(answer, text),
         truncated=truncated,
-        prompt_version=prompt.label,
+        prompt_version=request.prompt.label,
     )
 
 
@@ -321,34 +298,23 @@ def explain_rules(ref: c.DocumentRef) -> int:
     known = set(
         RuleExplanation.objects.filter(rule_id__in=issues).values_list("rule_id", flat=True)
     )
-    prompt = prompts.load("explain_rule", 1)
     explained = 0
     for rule_id in sorted(set(issues) - known):
         issue = issues[rule_id]
-        rule = "\n".join(
-            [
-                f"Rule ID: {rule_id}",
-                f"Official message: {issue.get('message', '')}",
-                f"Source: {issue.get('source', '')}",
-            ]
+        request = llm_requests.explanation_request(
+            rule_id,
+            str(issue.get("message", "")),
+            str(issue.get("source", "")),
+            document.organization,
         )
-        answer = llm_client.call(
-            llm_client.Request(
-                purpose="explain",
-                prompt=prompt,
-                data=prompts.fenced("rule", rule),
-                output=RuleExplanationOut,
-                max_output_tokens=EXPLAIN_MAX_OUTPUT_TOKENS,
-                organization=document.organization,
-            )
-        ).clipped()
+        answer = llm_client.call(request).clipped()
         _created = RuleExplanation.objects.get_or_create(
             rule_id=rule_id,
             defaults={
                 "plain_text": answer.plain_text,
                 "fix_hint": answer.fix_hint,
                 "source": RuleExplanation.Source.LLM,
-                "prompt_version": prompt.label,
+                "prompt_version": request.prompt.label,
             },
         )
         explained += 1
