@@ -47,5 +47,8 @@ test-results/
 backend/.local-media/
 data/
 !backend/src/invoices/data/
+# The eval manifest is committed; the per-document cache is rebuilt from the corpus.
+!evals/data/
+evals/data/cache/
 .next
 backend/coverage.json

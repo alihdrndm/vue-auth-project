@@ -72,8 +72,9 @@ ignore = ["DJ001"]
 
 [tool.mypy]
 strict = true
-mypy_path = "src"
-files = ["src", "tests", "tools"]
+# ".." makes the repository-root package `evals` importable for the type checker.
+mypy_path = "src,.."
+files = ["src", "tests", "tools", "../evals"]
 plugins = ["mypy_django_plugin.main", "pydantic.mypy"]
 
 # factur-x and saxonche ship no type information; see docs/DECISIONS.md.
@@ -110,8 +111,10 @@ llm-spend = "python manage.py llm_spend"
 openapi = "python tools/export_openapi.py"
 openapi-check = "python tools/export_openapi.py --check"
 worker = { cmd = "python -m eingang.worker", env = { PYTHONPATH = "src" } }
-_ruff-check = "ruff check ."
-_ruff-format-check = "ruff format --check ."
+# The evaluation scripts are modules of the repository-root package `evals` (see evals/__init__.py).
+eval-dataset = { cmd = "python -m evals.build_dataset", env = { PYTHONPATH = ".." } }
+_ruff-check = "ruff check . ../evals"
+_ruff-format-check = "ruff format --check . ../evals"
 _lint-imports = { cmd = "lint-imports", env = { PYTHONPATH = "src" } }
-_ruff-format = "ruff format ."
-_ruff-fix = "ruff check --fix ."
+_ruff-format = "ruff format . ../evals"
+_ruff-fix = "ruff check --fix . ../evals"
