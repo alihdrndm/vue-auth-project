@@ -306,6 +306,17 @@ def main() -> int:
         "results": [asdict(result) for result in parity.results],
     }
     out.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    from evals.report import update_latest
+    from evals.schema import Parity as ParitySummary
+
+    update_latest(
+        parity=ParitySummary(
+            files=parity.files,
+            excluded=parity.excluded,
+            verdict_agreement=parity.verdict_agreement,
+            rule_set_agreement=parity.rule_set_agreement,
+        )
+    )
     print(
         f"parity: {parity.files} files compared, {parity.excluded} excluded; "
         f"verdicts {parity.verdict_agreement:.1%}, rule sets {parity.rule_set_agreement:.1%}"

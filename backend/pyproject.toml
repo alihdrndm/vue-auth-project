@@ -113,6 +113,9 @@ openapi-check = "python tools/export_openapi.py --check"
 worker = { cmd = "python -m eingang.worker", env = { PYTHONPATH = "src" } }
 # The evaluation scripts are modules of the repository-root package `evals` (see evals/__init__.py).
 eval-dataset = { cmd = "python -m evals.build_dataset", env = { PYTHONPATH = ".." } }
+eval-baseline = { cmd = "python -m evals.run_extraction baseline", env = { PYTHONPATH = ".." } }
+eval-llm = { cmd = "python -m evals.run_extraction llm", env = { PYTHONPATH = ".." } }
+eval-parity = { cmd = "python -m evals.parity", env = { PYTHONPATH = ".." } }
 _ruff-check = "ruff check . ../evals"
 _ruff-format-check = "ruff format --check . ../evals"
 _lint-imports = { cmd = "lint-imports", env = { PYTHONPATH = "src" } }
