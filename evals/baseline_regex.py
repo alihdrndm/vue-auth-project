@@ -1,7 +1,8 @@
 """The `regex-baseline` system: label-anchored regular expressions, no LLM (HANDOFF "Systems").
 
 It reads German, English and French labels ("Rechnungsnummer", "Invoice No.", "Facture n°")
-and takes the value that follows on the same line. It is deliberately simple: it shows what
+and takes the value that follows on the same line. Labels are tried in priority order, so
+"Bruttosumme" wins over a looser "Gesamtbetrag". It is deliberately simple: it shows what
 the LLM adds over a fixed rule set, not the best possible rule set.
 """
 
@@ -12,42 +13,63 @@ from decimal import Decimal, InvalidOperation
 from evals.metrics import FIELDS, Values
 
 _GAP = r"[ \t]*[:.#]?[ \t]*(?:n[o°º]\.?|nr\.?|number)?[ \t]*[:.#]?[ \t]*"
+_VALUE = r"(?P<value>[^\n]+)"
 
 
-def _labels(*words: str) -> re.Pattern[str]:
-    return re.compile(r"(?im)\b(?:" + "|".join(words) + r")\b" + _GAP + r"(?P<value>[^\n]+)")
+def _label(word: str) -> re.Pattern[str]:
+    return re.compile(r"(?im)\b" + word + r"\b" + _GAP + _VALUE)
 
 
-LABELS: dict[str, re.Pattern[str]] = {
+def _labels(*words: str) -> tuple[re.Pattern[str], ...]:
+    """Labels in priority order: the most specific label that yields a value wins."""
+    return tuple(_label(word) for word in words)
+
+
+LABELS: dict[str, tuple[re.Pattern[str], ...]] = {
     "invoice_number": _labels(
-        "rechnungsnummer", "rechnungs-nr", "rechnung", "invoice", "invoice number",
-        "facture", "numéro de facture",
+        "rechnungsnummer", "rechnungs-nr", "invoice number", "invoice", "numéro de facture",
+        "facture", r"(?:rechnung|gutschrift)[^\n]*?\bnr\.?", "rechnung",
     ),
     "issue_date": _labels(
-        "rechnungsdatum", "datum", "invoice date", "date of issue", "date", "date de facture",
+        "rechnungsdatum", "invoice date", "date of issue", "date de facture",
+        r"nr\.?\s*\S+\s+vom", "datum", "date",
     ),
     "due_date": _labels("fällig am", "fälligkeitsdatum", "fällig", "due date", "échéance"),
     "seller.vat_id": _labels(
-        "ust-idnr", "ust-id", "umsatzsteuer-id", "vat id", "vat number", "vat no",
-        "n° tva", "tva intracommunautaire",
+        "ust-idnr", r"ust\.?-id\.?-nr", "ust-id", "umsatzsteuer-id", "vat id", "vat number",
+        "vat no", "n° tva", "tva intracommunautaire",
     ),
     "payee_iban": _labels("iban"),
     "net_total": _labels(
-        "nettobetrag", "netto", "summe netto", "net amount", "net total", "subtotal",
-        "total ht", "montant ht",
+        "nettobetrag", "nettosumme", "summe netto", r"rechnungssumme ohne ust\.?",
+        "net amount", "net total", "subtotal", "total ht", "montant ht", "netto",
     ),
     "tax_total": _labels(
-        "mwst", "ust", "umsatzsteuer", "mehrwertsteuer", "vat", "tax", "tva", "total tva",
+        "steuerbetrag", "mwst", "ust", "umsatzsteuer", "mehrwertsteuer", "total tva", "vat",
+        "tax", "tva",
     ),
     "gross_total": _labels(
-        "bruttobetrag", "brutto", "gesamtbetrag", "rechnungsbetrag", "total amount",
-        "grand total", "invoice total", "total ttc", "montant ttc",
+        "bruttosumme", "bruttobetrag", "rechnungsbetrag", "brutto", "total amount",
+        "grand total", "invoice total", "total ttc", "montant ttc", "gesamtbetrag",
     ),
     "payable_amount": _labels(
         "zahlbetrag", "zu zahlen", "amount due", "amount payable", "balance due",
         "net à payer", "à payer",
     ),
 }  # fmt: skip
+
+
+def _party(headings: str) -> re.Pattern[str]:
+    """`Name: ...` within four lines after a party heading (a common German layout)."""
+    return re.compile(
+        r"(?im)^\s*(?:" + headings + r")\b[^\n]*\n(?:[^\n]*\n){0,3}?\s*name\s*:\s*" + _VALUE
+    )
+
+
+PARTY_NAMES = {
+    "seller.name": _party("verkäufer|lieferant|seller|supplier|vendeur"),
+    "buyer.name": _party("käufer|kunde|rechnungsempfänger|buyer|customer|acheteur"),
+}
 
 _DATE = re.compile(r"(\d{1,2})[./](\d{1,2})[./](\d{4})|(\d{4})-(\d{2})-(\d{2})")
 _AMOUNT = re.compile(r"-?\d{1,3}(?:[.,' ]\d{3})*(?:[.,]\d{2})|-?\d+(?:[.,]\d{2})")
@@ -101,10 +123,11 @@ def _value(field: str, text: str) -> str | None:
 
 
 def _first(field: str, text: str) -> str | None:
-    for match in LABELS[field].finditer(text):
-        found = _value(field, match["value"])
-        if found is not None:
-            return found
+    for pattern in LABELS[field]:
+        for match in pattern.finditer(text):
+            found = _value(field, match["value"])
+            if found is not None:
+                return found
     return None
 
 
@@ -113,8 +136,8 @@ def _currency(text: str) -> str | None:
     return _CURRENCY_CODES.get(match[1], match[1]) if match else None
 
 
-def _seller_name(text: str) -> str | None:
-    """The first non-empty line after the first page marker: usually the letterhead."""
+def _first_line(text: str) -> str | None:
+    """The first non-empty line after the page marker: usually the letterhead."""
     for line in text.splitlines():
         stripped = line.strip()
         if stripped and not stripped.startswith("--- page"):
@@ -128,5 +151,8 @@ def extract(text: str) -> Values:
     for field in LABELS:
         values[field] = _first(field, text)
     values["currency"] = _currency(text)
-    values["seller.name"] = _seller_name(text)
+    for field, pattern in PARTY_NAMES.items():
+        match = pattern.search(text)
+        values[field] = match["value"].strip() if match else None
+    values["seller.name"] = values["seller.name"] or _first_line(text)
     return values
