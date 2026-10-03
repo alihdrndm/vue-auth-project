@@ -4,6 +4,22 @@
  */
 
 export interface paths {
+    "/api/v1/accuracy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["api_v1_accuracy_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/csrf": {
         parameters: {
             query?: never;
@@ -476,6 +492,20 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @description The evaluation dataset. */
+        AccuracyDataset: {
+            name: string;
+            documents: number;
+            corpus_commit: string;
+        };
+        /** @description The published evaluation results (evals/latest.json). */
+        AccuracyReport: {
+            /** Format: date-time */
+            generated_at: string;
+            dataset: components["schemas"]["AccuracyDataset"];
+            systems: components["schemas"]["SystemResult"][];
+            parity?: components["schemas"]["Parity"];
+        };
         /**
          * @description Leave out fields whose value is None: an absent optional field is omitted, not null.
          *
@@ -530,6 +560,15 @@ export interface components {
         Comment: {
             /** @default  */
             comment: string;
+        };
+        /** @description Share of documents with all critical fields correct, with its 95% CI. */
+        CriticalCorrect: {
+            /** Format: double */
+            value: number;
+            /** Format: double */
+            ci_low: number;
+            /** Format: double */
+            ci_high: number;
         };
         Decision: {
             decision: components["schemas"]["DecisionEnum"];
@@ -717,6 +756,15 @@ export interface components {
             /** Format: uri */
             previous: string | null;
             results: components["schemas"]["Export"][];
+        };
+        /** @description Rates for one field; a rate with no documents to count is omitted. */
+        FieldScore: {
+            /** Format: double */
+            accuracy?: number;
+            /** Format: double */
+            hallucination?: number;
+            /** Format: double */
+            abstention?: number;
         };
         /**
          * @description * `csv_invoices` - Csv Invoices
@@ -950,6 +998,15 @@ export interface components {
             duplicate_window_days: number;
             reminder_after_days: number;
         };
+        /** @description Validation parity with the official KoSIT validator. */
+        Parity: {
+            files: number;
+            excluded: number;
+            /** Format: double */
+            verdict_agreement: number;
+            /** Format: double */
+            rule_set_agreement: number;
+        };
         PatchedInvoiceEdit: {
             invoice_number?: string | null;
             type_code?: number | null;
@@ -1178,6 +1235,25 @@ export interface components {
             previous: string | null;
             results: components["schemas"]["Supplier"][];
         };
+        /** @description Headline numbers of one system. */
+        SystemResult: {
+            id: string;
+            model?: string;
+            prompt_version?: string;
+            critical_correct: components["schemas"]["CriticalCorrect"];
+            /** Format: decimal */
+            cost_usd: string;
+            /** Format: decimal */
+            usd_per_doc: string;
+            /** Format: double */
+            latency_p50_ms: number;
+            /** Format: double */
+            latency_p95_ms: number;
+            /** @description Keyed by field: invoice_number, issue_date, due_date, currency, seller.name, seller.vat_id, payee_iban, buyer.name, net_total, tax_total, gross_total, payable_amount. */
+            fields: {
+                [key: string]: components["schemas"]["FieldScore"];
+            };
+        };
         UploadRequest: {
             files: string[];
         };
@@ -1215,6 +1291,32 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    api_v1_accuracy_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccuracyReport"];
+                };
+            };
+            /** @description NOT_AVAILABLE: no results published yet. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     api_v1_auth_csrf_retrieve: {
         parameters: {
             query?: never;

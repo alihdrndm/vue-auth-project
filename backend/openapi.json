@@ -6,6 +6,29 @@
         "description": "Inbox for supplier invoices: validation, extraction, checks and approval."
     },
     "paths": {
+        "/api/v1/accuracy": {
+            "get": {
+                "operationId": "api_v1_accuracy_retrieve",
+                "tags": [
+                    "accuracy"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AccuracyReport"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "404": {
+                        "description": "NOT_AVAILABLE: no results published yet."
+                    }
+                }
+            }
+        },
         "/api/v1/auth/csrf": {
             "get": {
                 "operationId": "api_v1_auth_csrf_retrieve",
@@ -1262,6 +1285,53 @@
     },
     "components": {
         "schemas": {
+            "AccuracyDataset": {
+                "type": "object",
+                "description": "The evaluation dataset.",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "documents": {
+                        "type": "integer"
+                    },
+                    "corpus_commit": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "corpus_commit",
+                    "documents",
+                    "name"
+                ]
+            },
+            "AccuracyReport": {
+                "type": "object",
+                "description": "The published evaluation results (evals/latest.json).",
+                "properties": {
+                    "generated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "dataset": {
+                        "$ref": "#/components/schemas/AccuracyDataset"
+                    },
+                    "systems": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SystemResult"
+                        }
+                    },
+                    "parity": {
+                        "$ref": "#/components/schemas/Parity"
+                    }
+                },
+                "required": [
+                    "dataset",
+                    "generated_at",
+                    "systems"
+                ]
+            },
             "AllowedAction": {
                 "type": "object",
                 "description": "Leave out fields whose value is None: an absent optional field is omitted, not null.\n\nUse it only on serializers whose fields are never nullable by design (HANDOFF \"JSON\").",
@@ -1374,6 +1444,29 @@
                         "default": ""
                     }
                 }
+            },
+            "CriticalCorrect": {
+                "type": "object",
+                "description": "Share of documents with all critical fields correct, with its 95% CI.",
+                "properties": {
+                    "value": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "ci_low": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "ci_high": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "required": [
+                    "ci_high",
+                    "ci_low",
+                    "value"
+                ]
             },
             "Decision": {
                 "type": "object",
@@ -1841,6 +1934,24 @@
                     "previous",
                     "results"
                 ]
+            },
+            "FieldScore": {
+                "type": "object",
+                "description": "Rates for one field; a rate with no documents to count is omitted.",
+                "properties": {
+                    "accuracy": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "hallucination": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "abstention": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                }
             },
             "FormatEnum": {
                 "enum": [
@@ -2414,6 +2525,32 @@
                     "name",
                     "reminder_after_days",
                     "slug"
+                ]
+            },
+            "Parity": {
+                "type": "object",
+                "description": "Validation parity with the official KoSIT validator.",
+                "properties": {
+                    "files": {
+                        "type": "integer"
+                    },
+                    "excluded": {
+                        "type": "integer"
+                    },
+                    "verdict_agreement": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "rule_set_agreement": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "required": [
+                    "excluded",
+                    "files",
+                    "rule_set_agreement",
+                    "verdict_agreement"
                 ]
             },
             "PatchedInvoiceEdit": {
@@ -3069,6 +3206,58 @@
                     "next",
                     "previous",
                     "results"
+                ]
+            },
+            "SystemResult": {
+                "type": "object",
+                "description": "Headline numbers of one system.",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "model": {
+                        "type": "string"
+                    },
+                    "prompt_version": {
+                        "type": "string"
+                    },
+                    "critical_correct": {
+                        "$ref": "#/components/schemas/CriticalCorrect"
+                    },
+                    "cost_usd": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,6}(?:\\.\\d{0,6})?$"
+                    },
+                    "usd_per_doc": {
+                        "type": "string",
+                        "format": "decimal",
+                        "pattern": "^-?\\d{0,6}(?:\\.\\d{0,6})?$"
+                    },
+                    "latency_p50_ms": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "latency_p95_ms": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "fields": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/FieldScore"
+                        },
+                        "description": "Keyed by field: invoice_number, issue_date, due_date, currency, seller.name, seller.vat_id, payee_iban, buyer.name, net_total, tax_total, gross_total, payable_amount."
+                    }
+                },
+                "required": [
+                    "cost_usd",
+                    "critical_correct",
+                    "fields",
+                    "id",
+                    "latency_p50_ms",
+                    "latency_p95_ms",
+                    "usd_per_doc"
                 ]
             },
             "UploadRequest": {
