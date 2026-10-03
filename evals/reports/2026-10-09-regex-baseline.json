@@ -1,0 +1,72 @@
+{
+  "id": "regex-baseline",
+  "critical_correct": {
+    "value": 0.21153846153846154,
+    "ci_low": 0.1346153846153846,
+    "ci_high": 0.28846153846153844
+  },
+  "fields": {
+    "invoice_number": {
+      "accuracy": 0.33653846153846156,
+      "abstention": 0.33653846153846156
+    },
+    "issue_date": {
+      "accuracy": 0.75,
+      "abstention": 0.20192307692307693
+    },
+    "due_date": {
+      "accuracy": 0.08823529411764706,
+      "hallucination": 0.04285714285714286,
+      "abstention": 0.8823529411764706
+    },
+    "currency": {
+      "accuracy": 0.9903846153846154,
+      "abstention": 0.009615384615384616
+    },
+    "seller.name": {
+      "accuracy": 0.3173076923076923,
+      "abstention": 0.0
+    },
+    "seller.vat_id": {
+      "accuracy": 0.8921568627450981,
+      "hallucination": 1.0,
+      "abstention": 0.029411764705882353
+    },
+    "payee_iban": {
+      "accuracy": 0.9142857142857143,
+      "hallucination": 0.14492753623188406,
+      "abstention": 0.02857142857142857
+    },
+    "buyer.name": {
+      "accuracy": 0.25,
+      "abstention": 0.75
+    },
+    "net_total": {
+      "accuracy": 0.8365384615384616,
+      "abstention": 0.14423076923076922
+    },
+    "tax_total": {
+      "accuracy": 0.875,
+      "abstention": 0.0
+    },
+    "gross_total": {
+      "accuracy": 0.9326923076923077,
+      "abstention": 0.04807692307692308
+    },
+    "payable_amount": {
+      "accuracy": 0.9326923076923077,
+      "abstention": 0.0673076923076923
+    }
+  },
+  "cost_usd": "0",
+  "usd_per_doc": "0.000000",
+  "latency_p50_ms": 3.2726999997976236,
+  "latency_p95_ms": 6.204600002092775,
+  "generated_at": "2026-10-09T19:34:10.956997Z",
+  "dataset": {
+    "name": "zugferd-corpus-hybrid-cii",
+    "documents": 104,
+    "corpus_commit": "d891458e9822e34271a5438497bf924e89955979"
+  },
+  "documents": 104
+}

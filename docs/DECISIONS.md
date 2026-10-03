@@ -350,3 +350,11 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - Numbers: day-first dates (month-first only when day-first is impossible), German and English amount formats, a single mark followed by exactly three digits means thousands. ISO 4217 is a fixed list of active codes.
 - Rule explanations longer than 300/200 characters are cut at a word break with "…", because strict Structured Outputs can't enforce a maximum length.
 - The comparison counts a PDF value only when its evidence is in the visible text; a value the model didn't find is not a difference.
+
+### Evaluation (M6)
+- **Layout:** `evals/` is a package at the repository root, run from `backend/` as `python -m evals.<script>` with `PYTHONPATH=..` (poe tasks `eval-*`), so it uses the backend's environment and `.env`. The `latest.json` models live in `eingang/accuracy.py`, because application code never imports from `evals/`; `evals/schema.py` imports them.
+- **`/accuracy`** is described in OpenAPI by DRF serializers (drf-spectacular's Pydantic support produces OpenAPI 3.0 errors); a test keeps them in step with the models. A malformed `latest.json` is a build error (500).
+- **Dataset:** identical PDFs count once; MINIMUM and BASIC WL hybrids are kept (HANDOFF doesn't exclude them; their truth has fewer fields). The language guess is keyword counts and only describes the dataset.
+- **Regex baseline:** labels are tried in priority order. They were extended after looking at the corpus layout (recorded in `docs/EVALS.md`): the first version scored 3.8%, the extended one 21.2%. That tuning favours the baseline.
+- **Parity:** KoSIT's report prints each rule's original level and applies the scenario's `customLevel` entries only when assessing; the comparison applies the same custom levels to decide which rules were fatal. Schema and well-formedness errors are compared as Eingang's `XSD`. The KoSIT validator v1.6.0 and the full configuration release are downloaded into `data/kosit/` and pinned by SHA-256.
+- **LLM evaluation runs** are counted per prompt version in `evals/data/llm-runs.json` (committed); a third run needs `--third-run-approved`. A document whose call fails counts as abstaining on every field; a budget refusal ends the run, and the report shows how many documents were scored.
