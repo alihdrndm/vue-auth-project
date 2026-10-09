@@ -50,17 +50,20 @@ async function visit(path: string) {
 
 describe("public routes", () => {
   it.each([
-    ["/", "Eingang"],
+    ["/", "Some of our invoices are e-invoices"],
     ["/sign-in", "Sign in"],
-    ["/accuracy", "Accuracy"],
+    ["/accuracy", "How accurately does Eingang read invoices?"],
   ])("%s renders without asking for a session", async (path, heading) => {
     const calls = mockFetch(() => problem(401, "NOT_AUTHENTICATED"));
 
     const wrapper = await visit(path);
 
     expect(router.currentRoute.value.path).toBe(path);
-    expect(wrapper.get("h1").text()).toBe(heading);
-    expect(calls).toHaveLength(0);
+    expect(wrapper.get("h1").text()).toContain(heading);
+    // Public pages never ask who is signed in (they may load public data).
+    expect(
+      calls.filter((call) => call.path.startsWith("/api/v1/auth")),
+    ).toEqual([]);
   });
 
   it("shows the not-found screen for unknown paths", async () => {
