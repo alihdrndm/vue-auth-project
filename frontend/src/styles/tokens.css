@@ -1,0 +1,131 @@
+/*
+ * Design tokens. The only file in the frontend allowed to hold raw colour values.
+ * Colour, font, radius and shadow names match the design system one-to-one.
+ * Spacing, type-size, control-size and motion names are ours: the design gives
+ * those values as numbers only (see design/DESIGN-MAP.md).
+ */
+:root {
+  /* Surfaces */
+  --desk: #ebe4d6;
+  --paper: #fdfaf4;
+  --win: #fffdf9;
+  --bar: #f7f2ea;
+  --soft: #f6f0e6;
+
+  /* Lines and text */
+  --line: #ebe3d6;
+  --line-strong: #d6cbbb;
+  --ink: #1f1c18;
+  --text: #3f3a33;
+  --muted: #746c61;
+  --muted-strong: #5f574d;
+
+  /* Status pairs */
+  --ok: #0f6e62;
+  --ok-soft: #e4f1ed;
+  --warn: #c47408;
+  --warn-text: #8a4a06;
+  --warn-soft: #fcefd8;
+  --block: #b42318;
+  --block-soft: #fbe9e6;
+  --info: #2f5d8a;
+  --info-soft: #e6eef7;
+  --stamp: #2c4a8a;
+  --stamp-soft: #e8edf7;
+
+  /* Homepage only, and focus */
+  --pen: #d3241b;
+  --hl: #ffe53d;
+  --focus: #0f6e62;
+
+  /* Derived colours named in the handoff notes */
+  --backdrop: color-mix(in srgb, var(--ink) 32%, transparent);
+  --desk-grid: #3a2a140b;
+
+  /* Fonts */
+  --font-head: "Familjen Grotesk", sans-serif;
+  --font-sans: "Instrument Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-hand: "Caveat", cursive;
+  --font-stamp: "Barlow Condensed", sans-serif;
+  --tracking-head: -0.025em;
+  --tracking-stamp: 0.08em;
+
+  /* Type sizes (app scale; 12 px is the smallest size anywhere) */
+  --fs-12: 12px;
+  --fs-13: 13px;
+  --fs-14: 14px;
+  --fs-16: 16px;
+  --fs-17: 17px;
+  --fs-21: 21px;
+  --fs-section: clamp(28px, 2.6vw, 42px);
+  --fs-hero: clamp(38px, 4.6vw, 66px);
+  --lh-app: 1.45;
+  --lh-body: 1.6;
+  --lh-tight: 1.2;
+
+  /* Spacing: these ten steps and nothing in between */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-56: 56px;
+  --space-72: 72px;
+
+  /* Sizes (control heights are sizes, not spacing) */
+  --size-chip: 24px;
+  --size-chip-sm: 22px;
+  --size-badge: 20px;
+  --size-check: 18px;
+  --size-sm: 28px;
+  --size-md: 32px;
+  --size-row-header: 36px;
+  --size-tab: 44px;
+  --size-lg: 44px;
+  --size-topbar: 48px;
+  --size-row: 48px;
+  --size-icon-disc: 48px;
+  --size-textarea: 88px;
+  --size-empty-state: 280px;
+  --size-phone-header: 56px;
+  --size-tabbar-item: 56px;
+  --size-tabbar: 64px;
+  --size-avatar: 28px;
+  --size-rail: 88px;
+  --size-rail-icons: 64px;
+  --size-search-max: 440px;
+  --size-dialog-sm: 480px;
+  --size-dialog-md: 520px;
+  --size-dialog-lg: 680px;
+  --size-toast: 380px;
+  --size-tooltip-max: 248px;
+
+  /* Radii */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-pill: 999px;
+
+  /* Shadows */
+  --shadow-window: 0 30px 60px -34px #3a2a1480, 0 2px 8px -3px #3a2a1433;
+  --shadow-sheet:
+    0 1px 0 #3a2a140f, 0 30px 60px -34px #3a2a1470, 0 2px 6px -2px #3a2a1426;
+  --shadow-raised: 0 1px 0 var(--line-strong);
+
+  /* Focus ring */
+  --focus-width: 2.5px;
+  --focus-offset: 2px;
+  --focus-offset-inset: -3px;
+
+  /* Motion */
+  --ease-draw: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out: ease-out;
+  --ease-arrive: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-spin: 900ms;
+  --dur-fast: 120ms;
+  --dur-switch: 160ms;
+}
