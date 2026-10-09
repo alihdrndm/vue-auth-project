@@ -1,14 +1,14 @@
 <script setup lang="ts"></script>
 
 <template>
-  <main class="not-found">
+  <section class="not-found">
     <p class="code">404</p>
     <h1>Nothing at this address</h1>
     <p class="lead">
       The link may be old, or the sandbox it pointed to has been deleted.
     </p>
     <RouterLink :to="{ name: 'inbox' }">Go to the Inbox</RouterLink>
-  </main>
+  </section>
 </template>
 
 <style scoped>

@@ -318,14 +318,14 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
     </section>
   </div>
 
-  <main v-else-if="notFound" class="not-found">
+  <section v-else-if="notFound" class="not-found">
     <p class="not-found-code">404</p>
     <h1 class="not-found-title">Nothing at this address</h1>
     <p class="not-found-lead">
       The link may be old, or the sandbox it pointed to has been deleted.
     </p>
     <RouterLink :to="{ name: 'inbox' }">Go to the Inbox</RouterLink>
-  </main>
+  </section>
 
   <div v-else-if="problem" class="review review--state">
     <div class="pane pane--data">
