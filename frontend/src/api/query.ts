@@ -56,8 +56,12 @@ export const queryKeys = {
     options: () => ["suppliers", "options"] as const,
   },
   exports: () => ["exports"] as const,
+  /** One page of `GET /exports`. */
+  exportsPage: (page: number) => ["exports", "list", page] as const,
   organization: () => ["organization"] as const,
   members: () => ["members"] as const,
+  /** One page of `GET /members`. */
+  membersPage: (page: number) => ["members", "list", page] as const,
   accuracy: () => ["accuracy"] as const,
   rule: (ruleId: string) => ["rules", ruleId] as const,
 };
