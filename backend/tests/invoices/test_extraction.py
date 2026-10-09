@@ -306,9 +306,9 @@ def test_vat_id_validator_and_reread() -> None:
 
 
 def test_bic_validator() -> None:
-    page = collapse("BIC: COBADEFFXXX and BIC: 12345")
+    page = collapse("BIC: COBADEFF370 and BIC: 12345")
 
-    assert assess("payee_bic", "COBADEFFXXX", "BIC: COBADEFFXXX", page, TODAY).confidence == HIGH
+    assert assess("payee_bic", "COBADEFF370", "BIC: COBADEFF370", page, TODAY).confidence == HIGH
     assert assess("payee_bic", "12345", "BIC: 12345", page, TODAY).confidence == LOW
 
 
