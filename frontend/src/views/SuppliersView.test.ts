@@ -43,6 +43,7 @@ function detail(overrides: Partial<SupplierDetail> = {}): SupplierDetail {
       {
         iban: "DE89370400440532013000",
         first_seen_invoice_id: "inv-11",
+        first_seen_document_id: "doc-11",
         first_seen_at: "2026-10-02T08:55:00Z",
         last_seen_at: "2026-10-09T07:58:00Z",
         trusted: true,
@@ -51,6 +52,7 @@ function detail(overrides: Partial<SupplierDetail> = {}): SupplierDetail {
       {
         iban: "DE02120300000000202051",
         first_seen_invoice_id: "inv-7",
+        first_seen_document_id: "doc-7",
         first_seen_at: "2026-10-07T10:05:00Z",
         last_seen_at: "2026-10-07T10:05:00Z",
         trusted: false,
@@ -268,6 +270,7 @@ describe("SupplierDetailView", () => {
             {
               iban: "DE02120300000000202051",
               first_seen_invoice_id: "inv-7",
+              first_seen_document_id: "doc-7",
               first_seen_at: "2026-10-07T10:05:00Z",
               last_seen_at: "2026-10-07T10:05:00Z",
               trusted: true,

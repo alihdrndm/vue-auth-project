@@ -16,10 +16,11 @@ describe("IBAN helpers", () => {
     );
   });
 
-  it("finds the invoice an IBAN was first seen on by its received time", () => {
+  it("finds the invoice an IBAN was first seen on by its document", () => {
     const entry = {
       iban: "DE02120300000000202051",
       first_seen_invoice_id: "inv-7",
+      first_seen_document_id: "doc-7",
       first_seen_at: "2026-10-07T10:05:00Z",
       last_seen_at: "2026-10-07T10:05:00Z",
       trusted: false,
@@ -37,7 +38,15 @@ describe("IBAN helpers", () => {
         received_at: "2026-10-07T10:05:00.000000Z",
       },
     ];
-    expect(firstSeenInvoice(entry, invoices)?.document_id).toBe("doc-7");
-    expect(firstSeenInvoice(entry, invoices.slice(0, 1))).toBeNull();
+    expect(
+      firstSeenInvoice({ ...entry, first_seen_document_id: "doc-7" }, invoices)
+        ?.document_id,
+    ).toBe("doc-7");
+    expect(
+      firstSeenInvoice(
+        { ...entry, first_seen_document_id: "doc-7" },
+        invoices.slice(0, 1),
+      ),
+    ).toBeNull();
   });
 });

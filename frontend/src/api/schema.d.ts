@@ -1197,6 +1197,9 @@ export interface components {
             iban: string;
             /** Format: uuid */
             first_seen_invoice_id: string;
+            /** Format: uuid */
+            first_seen_document_id: string;
+            first_seen_invoice_number?: string;
             /** Format: date-time */
             first_seen_at: string;
             /** Format: date-time */

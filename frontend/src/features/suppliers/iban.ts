@@ -32,19 +32,15 @@ export function groupIban(iban: string): string {
     .trim();
 }
 
-/**
- * The supplier invoice an IBAN was first seen on. The API names the invoice by its own id,
- * not the document id the review route needs; the first sighting is recorded with that
- * document's received time, so the invoice is matched by it.
- */
+/** The supplier's invoice on which this IBAN was first seen (by the API's document id). */
 export function firstSeenInvoice(
   entry: SupplierIban,
   invoices: readonly SupplierInvoice[],
 ): SupplierInvoice | null {
-  const seen = Date.parse(entry.first_seen_at);
-  if (Number.isNaN(seen)) return null;
   return (
-    invoices.find((invoice) => Date.parse(invoice.received_at) === seen) ?? null
+    invoices.find(
+      (invoice) => invoice.document_id === entry.first_seen_document_id,
+    ) ?? null
   );
 }
 
