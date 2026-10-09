@@ -31,7 +31,11 @@ const actTwo = ref<HTMLElement | null>(null);
 const actOneSeen = useSeenOnce(actOne, 0.3);
 const actTwoSeen = useSeenOnce(actTwo, 0.3);
 
-async function openSandbox(): Promise<void> {
+/** Which call to action was pressed, so its message appears next to it. */
+const pressedAt = ref<"top" | "close">("top");
+
+async function openSandbox(at: "top" | "close" = "top"): Promise<void> {
+  pressedAt.value = at;
   if (opening.value) return;
   opening.value = true;
   error.value = null;
@@ -64,7 +68,7 @@ async function openSandbox(): Promise<void> {
           variant="primary"
           size="sm"
           :loading="opening"
-          @click="openSandbox"
+          @click="openSandbox('top')"
         >
           Open the sandbox
         </Button>
@@ -89,7 +93,7 @@ async function openSandbox(): Promise<void> {
               variant="primary"
               size="lg"
               :loading="opening"
-              @click="openSandbox"
+              @click="openSandbox('top')"
             >
               {{ opening ? "Opening the sandbox…" : "Open the sandbox" }}
             </Button>
@@ -97,7 +101,9 @@ async function openSandbox(): Promise<void> {
               >Sign in</RouterLink
             >
           </div>
-          <p class="error" role="alert">{{ error }}</p>
+          <p class="error" role="alert">
+            {{ pressedAt === "top" ? error : null }}
+          </p>
           <p class="small">Free and open source. No sign-up for the sandbox.</p>
         </div>
         <div class="hero__art" aria-hidden="true">
@@ -229,7 +235,7 @@ async function openSandbox(): Promise<void> {
             variant="primary"
             size="lg"
             :loading="opening"
-            @click="openSandbox"
+            @click="openSandbox('close')"
           >
             Open the sandbox
           </Button>
@@ -237,6 +243,9 @@ async function openSandbox(): Promise<void> {
             >Sign in</RouterLink
           >
         </div>
+        <p class="error" role="alert">
+          {{ pressedAt === "close" ? error : null }}
+        </p>
         <p class="small">Free and open source. No sign-up for the sandbox.</p>
         <RouterLink :to="{ name: 'accuracy-public' }" class="accuracy">
           How accurate is it? Measured, with the method

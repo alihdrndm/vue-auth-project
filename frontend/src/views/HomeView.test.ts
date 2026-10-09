@@ -101,4 +101,18 @@ describe("HomeView", () => {
     expect(hrefs).toContain("/accuracy");
     expect(hrefs).toContain("https://github.com/alihdrndm/eingang");
   });
+
+  it("shows the limit message next to the button that was pressed", async () => {
+    mockFetch(() =>
+      problem(429, "SANDBOX_LIMIT", "Too many sandboxes were opened today."),
+    );
+    const wrapper = mountHome();
+    const buttons = wrapper
+      .findAll("button")
+      .filter((button) => button.text().includes("Open the sandbox"));
+    await buttons[buttons.length - 1]?.trigger("click");
+    await flushPromises();
+    const errors = wrapper.findAll(".error").map((error) => error.text());
+    expect(errors).toEqual(["", "Too many sandboxes were opened today."]);
+  });
 });
