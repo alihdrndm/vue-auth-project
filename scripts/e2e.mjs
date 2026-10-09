@@ -31,6 +31,10 @@ if (stopStatus !== 0) {
   process.exit(stopStatus);
 }
 
+// Ctrl+C reaches the running child (Compose or Playwright), which stops; this process
+// keeps going so the e2e stack is still removed below.
+process.on("SIGINT", () => console.error("e2e: interrupted; removing the e2e stack."));
+
 let status = 0;
 try {
   status = run("Start the e2e stack", "docker", [
@@ -54,6 +58,8 @@ try {
     "compose",
     "-p",
     E2E_PROJECT,
+    "--profile",
+    "e2e",
     "down",
     "-v",
   ]);
