@@ -40,7 +40,9 @@ export function openBlocking(checks: readonly Check[]): number {
 export function noteError(note: string): string | null {
   const length = note.trim().length;
   if (length < NOTE_MIN || length > NOTE_MAX) {
-    return `Write ${NOTE_MIN} to ${NOTE_MAX} characters.`;
+    return length < NOTE_MIN
+      ? `Write at least ${NOTE_MIN} characters.`
+      : `Write at most ${NOTE_MAX} characters.`;
   }
   return null;
 }

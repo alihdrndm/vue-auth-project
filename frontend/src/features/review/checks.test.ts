@@ -56,9 +56,9 @@ describe("checks", () => {
   });
 
   it("validates the note length after trimming", () => {
-    expect(noteError("  ok  ")).toBe("Write 5 to 500 characters.");
+    expect(noteError("  ok  ")).toBe("Write at least 5 characters.");
     expect(noteError("Called the supplier.")).toBeNull();
-    expect(noteError("x".repeat(501))).toBe("Write 5 to 500 characters.");
+    expect(noteError("x".repeat(501))).toBe("Write at most 500 characters.");
     expect(noteCounter(" hello ")).toBe("5 / 500");
   });
 
