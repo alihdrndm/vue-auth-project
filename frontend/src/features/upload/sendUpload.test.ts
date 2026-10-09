@@ -1,6 +1,10 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { ApiError, resetCsrfToken } from "../../api/client";
+import {
+  ApiError,
+  resetCsrfToken,
+  setAuthFailureHandler,
+} from "../../api/client";
 import { createSender } from "./sendUpload";
 
 class FakeRequest {
@@ -119,5 +123,50 @@ describe("sendUpload", () => {
     await flush();
     requests[0]?.onerror?.();
     await expect(result).rejects.toMatchObject({ code: "NETWORK" });
+  });
+
+  it("retries once with a fresh token on CSRF_FAILED", async () => {
+    const { requests, send } = setup();
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => {
+        document.cookie = "csrftoken=token-2";
+        return new Response(null, { status: 204 });
+      }),
+    );
+    const result = send(file, () => undefined);
+    await flush();
+    requests[0]?.respond(403, {
+      code: "CSRF_FAILED",
+      title: "t",
+      detail: "d",
+      status: 403,
+    });
+    await flush();
+    await flush();
+    expect(requests[1]?.headers["X-CSRFToken"]).toBe("token-2");
+    requests[1]?.respond(201, { created: [{ id: "doc-2" }], duplicates: [] });
+    await expect(result).resolves.toEqual({
+      kind: "created",
+      documentId: "doc-2",
+    });
+    vi.unstubAllGlobals();
+  });
+
+  it("reports a 401 to the session handler", async () => {
+    const codes: string[] = [];
+    setAuthFailureHandler((code) => codes.push(code));
+    const { requests, send } = setup();
+    const result = send(file, () => undefined);
+    await flush();
+    requests[0]?.respond(401, {
+      code: "SANDBOX_EXPIRED",
+      title: "t",
+      detail: "d",
+      status: 401,
+    });
+    await expect(result).rejects.toMatchObject({ code: "SANDBOX_EXPIRED" });
+    expect(codes).toEqual(["SANDBOX_EXPIRED"]);
+    setAuthFailureHandler(null);
   });
 });

@@ -121,6 +121,13 @@ export function setAuthFailureHandler(
   authFailureHandler = handler;
 }
 
+/** Reports a `401` seen outside the API client (the upload request) to the same handler. */
+export function reportAuthFailure(code: string | undefined): void {
+  authFailureHandler?.(
+    code === "SANDBOX_EXPIRED" ? "SANDBOX_EXPIRED" : "NOT_AUTHENTICATED",
+  );
+}
+
 async function problemCode(response: Response): Promise<string | undefined> {
   try {
     const body: unknown = await response.clone().json();

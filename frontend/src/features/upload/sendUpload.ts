@@ -1,7 +1,12 @@
 // Sending one file to `POST /documents`. XMLHttpRequest instead of fetch, because only it
 // reports upload progress; like the API client it sends the CSRF header and turns
 // problem+json answers into ApiError.
-import { API_PREFIX, ApiError, currentCsrfToken } from "../../api/client";
+import {
+  API_PREFIX,
+  ApiError,
+  currentCsrfToken,
+  reportAuthFailure,
+} from "../../api/client";
 import type { components } from "../../api/schema";
 import type { SendFile, SendResult } from "./uploadQueue";
 
@@ -30,12 +35,26 @@ export function resultOf(body: UploadResponse): SendResult {
   });
 }
 
+interface Answer {
+  status: number;
+  body: unknown;
+}
+
+function codeOf(body: unknown): string | undefined {
+  return typeof body === "object" && body !== null && "code" in body
+    ? String((body as { code: unknown }).code)
+    : undefined;
+}
+
 export function createSender(
   createRequest: () => XMLHttpRequest = () => new XMLHttpRequest(),
 ): SendFile {
-  return async (file, onProgress) => {
-    const token = await currentCsrfToken();
-    return new Promise<SendResult>((resolve, reject) => {
+  function attempt(
+    file: File,
+    onProgress: (share: number) => void,
+    token: string | null,
+  ): Promise<Answer> {
+    return new Promise<Answer>((resolve, reject) => {
       const request = createRequest();
       request.open("POST", `${API_PREFIX}/documents`);
       request.withCredentials = true;
@@ -44,18 +63,8 @@ export function createSender(
         if (event.lengthComputable && event.total > 0)
           onProgress(event.loaded / event.total);
       };
-      request.onload = () => {
-        const body = parse(request.responseText);
-        if (request.status === 201) {
-          try {
-            resolve(resultOf(body as UploadResponse));
-          } catch (error) {
-            reject(error);
-          }
-          return;
-        }
-        reject(ApiError.fromBody(request.status, body));
-      };
+      request.onload = () =>
+        resolve({ status: request.status, body: parse(request.responseText) });
       request.onerror = () =>
         reject(
           new ApiError({
@@ -69,5 +78,17 @@ export function createSender(
       form.append("files", file, file.name);
       request.send(form);
     });
+  }
+
+  // Like the API client: the CSRF token is refreshed and the upload sent again once on
+  // 403 CSRF_FAILED, and a 401 goes to the same handler (sign-in, or home when expired).
+  return async (file, onProgress) => {
+    let answer = await attempt(file, onProgress, await currentCsrfToken());
+    if (answer.status === 403 && codeOf(answer.body) === "CSRF_FAILED") {
+      answer = await attempt(file, onProgress, await currentCsrfToken(true));
+    }
+    if (answer.status === 401) reportAuthFailure(codeOf(answer.body));
+    if (answer.status === 201) return resultOf(answer.body as UploadResponse);
+    throw ApiError.fromBody(answer.status, answer.body);
   };
 }
