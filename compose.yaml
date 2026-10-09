@@ -1,3 +1,24 @@
+# Development: `docker compose up -d --wait db temporal` (pnpm dev) starts only db and temporal.
+# End-to-end: `docker compose -p eingang-e2e --profile e2e up -d --build --wait` (pnpm test:e2e)
+# starts the whole stack as a separate project with its own containers and volumes. db and
+# temporal have no profile, so they belong to both.
+
+# Shared by the e2e backend services. Not a secret: the stack only runs locally and in CI.
+x-e2e-backend-env: &e2e-backend-env
+  DJANGO_DEBUG: "false"
+  DJANGO_SECRET_KEY: e2e-only-insecure-secret-key
+  ALLOWED_HOSTS: api,localhost,127.0.0.1
+  FRONTEND_ORIGIN: http://localhost:3110
+  DATABASE_URL: postgres://eingang:eingang@db:5432/eingang
+  TEMPORAL_ADDRESS: temporal:7233
+  TEMPORAL_NAMESPACE: eingang
+  STORAGE_BACKEND: local
+  LLM_ENABLED: "false"
+
+x-e2e-api-build: &e2e-api-build
+  context: .
+  dockerfile: backend/docker/api.Dockerfile
+
 services:
   db:
     image: postgres:17
@@ -45,6 +66,90 @@ services:
       retries: 20
       start_period: 10s
 
+  # One-off: migrations, curated rule explanations and Temporal schedules; then it exits.
+  e2e-setup:
+    profiles: ["e2e"]
+    build: *e2e-api-build
+    environment: *e2e-backend-env
+    command:
+      - sh
+      - -c
+      - python manage.py migrate --noinput && python manage.py seed_rules && python manage.py ensure_schedules
+    depends_on:
+      db:
+        condition: service_healthy
+      temporal:
+        condition: service_healthy
+
+  api:
+    profiles: ["e2e"]
+    build: *e2e-api-build
+    environment:
+      <<: *e2e-backend-env
+      PORT: "8010"
+    volumes:
+      - media:/app/backend/.local-media
+    depends_on:
+      e2e-setup:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      temporal:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://localhost:8010/healthz', timeout=2)
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+
+  worker:
+    profiles: ["e2e"]
+    build:
+      context: .
+      dockerfile: backend/docker/worker.Dockerfile
+    environment: *e2e-backend-env
+    volumes:
+      - media:/app/backend/.local-media
+    depends_on:
+      e2e-setup:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      temporal:
+        condition: service_healthy
+
+  web:
+    profiles: ["e2e"]
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    environment:
+      API_PROXY_TARGET: http://api:8010
+    ports:
+      - "3110:3110"
+    depends_on:
+      e2e-setup:
+        condition: service_completed_successfully
+      api:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://localhost:3110/').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
+
 volumes:
   db-data:
   temporal-data:
+  # Local document storage shared by api and worker (e2e profile only).
+  media:
