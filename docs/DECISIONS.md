@@ -367,3 +367,6 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - **Disabled actions** keep the real `disabled` attribute (as HANDOFF says) with the reason as visible text linked by `aria-describedby`.
 - **PDF.js** loads on demand (its own chunk); the XML visualisation is shown in `<iframe sandbox="">` from the API's URL, so its Content-Security-Policy still applies.
 - **End-to-end tests** live in `frontend/e2e/` with their own TypeScript config (Node types stay out of the app); Vitest runs only `src/**/*.test.ts`.
+- **HTTP in frontend tests is mocked with a small hand-written `fetch` stub** (`src/testing/http.ts`), not msw. Every request goes through one `fetch`, so a stub that records method, path, headers and body (and answers with typed problem bodies) covers what the tests need without a service worker or another dependency. The XHR upload has its own fake request.
+- **Validation line by profile:** only XRechnung 3 invoices say "Checked with the official XRechnung rules"; XRechnung 1.x/2.x say "XRechnung 2.x: checked against EN 16931 rules only" and EN 16931, BASIC and EXTENDED say "Checked against EN 16931 rules only" (E3, E5).
+- **Evidence** shows while the eye button is hovered or focused and stays open after a click.
