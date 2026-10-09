@@ -172,15 +172,19 @@ const DAY = new Intl.DateTimeFormat("en-GB", {
   timeZone: "UTC",
 });
 
-/** How a value reads in the row: amounts "1.190,00 €", dates "23 Oct 2026" (as designed). */
+export const CREDIT_NOTE = 381;
+
+/** How a value reads; on a credit note (type 381) amounts carry a minus sign, as everywhere. */
 export function display(
   def: FieldDef,
   value: string | null,
   currency = "EUR",
+  creditNote = false,
 ): string {
   if (value === null) return "—";
   if (def.kind === "amount") {
-    const amount = Number(value);
+    const stored = Number(value);
+    const amount = creditNote && stored !== 0 ? -Math.abs(stored) : stored;
     if (Number.isNaN(amount)) return value;
     return currency === "EUR"
       ? `${MONEY.format(amount)} €`

@@ -118,6 +118,8 @@ describe("display", () => {
     expect(display(def("gross_total"), "-58.31")).toBe("-58,31 €");
     expect(display(def("gross_total"), "10.00", "USD")).toBe("10,00 USD");
     expect(display(def("due_date"), "2026-10-23")).toBe("23 Oct 2026");
+    expect(display(def("gross_total"), "58.31", "EUR", true)).toBe("-58,31 €");
+    expect(display(def("gross_total"), "0.00", "EUR", true)).toBe("0,00 €");
     expect(display(def("seller_name"), null)).toBe("—");
     expect(isMono(def("payee_iban"))).toBe(true);
     expect(isMono(def("seller_name"))).toBe(false);

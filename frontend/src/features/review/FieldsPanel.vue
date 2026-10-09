@@ -13,6 +13,7 @@ import Icon from "../../components/ui/Icon.vue";
 import { useToast } from "../../components/ui/useToast";
 import {
   changes,
+  CREDIT_NOTE,
   display,
   type FieldDef,
   type FieldRowState,
@@ -34,6 +35,7 @@ const invoice = computed(
 );
 const rows = computed(() => (invoice.value ? fieldRows(invoice.value) : []));
 const currency = computed(() => invoice.value?.currency ?? "EUR");
+const creditNote = computed(() => invoice.value?.type_code === CREDIT_NOTE);
 const fromXml = computed(() => invoice.value?.extraction_method === "xml");
 
 const note = computed(() => {
@@ -217,7 +219,7 @@ function evidenceParts(row: FieldRowState): [string, string, string] | null {
               <span
                 :class="{ mono: isMono(row.def), muted: row.value === null }"
               >
-                {{ display(row.def, row.value, currency) }}
+                {{ display(row.def, row.value, currency, creditNote) }}
               </span>
               <span
                 v-if="row.confidence === 'edited'"
