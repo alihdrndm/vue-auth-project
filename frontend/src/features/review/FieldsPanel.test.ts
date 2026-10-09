@@ -171,4 +171,17 @@ describe("FieldsPanel", () => {
     expect(wrapper.find("form").exists()).toBe(false);
     wrapper.unmount();
   });
+
+  it("shows the evidence while the eye button has focus", async () => {
+    const wrapper = mount(FieldsPanel, {
+      props: { document: LLM, canEdit: false },
+    });
+    const eye = wrapper.find(
+      '[aria-label="Show where Invoice number came from"]',
+    );
+    await eye.trigger("focus");
+    expect(wrapper.find("mark").text()).toBe("2026-1043");
+    await eye.trigger("blur");
+    expect(wrapper.find("mark").exists()).toBe(false);
+  });
 });

@@ -78,7 +78,12 @@ const editors = computed(() => {
   return found;
 });
 
+// Evidence shows while the eye button is hovered or focused (HANDOFF), and stays open
+// after a click until it is clicked again.
 const evidenceOpen = ref<string | null>(null);
+const previewing = ref<string | null>(null);
+const shown = (name: string) =>
+  evidenceOpen.value === name || previewing.value === name;
 const editing = ref<string | null>(null);
 const draft = ref("");
 const fieldError = ref<string | null>(null);
@@ -249,10 +254,12 @@ function evidenceParts(row: FieldRowState): [string, string, string] | null {
                   class="icon-button"
                   :aria-label="`Show where ${row.def.label} came from`"
                   :title="`Show where ${row.def.label} came from`"
-                  :aria-expanded="
-                    evidenceOpen === row.def.name ? 'true' : 'false'
-                  "
+                  :aria-expanded="shown(row.def.name) ? 'true' : 'false'"
                   @click="toggleEvidence(row.def.name)"
+                  @mouseenter="previewing = row.def.name"
+                  @mouseleave="previewing = null"
+                  @focus="previewing = row.def.name"
+                  @blur="previewing = null"
                 >
                   <Icon name="eye" :size="16" />
                 </button>
@@ -272,7 +279,7 @@ function evidenceParts(row: FieldRowState): [string, string, string] | null {
                 resolve the check with a note.
               </p>
               <div
-                v-if="evidenceOpen === row.def.name && evidenceParts(row)"
+                v-if="shown(row.def.name) && evidenceParts(row)"
                 class="evidence"
                 role="group"
                 :aria-label="`Where ${row.def.label} came from`"
@@ -412,7 +419,7 @@ function evidenceParts(row: FieldRowState): [string, string, string] | null {
   display: inline-flex;
   gap: var(--space-4);
   align-items: center;
-  height: 20px;
+  height: var(--size-badge);
   padding: 0 var(--space-8);
   border-radius: var(--r-pill);
   font-size: var(--fs-12);
@@ -442,8 +449,8 @@ function evidenceParts(row: FieldRowState): [string, string, string] | null {
 .icon-button {
   display: inline-grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  width: var(--size-sm);
+  height: var(--size-sm);
   border: 0;
   border-radius: var(--r-sm);
   background: transparent;
@@ -491,7 +498,7 @@ function evidenceParts(row: FieldRowState): [string, string, string] | null {
 .edit__input {
   flex: 1 1 160px;
   min-width: 0;
-  height: 32px;
+  height: var(--size-md);
   padding: 0 var(--space-8);
   border: 1px solid var(--line);
   border-radius: var(--r-sm);
