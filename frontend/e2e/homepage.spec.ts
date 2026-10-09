@@ -1,7 +1,7 @@
 // Homepage accessibility (HANDOFF M8: zero serious or critical axe violations) and its
 // interactions in a real browser, at desktop and phone width.
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 
 const SIZES = [
   { width: 1440, height: 900 },
@@ -27,33 +27,46 @@ for (const size of SIZES) {
   });
 }
 
-test("both acts work with the keyboard", async ({ page }) => {
+/** Presses Tab until the focused element's text starts with `label` (at most 80 times). */
+async function tabTo(page: Page, label: string): Promise<void> {
+  for (let i = 0; i < 80; i += 1) {
+    await page.keyboard.press("Tab");
+    const text = await page.evaluate(
+      () => document.activeElement?.textContent?.trim() ?? "",
+    );
+    if (text.startsWith(label)) return;
+  }
+  throw new Error(`Tab never reached "${label}"`);
+}
+
+const focusedText = (page: Page) =>
+  page.evaluate(() => document.activeElement?.textContent?.trim() ?? "");
+
+test("both acts work with Tab and Enter alone", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
-  for (const number of [
-    "RE-2026-0412",
-    "2026-1043",
-    "F-2026-118",
-    "RE-2026-0413",
-  ]) {
-    const stamp = page.getByRole("button", {
-      name: new RegExp(`^Stamp it\\s*: ${number}$`),
-    });
-    await stamp.focus();
-    await page.keyboard.press("Enter");
-  }
+  // Act 1: Tab to the first "Stamp it"; after each stamp focus moves to the next one.
+  await tabTo(page, "Stamp it");
+  for (let stamp = 0; stamp < 4; stamp += 1) await page.keyboard.press("Enter");
   await expect(page.locator(".done")).toContainText(
     "4 invoices stamped. 1 is a valid e-invoice.",
   );
+  expect(await focusedText(page)).toContain("Do it again");
 
-  await page.getByRole("button", { name: "Use example note" }).click();
-  await page.getByRole("button", { name: "Resolve check" }).click();
-  await page.getByRole("button", { name: "Mark reviewed" }).click();
-  await page.getByRole("button", { name: "Approve", exact: true }).click();
+  // Act 2: focus follows each step.
+  await tabTo(page, "Use example note");
+  await page.keyboard.press("Enter");
+  await tabTo(page, "Resolve check");
+  await page.keyboard.press("Enter");
+  expect(await focusedText(page)).toBe("Mark reviewed");
+  await page.keyboard.press("Enter");
+  expect(await focusedText(page)).toBe("Approve");
+  await page.keyboard.press("Enter");
   await expect(page.locator(".card__done")).toHaveText(
     "You approved this on 09 Oct 2026.",
   );
   await expect(page.locator(".export--in")).toBeVisible();
+  expect(await focusedText(page)).toContain("Do it again");
 });
 
 test("the phone layout never scrolls sideways", async ({ page }) => {
