@@ -1,0 +1,35 @@
+/* Shared look of the review panel's sections (design: 20 px padding, a line between sections,
+   section titles in Familjen Grotesk 16 px). */
+.section {
+  display: grid;
+  gap: var(--space-12);
+  padding: var(--space-20);
+  border-bottom: 1px solid var(--line);
+}
+
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8) var(--space-12);
+}
+
+.section-title {
+  font-family: var(--font-head);
+  font-size: var(--fs-16);
+  font-weight: 700;
+  letter-spacing: var(--tracking-head);
+  line-height: var(--lh-app);
+  color: var(--ink);
+}
+
+.section-empty {
+  font-size: var(--fs-13);
+  color: var(--muted);
+}
+
+@media (max-width: 767px) {
+  .section {
+    padding: var(--space-16);
+  }
+}
