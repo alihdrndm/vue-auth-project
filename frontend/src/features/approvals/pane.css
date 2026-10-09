@@ -1,0 +1,133 @@
+/* Shared look of the M8 screens (design "Eingang App Screens"): a page title, then panes on
+   --win with a --bar header (title in Familjen Grotesk), 20 px side padding. */
+.page {
+  display: grid;
+  align-content: start;
+  gap: var(--space-16);
+  min-width: 0;
+}
+
+.page-title {
+  margin: 0;
+  color: var(--ink);
+  font: 700 var(--fs-21) / var(--lh-tight) var(--font-head);
+  letter-spacing: var(--tracking-head);
+}
+
+.pane {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--win);
+  overflow: hidden;
+}
+
+.pane-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8) var(--space-12);
+  min-height: var(--size-row);
+  padding: var(--space-12) var(--space-20);
+  border-bottom: 1px solid var(--line);
+  background: var(--bar);
+}
+
+.pane-head--page {
+  min-height: var(--size-phone-header);
+  padding: var(--space-8) var(--space-20);
+}
+
+.pane-title {
+  margin: 0;
+  color: var(--ink);
+  font: 700 var(--fs-16) / var(--lh-app) var(--font-head);
+  letter-spacing: var(--tracking-head);
+}
+
+.pane-body {
+  display: grid;
+  gap: var(--space-16);
+  padding: var(--space-16) var(--space-20);
+}
+
+.pane-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--space-20);
+  border-top: 1px solid var(--line);
+  background: var(--bar);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.muted {
+  color: var(--muted-strong);
+  font-size: var(--fs-13);
+}
+
+.small {
+  font-size: var(--fs-12);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-8);
+  margin: 0;
+  color: var(--text);
+  font-size: var(--fs-13);
+  overflow-wrap: anywhere;
+}
+
+.note-icon {
+  flex: none;
+  margin-top: 2px;
+  color: var(--muted);
+}
+
+.note-icon--info {
+  color: var(--info);
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--space-20);
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-13);
+}
+
+.pager-range {
+  margin-right: auto;
+  color: var(--muted-strong);
+}
+
+.empty-line {
+  margin: 0;
+  padding: var(--space-16) var(--space-20);
+  color: var(--muted-strong);
+  font-size: var(--fs-13);
+}
+
+@media (max-width: 767px) {
+  .pane-head,
+  .pane-body,
+  .pane-foot,
+  .pager,
+  .empty-line {
+    padding-right: var(--space-16);
+    padding-left: var(--space-16);
+  }
+}
