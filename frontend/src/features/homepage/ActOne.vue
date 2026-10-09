@@ -2,7 +2,7 @@
 // Homepage Act 1 (design "Every format lands in one inbox"): four sample documents; drag one
 // onto the stamp, or press its "Stamp it" button. Each lands in the sample inbox as a row
 // that goes Received → Processing → its verdict. Sample data only; nothing is sent anywhere.
-import { computed, ref } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 
 import Button from "../../components/ui/Button.vue";
 import Icon from "../../components/ui/Icon.vue";
@@ -78,6 +78,13 @@ const rows = ref<Row[]>([]);
 const pressing = ref(false);
 const over = ref(false);
 const { later, clear } = useTimers();
+const root = ref<HTMLElement | null>(null);
+
+/** After stamping, keyboard focus moves to the next document, then to "Do it again". */
+async function focusNext(selector: string): Promise<void> {
+  await nextTick();
+  root.value?.querySelector<HTMLElement>(selector)?.focus();
+}
 
 const stamped = (id: string) => rows.value.some((row) => row.id === id);
 const documentOf = (id: string) => DOCUMENTS.find((item) => item.id === id);
@@ -111,6 +118,7 @@ function stamp(id: string): void {
     ...rows.value,
   ];
   over.value = false;
+  void focusNext(".doc button:not([disabled])");
   if (reduced) return;
   pressing.value = true;
   later(() => (pressing.value = false), 300);
@@ -120,6 +128,10 @@ function stamp(id: string): void {
   later(() => setRow(id, { phase: "processing" }), 400);
   later(() => setRow(id, { phase: "done" }), 1100);
 }
+
+watch(finished, (done) => {
+  if (done) void focusNext(".done button");
+});
 
 function reset(): void {
   clear();
@@ -154,7 +166,7 @@ function verdictText(kind: Kind): string {
 </script>
 
 <template>
-  <div class="act">
+  <div ref="root" class="act">
     <div class="pile">
       <ul class="docs" aria-label="Sample documents">
         <li

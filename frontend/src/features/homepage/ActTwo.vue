@@ -2,7 +2,7 @@
 // Homepage Act 2 (design "Someone still has to say yes."): Anna resolves the bank-account
 // check with a note and marks the invoice reviewed; Jonas approves it on his phone; the
 // export drops into the folder for the tax advisor. A demo with sample data: nothing is sent.
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 
 import Button from "../../components/ui/Button.vue";
 import Icon from "../../components/ui/Icon.vue";
@@ -22,6 +22,13 @@ const approved = ref(false);
 const exported = ref(false);
 const rejectHint = ref(false);
 const { later, clear } = useTimers();
+const root = ref<HTMLElement | null>(null);
+
+/** Keyboard focus follows the demo to its next step instead of falling to the page top. */
+async function focusNext(selector: string): Promise<void> {
+  await nextTick();
+  root.value?.querySelector<HTMLElement>(selector)?.focus();
+}
 
 const quote = computed(() => note.value.trim());
 const status = computed(() => {
@@ -58,10 +65,13 @@ function resolve(): void {
     return;
   }
   resolved.value = true;
+  void focusNext(".review button");
 }
 
 function markReviewed(): void {
-  if (resolved.value && !reviewed.value) reviewed.value = true;
+  if (!resolved.value || reviewed.value) return;
+  reviewed.value = true;
+  void focusNext(".card__actions .button--primary");
 }
 
 function approve(): void {
@@ -71,12 +81,14 @@ function approve(): void {
   if (reduced) {
     approved.value = true;
     exported.value = true;
+    void focusNext(".review__end button");
     return;
   }
   approving.value = true;
   later(() => {
     approving.value = false;
     approved.value = true;
+    void focusNext(".review__end button");
     later(() => (exported.value = true), EXPORT_AFTER_MS);
   }, APPROVE_MS);
 }
@@ -95,7 +107,7 @@ function reset(): void {
 </script>
 
 <template>
-  <div class="act">
+  <div ref="root" class="act">
     <ol class="steps" aria-label="Steps">
       <li
         v-for="step in steps"

@@ -7,7 +7,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/vue-query";
-import { computed, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 
 import { api, ApiError, unwrap } from "../api/client";
 import { queryKeys, type DocumentListParams } from "../api/query";
@@ -176,11 +176,13 @@ async function decide(
     busy.value = null;
     rejecting.value = null;
     toast.show({ kind: "success", message: successMessage(decision, number) });
-    void queryClient.invalidateQueries({ queryKey: ["documents", "list"] });
     void queryClient.invalidateQueries({
       queryKey: queryKeys.documents.detail(doc.id),
     });
     void queryClient.invalidateQueries({ queryKey: queryKeys.stats() });
+    await queryClient.invalidateQueries({ queryKey: ["documents", "list"] });
+    await nextTick();
+    focusNextDecision();
   } catch (caught) {
     busy.value = null;
     const fieldError =
@@ -195,6 +197,14 @@ async function decide(
     // The row may have changed meanwhile (decided by someone else, sent back): reload it.
     void list.refetch();
   }
+}
+
+/** The decided row is gone: keep keyboard focus on the next decision, or the title. */
+function focusNextDecision(): void {
+  const next = document.querySelector<HTMLButtonElement>(
+    ".card-actions button:not([disabled]), .actions button:not([disabled])",
+  );
+  (next ?? document.getElementById("approvals-title"))?.focus();
 }
 
 function start(doc: DocumentSummary, decision: Decision): void {
@@ -228,7 +238,7 @@ function label(doc: DocumentSummary, decision: Decision): string {
   <section class="page" aria-labelledby="approvals-title">
     <div class="pane">
       <header class="pane-head pane-head--page">
-        <h1 id="approvals-title" class="page-title">Approvals</h1>
+        <h1 id="approvals-title" class="page-title" tabindex="-1">Approvals</h1>
         <Badge v-if="list.data.value">{{ total }}</Badge>
         <span class="spacer" />
         <p v-if="fourEyes" class="note">
