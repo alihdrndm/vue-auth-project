@@ -4,7 +4,15 @@ import pluginVue from "eslint-plugin-vue";
 import tseslint from "typescript-eslint";
 
 export default defineConfig(
-  { ignores: ["dist/**", "coverage/**", "src/api/schema.d.ts"] },
+  {
+    ignores: [
+      "dist/**",
+      "coverage/**",
+      "playwright-report/**",
+      "test-results/**",
+      "src/api/schema.d.ts",
+    ],
+  },
   tseslint.configs.strict,
   pluginVue.configs["flat/recommended"],
   {

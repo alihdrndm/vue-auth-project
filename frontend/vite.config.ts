@@ -21,5 +21,7 @@ export default defineConfig({
   },
   test: {
     environment: "jsdom",
+    // Playwright's end-to-end specs (e2e/) run in a real browser, not here.
+    include: ["src/**/*.test.ts"],
   },
 });
