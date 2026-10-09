@@ -55,3 +55,12 @@ def test_llm_budget_defaults() -> None:
     assert str(settings.LLM_BUDGET_USD_DAILY_PUBLIC) == "0.10"
     assert settings.LLM_MAX_CALLS_PER_SANDBOX == 3
     assert str(settings.EVAL_BUDGET_USD) == "0.75"
+
+
+def test_the_env_example_loads_as_it_is() -> None:
+    from pathlib import Path
+
+    example = Path(__file__).resolve().parents[2] / ".env.example"
+    settings = Settings(_env_file=example)
+    assert settings.LLM_ENABLED is False
+    assert settings.OPENAI_PRICE_INPUT_PER_MTOK is None

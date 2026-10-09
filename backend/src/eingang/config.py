@@ -22,6 +22,8 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
         case_sensitive=True,
+        # `NAME=` in a copied .env.example means "not set", so the default applies.
+        env_ignore_empty=True,
     )
 
     DJANGO_SECRET_KEY: str = DEV_SECRET_KEY
