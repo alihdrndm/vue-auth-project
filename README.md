@@ -4,7 +4,11 @@ Eingang is an inbox for supplier invoices that tells a small German business whe
 
 **Live demo:** not deployed yet. The link is added when the project is deployed.
 
-<!-- Screenshot strip: three images from docs/media/, added once recorded. -->
+<p>
+  <img src="docs/media/feature-verdicts.png" alt="The inbox: every invoice with its format, e-invoice verdict and validation result" width="32%">
+  <img src="docs/media/feature-evidence.png" alt="A field read from a plain PDF, with the text it came from" width="32%">
+  <img src="docs/media/feature-approval.png" alt="Approving an invoice after a changed bank account was checked" width="32%">
+</p>
 
 ## The problem
 
@@ -14,17 +18,18 @@ Eingang is not tax or legal advice. It checks published technical rules (EN 1693
 
 ## What it does
 
-Eingang is being built milestone by milestone. So far only the project skeleton exists. Each item below is planned, and the list will say what has shipped as it does.
-
 - Detects the format of each incoming file: XRechnung (UBL or CII), ZUGFeRD/Factur-X with its profile, plain PDF, or scan.
-- Validates structured invoices against the official XSD and Schematron rules and explains each finding in plain language.
-- Turns every invoice into the same fields. Values come from the XML where there is one, and from the PDF text with an AI model where there isn't, with the evidence for each value.
-- Runs business checks: duplicates, changed bank details, arithmetic, an invoice addressed to someone else, and more.
+- Validates structured invoices against the official XSD and Schematron rules (KoSIT configuration `v2026-01-31`) and explains each finding in plain language.
+- Turns every invoice into the same fields: from the XML where there is one, and from the PDF text with an AI model where there isn't, with the evidence and a confidence level for each value.
+- Runs business checks C01–C16: duplicates, changed bank details, arithmetic, an invoice addressed to someone else, overdue invoices, and more.
 - Routes invoices through review and four-eyes approval, and exports CSV/ZIP files for the tax advisor.
 
 ## How well it works
 
-The extraction evaluation and the validation-parity check have not been run yet. Their results will appear here, with a link to `docs/EVALS.md`.
+Full method and limits: [docs/EVALS.md](docs/EVALS.md).
+
+- **Validation parity with the official KoSIT validator:** the same verdict on **100%** of 176 files, and the same set of failed rules on **100%** (64 files excluded as not applicable or without a KoSIT scenario).
+- **Field extraction from PDF text**, on 104 ZUGFeRD corpus invoices (truth = the embedded XML): a label-based regex baseline gets the critical fields (number, date, gross total, IBAN) all right on **21.2%** of invoices (95% CI 13.5–28.8%). The AI extraction run is pending and will be added here.
 
 ## Architecture
 
@@ -37,6 +42,8 @@ flowchart LR
     api --> db[(PostgreSQL)]
     worker --> db
     worker -. budget-gated .-> llm[OpenAI API]
+    api --> files[(File storage)]
+    worker --> files
 ```
 
 The Vue app talks only to its own origin, which proxies `/api` to the Django API. The API stores uploads and starts one Temporal workflow per document. The worker does the heavy work: format detection, validation with SaxonC, PDF text extraction, and the budget-gated AI calls. It then waits durably for review and approval signals. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
@@ -48,15 +55,18 @@ Prerequisites: Docker with Compose v2, Node 24 with Corepack, and [uv](https://d
 ```sh
 corepack enable
 pnpm install
-cd backend && uv sync --extra worker && cd ..
+cd backend && uv sync --all-groups --all-extras && cp .env.example .env && cd ..
+docker compose up -d --wait db temporal
+cd backend && uv run python manage.py migrate && uv run poe ensure-schedules && cd ..
+pnpm seed
 pnpm dev
 ```
 
-`pnpm dev` starts PostgreSQL and Temporal in Docker, then the API (http://localhost:8010), the worker and the web app (http://localhost:3110). The Temporal UI is at http://localhost:8233. `pnpm verify` runs every check.
+Open http://localhost:3110 and choose **Open the sandbox**, or sign in as `admin@example.invalid` with the password `eingang-dev` (the seed users; the password is `SEED_PASSWORD`). `pnpm dev` runs the API (http://localhost:8010), the worker and the web app; the Temporal UI is at http://localhost:8233. `pnpm verify` runs every check, and `pnpm test:e2e` runs the browser tests against the full Docker stack. The AI features stay off until `LLM_ENABLED=true` and an OpenAI key are set (see [docs/DEPLOY.md](docs/DEPLOY.md)).
 
 ## Costs
 
-See `docs/COSTS.md` (written at deployment, from measured numbers).
+Measured idle use, prices and the AI spend so far: [docs/COSTS.md](docs/COSTS.md).
 
 ## Data and licences
 
