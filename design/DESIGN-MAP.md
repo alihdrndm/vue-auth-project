@@ -133,7 +133,7 @@ PaneHeader, IconButton, Checkbox and SearchField as standalone components (each 
 
 - **List columns.** The design's "Open" (per-status counts) and "Bank account" columns are left out: `GET /suppliers` has neither. The list shows the VAT ID under the name and the first and last invoice dates.
 - **Search** is a field in the pane header (the design has none on this screen); `?q=` and `page` live in the URL.
-- **IBAN history.** "Also on …" is left out (the API does not say which invoices carry which IBAN). The invoice an IBAN was first seen on is matched by its received time, because the API names it by invoice id while the review route needs the document id (`firstSeenInvoice` in `features/suppliers/iban.ts`); without a match the line has no number and no link.
+- **IBAN history.** "Also on …" is left out (the API does not say which invoices carry which IBAN). The invoice an IBAN was first seen on comes from the API's `first_seen_document_id`; if that invoice was deleted, the line has no number and no link.
 - **Invoices table** shows Received, Number, Invoice date, Gross and Status; Format and Bank account are not in the supplier detail response, and amounts carry the API's sign (no type code there).
 
 ### Exports differences
