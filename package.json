@@ -12,7 +12,8 @@
     "test:e2e": "node scripts/e2e.mjs",
     "gen:api": "node scripts/gen-api.mjs",
     "db:reset": "node scripts/db-reset.mjs",
-    "seed": "node scripts/seed.mjs"
+    "seed": "node scripts/seed.mjs",
+    "record-media": "node scripts/record-media.mjs"
   },
   "devDependencies": {
     "concurrently": "^10.0.6"
