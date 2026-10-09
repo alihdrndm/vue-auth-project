@@ -94,6 +94,13 @@ PaneHeader, IconButton, Checkbox, Switch, SearchField (as a standalone component
 - **Phone layout.** The page shows its own back link to the Inbox; the shell's bottom tab bar stays (the design hides it on this screen), and the actions sit in the header with 44 px buttons instead of a separate action bar at the bottom.
 - **PDF pages** are buttons in the viewer's tool row rather than thumbnails (the design's review has single-page samples and no thumbnail strip).
 
+- **Fields of an XML invoice are editable** in `needs_review` for admins and accountants. The design makes them read-only ("Read-only: the XML is the invoice."); HANDOFF allows editing any invoice in review, and behaviour follows HANDOFF. The note then reads "From the XML. The XML is the invoice."; the read-only sentence is shown when editing is not allowed.
+- **Visualisation note from KoSIT.** The rendered XML comes from KoSIT's own stylesheet and is shown in a sandbox without scripts, so its built-in line "The display of content on this page is limited without JavaScript." appears at the top. It is KoSIT's page, not ours; the XML tab shows the source.
+
+### Shell differences
+
+- **Sandbox banner on every app page.** The design shows it on the Inbox and Settings only; HANDOFF wants it on every app page in a sandbox.
+
 ## Screens not in the design
 
 To be filled in as screens are built.
