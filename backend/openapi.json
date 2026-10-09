@@ -3159,6 +3159,9 @@
                     "invoice_number": {
                         "type": "string"
                     },
+                    "type_code": {
+                        "type": "integer"
+                    },
                     "issue_date": {
                         "type": "string",
                         "format": "date"

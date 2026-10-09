@@ -79,7 +79,9 @@ function detail(overrides: Partial<SupplierDetail> = {}): SupplierDetail {
       {
         document_id: "doc-11",
         invoice_number: "BN-88102-G",
-        gross_total: "-58.31",
+        // As the API sends a credit note: a positive amount and type code 381.
+        type_code: 381,
+        gross_total: "58.31",
         currency: "EUR",
         status: "approved",
         received_at: "2026-10-02T08:55:00Z",

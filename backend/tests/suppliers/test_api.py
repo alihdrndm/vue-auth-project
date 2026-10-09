@@ -136,6 +136,17 @@ def test_detail_names_the_document_where_each_iban_was_first_seen(
     assert ibans[CONFIRMED]["first_seen_invoice_number"] == "RE-2"
 
 
+def test_detail_invoices_carry_their_type_code(
+    signed_in: Callable[[str], ApiClient], organization: Organization
+) -> None:
+    api = signed_in("viewer")
+    supplier = _supplier_with_history(organization, None)
+    supplier.invoices.filter(invoice_number="RE-2").update(type_code=381)
+    response = api.get(f"/api/v1/suppliers/{supplier.id}")
+    codes = {row["invoice_number"]: row.get("type_code") for row in response.json()["invoices"]}
+    assert codes["RE-2"] == 381
+
+
 def test_detail_lists_invoices_newest_first_without_deleted_ones(
     signed_in: Callable[[str], ApiClient], organization: Organization
 ) -> None:

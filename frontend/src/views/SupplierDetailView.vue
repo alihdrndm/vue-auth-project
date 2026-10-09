@@ -24,6 +24,7 @@ import {
   type SupplierIban,
   type SupplierInvoice,
 } from "../features/suppliers/iban";
+import { CREDIT_NOTE } from "../features/review/fields";
 import IbanTag from "../features/suppliers/IbanTag.vue";
 import {
   formatDate,
@@ -74,8 +75,11 @@ function seenOn(entry: SupplierIban): SupplierInvoice | null {
   return firstSeenInvoice(entry, data.value?.invoices ?? []);
 }
 
-function numberOf(invoice: SupplierInvoice | null): string | null {
-  return invoice?.invoice_number ?? null;
+/** The number of the invoice the IBAN was first seen on, as the API names it. */
+function entryNumber(entry: SupplierIban): string | null {
+  return (
+    entry.first_seen_invoice_number ?? seenOn(entry)?.invoice_number ?? null
+  );
 }
 
 const subtitle = computed(() => {
@@ -104,7 +108,8 @@ const COLUMNS: DataTableColumn<SupplierInvoice>[] = [
     align: "right",
     mono: true,
     width: "136px",
-    value: (row) => formatMoney(row.gross_total, row.currency),
+    value: (row) =>
+      formatMoney(row.gross_total, row.currency, row.type_code === CREDIT_NOTE),
   },
   { key: "status", label: "Status", width: "184px" },
 ];
@@ -197,11 +202,9 @@ function open(row: SupplierInvoice): void {
             <template v-if="!entry.trusted">
               <p class="iban-text">
                 First seen
-                <template v-if="numberOf(seenOn(entry))"
+                <template v-if="entryNumber(entry)"
                   >on
-                  <span class="mono">{{
-                    numberOf(seenOn(entry))
-                  }}</span></template
+                  <span class="mono">{{ entryNumber(entry) }}</span></template
                 >, {{ formatDay(entry.first_seen_at) }} · Not confirmed yet
               </p>
               <RouterLink
@@ -212,8 +215,7 @@ function open(row: SupplierInvoice): void {
                   params: { id: seenOn(entry)?.document_id },
                 }"
                 ><Icon name="octagon" :size="14" class="check-icon" />Open the
-                check on
-                {{ numberOf(seenOn(entry)) ?? "this invoice" }}</RouterLink
+                check on {{ entryNumber(entry) ?? "this invoice" }}</RouterLink
               >
             </template>
             <p v-else-if="entry.status === 'confirmed'" class="iban-text">
@@ -225,11 +227,8 @@ function open(row: SupplierInvoice): void {
             </p>
             <p v-else class="iban-text">
               Known account · first seen {{ formatDay(entry.first_seen_at) }}
-              <template v-if="numberOf(seenOn(entry))"
-                >on
-                <span class="mono">{{
-                  numberOf(seenOn(entry))
-                }}</span></template
+              <template v-if="entryNumber(entry)"
+                >on <span class="mono">{{ entryNumber(entry) }}</span></template
               >.
             </p>
           </li>

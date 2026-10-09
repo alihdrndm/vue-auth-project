@@ -1216,6 +1216,7 @@ export interface components {
             /** Format: uuid */
             document_id: string;
             invoice_number?: string;
+            type_code?: number;
             /** Format: date */
             issue_date?: string;
             /** Format: decimal */
