@@ -49,6 +49,14 @@ function stepIcon(key: string): {
 } {
   const reached = ORDER.indexOf(step.value ?? "detect");
   const index = ORDER.indexOf(key);
+  if (status.value === "failed") {
+    // Processing stopped at the current step: done before it, failed at it, not run after.
+    if (index < reached)
+      return { icon: "circle-check", spin: false, label: "done" };
+    if (index === reached)
+      return { icon: "octagon", spin: false, label: "failed" };
+    return { icon: "minus", spin: false, label: "not run" };
+  }
   if (!PROCESSING.has(status.value ?? "received") || index < reached) {
     return { icon: "circle-check", spin: false, label: "done" };
   }
@@ -100,7 +108,7 @@ const finished = computed(
     <div class="row__body">
       <div class="row__head">
         <span class="row__name">{{ row.name }}</span>
-        <span class="row__status">{{ statusText }}</span>
+        <span class="row__status" aria-live="polite">{{ statusText }}</span>
       </div>
       <progress
         v-if="row.state === 'uploading'"
@@ -147,6 +155,13 @@ const finished = computed(
         <Icon name="eye" :size="14" />Open
       </RouterLink>
       <Button
+        v-if="row.state === 'failed' && row.retryable"
+        size="sm"
+        @click="$emit('retry')"
+      >
+        Retry
+      </Button>
+      <Button
         v-if="row.state === 'failed'"
         size="sm"
         variant="ghost"
@@ -170,7 +185,7 @@ const finished = computed(
 
 .row__icon {
   color: var(--muted);
-  margin-top: 2px;
+  margin-top: 0;
 }
 
 .row__head {
@@ -192,7 +207,7 @@ const finished = computed(
 
 .row__progress {
   width: 100%;
-  height: 4px;
+  height: var(--space-4);
   margin-top: var(--space-8);
   accent-color: var(--stamp);
 }
@@ -221,6 +236,11 @@ const finished = computed(
   color: var(--stamp);
 }
 
+.steps__icon--failed {
+  color: var(--block);
+}
+
+.steps__icon--not-run,
 .steps__icon--waiting {
   color: var(--muted);
 }

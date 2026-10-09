@@ -19,6 +19,8 @@ export interface UploadRow {
   documentId: string | null;
   /** A problem's title and detail, shown on the row. */
   error: { title: string; detail: string } | null;
+  /** False for a file refused before sending: there is nothing to send again. */
+  retryable: boolean;
 }
 
 export interface SendResult {
@@ -102,6 +104,7 @@ export function createUploadQueue(
         progress: 0,
         documentId: null,
         error: null,
+        retryable: true,
       });
     }
     pump();
@@ -121,6 +124,7 @@ export function createUploadQueue(
       progress: 0,
       documentId: null,
       error,
+      retryable: false,
     });
   }
 
