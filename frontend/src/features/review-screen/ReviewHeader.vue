@@ -12,7 +12,7 @@ import Dialog from "../../components/ui/Dialog.vue";
 import FormatChip from "../../components/ui/FormatChip.vue";
 import Icon from "../../components/ui/Icon.vue";
 import Stamp from "../../components/ui/Stamp.vue";
-import StatusChip from "../../components/ui/StatusChip.vue";
+import StatusChip, { STATUS_LOOK } from "../../components/ui/StatusChip.vue";
 import TextArea from "../../components/ui/TextArea.vue";
 import { useToast } from "../../components/ui/useToast";
 import { useSessionStore } from "../../stores/session";
@@ -93,6 +93,10 @@ const decision = computed(() => {
   } as const;
 });
 
+// Announced politely whenever the status changes (HANDOFF accessibility).
+const statusAnnouncement = computed(
+  () => `Status: ${STATUS_LOOK[doc.value.status].label}.`,
+);
 const processing = computed(() => {
   const status = doc.value.status;
   if (status !== "received" && status !== "processing") return null;
@@ -335,7 +339,8 @@ watch(note, () => {
       </div>
     </div>
 
-    <p v-if="processing" class="processing" role="status">
+    <p class="sr-only" aria-live="polite">{{ statusAnnouncement }}</p>
+    <p v-if="processing" class="processing">
       <Icon name="loader" spin />{{ processing }}
     </p>
     <p v-if="doc.status === 'failed'" class="failed" role="status">

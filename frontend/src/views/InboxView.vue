@@ -21,6 +21,7 @@ import { api, ApiError, unwrap } from "../api/client";
 import { queryKeys, type DocumentListParams } from "../api/query";
 import type { components } from "../api/schema";
 import Button from "../components/ui/Button.vue";
+import { STATUS_LOOK } from "../components/ui/StatusChip.vue";
 import type { DataTableSort } from "../components/ui/DataTable.vue";
 import EmptyState from "../components/ui/EmptyState.vue";
 import ErrorState from "../components/ui/ErrorState.vue";
@@ -272,18 +273,34 @@ const processingIds = computed(() =>
   rows.value.filter(isProcessing).map((row) => row.id),
 );
 
+// Announced politely (HANDOFF accessibility): how many are processing, and each invoice's
+// new status when it finishes.
+const finishedMessage = ref("");
 const liveMessage = computed(() => {
   const n = processingIds.value.length;
-  if (n === 0) return "";
-  return n === 1
-    ? "1 invoice is being processed"
-    : `${n} invoices are being processed`;
+  if (n === 0) return finishedMessage.value;
+  const processing =
+    n === 1
+      ? "1 invoice is being processed"
+      : `${n} invoices are being processed`;
+  return finishedMessage.value
+    ? `${finishedMessage.value} ${processing}.`
+    : processing;
 });
 
 // When a row finishes processing, the tab counts change too.
 watch(processingIds, (now, before) => {
-  if (before.some((id) => !now.includes(id)))
-    void queryClient.invalidateQueries({ queryKey: queryKeys.stats() });
+  const done = before.filter((id) => !now.includes(id));
+  if (done.length === 0) return;
+  void queryClient.invalidateQueries({ queryKey: queryKeys.stats() });
+  finishedMessage.value = done
+    .map((id) => rows.value.find((row) => row.id === id))
+    .filter((row) => row !== undefined)
+    .map(
+      (row) =>
+        `${row.invoice_number ?? row.original_filename}: ${STATUS_LOOK[row.status].label}.`,
+    )
+    .join(" ");
 });
 
 // --- Upload ---------------------------------------------------------------------------
