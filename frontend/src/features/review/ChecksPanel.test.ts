@@ -30,6 +30,14 @@ function mountPanel(checks: Check[]) {
   return mount(ChecksPanel, {
     props: { document: documentWith(checks) },
     attachTo: document.body,
+    global: {
+      stubs: {
+        RouterLink: {
+          props: ["to"],
+          template: '<a :data-to="JSON.stringify(to)"><slot /></a>',
+        },
+      },
+    },
   });
 }
 
@@ -176,6 +184,48 @@ describe("ChecksPanel", () => {
     expect(wrapper.text()).toContain("Confirmed by phone.");
     expect(wrapper.text()).toContain("gross total");
     expect(wrapper.text()).toContain("1190.00");
+    wrapper.unmount();
+  });
+
+  it("links the earlier invoice and the source instead of showing a raw URL", () => {
+    const url =
+      "https://ec.europa.eu/digital-building-blocks/sites/spaces/DIGITAL/pages/467108886/eInvoicing+in+Germany";
+    const wrapper = mountPanel([
+      check({
+        check_id: "C02",
+        message: "An invoice with the same number was received earlier.",
+        details: { document_id: "doc-early" },
+      }),
+      check({
+        check_id: "C11",
+        severity: "info",
+        message: `This is a plain PDF. Source of the mandate dates: European Commission, "eInvoicing in Germany" (${url}).`,
+        details: { source_url: url },
+      }),
+    ]);
+    const links = wrapper.findAll(".card__message a");
+    expect(links.map((link) => link.text())).toEqual([
+      "Open the earlier invoice",
+      "Source: European Commission",
+    ]);
+    expect(links[0]?.attributes("data-to")).toContain("doc-early");
+    expect(links[1]?.attributes("href")).toBe(url);
+    expect(wrapper.text()).not.toContain("https://");
+    wrapper.unmount();
+  });
+
+  it("shows why a check can't be resolved as visible text", () => {
+    const wrapper = mountPanel([
+      check({
+        resolve: {
+          enabled: false,
+          reason: "Only invoices that need review can be changed.",
+        },
+      }),
+    ]);
+    expect(wrapper.find(".card__why").text()).toBe(
+      "Only invoices that need review can be changed.",
+    );
     wrapper.unmount();
   });
 });

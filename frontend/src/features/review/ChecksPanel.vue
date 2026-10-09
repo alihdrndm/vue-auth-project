@@ -96,6 +96,36 @@ interface Difference {
   pdf: string;
 }
 
+function detail(check: Check, key: string): string | null {
+  const value = (check.details as Record<string, unknown>)[key];
+  return typeof value === "string" && value !== "" ? value : null;
+}
+
+/** C02 and C03 name the earlier invoice (HANDOFF section 8: the message links it). */
+function earlierInvoice(check: Check): string | null {
+  return detail(check, "document_id");
+}
+
+/** C11 links the source of the mandate dates. */
+function sourceUrl(check: Check): string | null {
+  const url = detail(check, "source_url");
+  return url && /^https:\/\//.test(url) ? url : null;
+}
+
+function sourceLabel(url: string): string {
+  return url.includes("ec.europa.eu")
+    ? "Source: European Commission"
+    : "Source";
+}
+
+/** The message without a URL that is shown as a link instead. */
+function messageText(check: Check): string {
+  const url = sourceUrl(check);
+  return url
+    ? check.message.replace(` (${url})`, "").replace(url, "").trim()
+    : check.message;
+}
+
 function differences(check: Check): Difference[] {
   const list = (check.details as { differences?: unknown }).differences;
   return Array.isArray(list) ? (list as Difference[]) : [];
@@ -122,7 +152,20 @@ function differences(check: Check): Difference[] {
           <SeverityChip :severity="check.severity" />
           <span class="card__id">{{ check.check_id }}</span>
         </div>
-        <p class="card__message">{{ check.message }}</p>
+        <p class="card__message">
+          {{ messageText(check) }}
+          <RouterLink
+            v-if="earlierInvoice(check)"
+            :to="{ name: 'invoice', params: { id: earlierInvoice(check) } }"
+            >Open the earlier invoice</RouterLink
+          >
+          <a
+            v-if="sourceUrl(check)"
+            :href="sourceUrl(check) ?? undefined"
+            rel="noopener"
+            >{{ sourceLabel(sourceUrl(check) ?? "") }}</a
+          >
+        </p>
         <table v-if="differences(check).length" class="diff">
           <caption class="visually-hidden">
             Differences between the PDF and the XML
@@ -154,6 +197,9 @@ function differences(check: Check): Difference[] {
           >
             {{ resolveLabel(check) }}
           </Button>
+          <span v-if="resolveState(check).reason" class="card__why">{{
+            resolveState(check).reason
+          }}</span>
         </div>
       </li>
     </ul>
@@ -267,6 +313,15 @@ function differences(check: Check): Difference[] {
   gap: var(--space-8);
   align-items: center;
   margin-top: var(--space-12);
+}
+
+.card__why {
+  color: var(--muted);
+  font-size: var(--fs-13);
+}
+
+.card__message a {
+  margin-left: var(--space-4);
 }
 
 .card__resolved {
