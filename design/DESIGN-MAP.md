@@ -97,6 +97,13 @@ PaneHeader, IconButton, Checkbox, Switch, SearchField (as a standalone component
 - **Fields of an XML invoice are editable** in `needs_review` for admins and accountants. The design makes them read-only ("Read-only: the XML is the invoice."); HANDOFF allows editing any invoice in review, and behaviour follows HANDOFF. The note then reads "From the XML. The XML is the invoice."; the read-only sentence is shown when editing is not allowed.
 - **Visualisation note from KoSIT.** The rendered XML comes from KoSIT's own stylesheet and is shown in a sandbox without scripts, so its built-in line "The display of content on this page is limited without JavaScript." appears at the top. It is KoSIT's page, not ours; the XML tab shows the source.
 
+### Homepage differences
+
+- **BASIC WL source.** The design links "Source: BMF letter, 15 Oct 2024" to a software vendor's blog. The page links a published summary of the letter (PwC tax newsletter) and says so: "Source: BMF letter, 15 Oct 2024 (PwC summary)". The ministry's own site refuses automated checks, so its URL could not be verified.
+- **Hero art** is a simpler composition of the same elements (XML sheet with the highlighted amount, the plain-PDF sheet with the stamp, the red-pen "XML inside?"); the drawn pen strokes and highlighter swipe are not animated.
+- **Red-pen notes** wipe in when their act is 30 % in view (shown at once with reduced motion); the drawn circles and arrows are left out.
+- **Headline:** option 1 of the design's three ("Some of our invoices are e-invoices. We couldn't tell you which."). The tweaks (headline, motion, ink texture) are design-tool controls and are not built.
+
 ### Shell differences
 
 - **Sandbox banner on every app page.** The design shows it on the Inbox and Settings only; HANDOFF wants it on every app page in a sandbox.
