@@ -5,7 +5,12 @@ import { headerActions, problemMessage, successMessage } from "./actions";
 import { formatDate, formatMoney, formatRate } from "./format";
 import { serializeFrom } from "../inbox/listParams";
 import { decodeFrom, neighbour, stepMessage } from "./navigation";
-import { configRelease, issueGroups, validationText } from "./validation";
+import {
+  configRelease,
+  issueGroups,
+  rulesLine,
+  validationText,
+} from "./validation";
 import { detail, summary } from "./testing";
 
 describe("format", () => {
@@ -102,6 +107,7 @@ describe("validation", () => {
     const engine = "xrechnung-config 2026-01-31; CEN 1.3.13; saxonche 12.5";
     expect(configRelease(engine)).toBe("2026-01-31");
     const doc = detail({
+      profile: "XRECHNUNG",
       validation: {
         status: "invalid",
         engine,
@@ -112,6 +118,32 @@ describe("validation", () => {
     });
     expect(validationText(doc)).toBe(
       "Checked with the official XRechnung rules (KoSIT 2026-01-31). 1 error.",
+    );
+  });
+
+  it("says when only the EN 16931 rules ran", () => {
+    const engine = "xrechnung-config 2026-01-31; CEN 1.3.13; saxonche 12.5";
+    const validation = {
+      status: "valid" as const,
+      engine,
+      fatal_count: 0,
+      warning_count: 0,
+      issues: [],
+    };
+    expect(rulesLine({ profile: "EN 16931", invoice: undefined }, engine)).toBe(
+      "Checked against EN 16931 rules only.",
+    );
+    expect(rulesLine({ profile: "EXTENDED", invoice: undefined }, engine)).toBe(
+      "Checked against EN 16931 rules only.",
+    );
+    const old = detail({ profile: "XRECHNUNG", validation });
+    old.invoice = {
+      ...old.invoice,
+      spec_id:
+        "urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_2.3",
+    } as typeof old.invoice;
+    expect(validationText(old)).toBe(
+      "XRechnung 2.x: checked against EN 16931 rules only. No errors, no warnings.",
     );
   });
 

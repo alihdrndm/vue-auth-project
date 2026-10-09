@@ -66,10 +66,7 @@ export function validationText(document: DocumentDetail): string {
       ? "A plain PDF has no structured data to check against the e-invoice rules. AI read the fields below; check them before you mark it reviewed."
       : "A plain PDF has no structured data to check against the e-invoice rules.";
   }
-  const release = configRelease(validation.engine);
-  const rules = release
-    ? `Checked with the official XRechnung rules (KoSIT ${release}).`
-    : `Checked with ${validation.engine}.`;
+  const rules = rulesLine(document, validation.engine);
   const errors = validation.fatal_count;
   const warnings = validation.warning_count;
   let result: string;
@@ -84,6 +81,29 @@ export function validationText(document: DocumentDetail): string {
     result = "No errors, no warnings.";
   }
   return `${rules} ${result}`;
+}
+
+/** XRechnung 1.x/2.x: the specification identifier of the older KoSIT standards. */
+const LEGACY_XRECHNUNG =
+  /xoev-de:kosit:standard:xrechnung|xrechnung_[12](?:\.|$)/;
+
+/**
+ * Which rules ran (HANDOFF section 3, E3 and E5): only XRechnung 3 invoices are checked with
+ * the XRechnung rules; XRechnung 1.x/2.x and the other profiles with EN 16931 rules only.
+ */
+export function rulesLine(
+  document: Pick<DocumentDetail, "profile" | "invoice">,
+  engine: string,
+): string {
+  if (document.profile !== "XRECHNUNG")
+    return "Checked against EN 16931 rules only.";
+  if (LEGACY_XRECHNUNG.test(document.invoice?.spec_id ?? "")) {
+    return "XRechnung 2.x: checked against EN 16931 rules only.";
+  }
+  const release = configRelease(engine);
+  return release
+    ? `Checked with the official XRechnung rules (KoSIT ${release}).`
+    : `Checked with ${engine}.`;
 }
 
 export const SEVERITY_ORDER: IssueSeverity[] = [
