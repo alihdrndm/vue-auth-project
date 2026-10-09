@@ -1,3 +1,7 @@
+import "./styles/fonts";
+import "./styles/tokens.css";
+import "./styles/base.css";
+
 import { VueQueryPlugin } from "@tanstack/vue-query";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
