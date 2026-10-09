@@ -97,6 +97,8 @@ describe("HomeView", () => {
   it("links to sign-in and the public accuracy page", () => {
     const wrapper = mountHome();
     const hrefs = wrapper.findAll("a").map((link) => link.attributes("href"));
-    expect(hrefs).toEqual(["/sign-in", "/accuracy"]);
+    expect(hrefs).toContain("/sign-in");
+    expect(hrefs).toContain("/accuracy");
+    expect(hrefs).toContain("https://github.com/alihdrndm/eingang");
   });
 });
