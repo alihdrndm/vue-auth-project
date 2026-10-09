@@ -173,7 +173,7 @@ async function fetchCsrfToken(): Promise<string | null> {
  * The current CSRF token. The cookie is read on every call because Django rotates the token at
  * sign-in; `GET /auth/csrf` is only called when no token is known yet, or when `refresh` is set.
  */
-async function currentCsrfToken(refresh = false): Promise<string | null> {
+export async function currentCsrfToken(refresh = false): Promise<string | null> {
   if (!refresh) {
     const token = readCookie(CSRF_COOKIE) ?? csrfToken;
     if (token) return token;
