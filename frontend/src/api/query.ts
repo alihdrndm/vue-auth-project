@@ -43,12 +43,17 @@ export const queryKeys = {
     detail: (id: string) => ["documents", "detail", id] as const,
     text: (id: string) => ["documents", "detail", id, "text"] as const,
     xml: (id: string) => ["documents", "detail", id, "xml"] as const,
+    file: (id: string) => ["documents", "detail", id, "file"] as const,
+    visualization: (id: string) =>
+      ["documents", "detail", id, "visualization"] as const,
   },
   suppliers: {
     all: () => ["suppliers"] as const,
     list: (params: SupplierListParams = {}) =>
       ["suppliers", "list", params] as const,
     detail: (id: string) => ["suppliers", "detail", id] as const,
+    /** Every supplier (all pages), for filter menus. */
+    options: () => ["suppliers", "options"] as const,
   },
   exports: () => ["exports"] as const,
   organization: () => ["organization"] as const,
