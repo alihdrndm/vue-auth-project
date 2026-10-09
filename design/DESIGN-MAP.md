@@ -116,7 +116,7 @@ PaneHeader, IconButton, Checkbox and SearchField as standalone components (each 
 
 ### Homepage differences
 
-- **BASIC WL source.** The design links "Source: BMF letter, 15 Oct 2024" to a software vendor's blog. The page links a published summary of the letter (PwC tax newsletter) and says so: "Source: BMF letter, 15 Oct 2024 (PwC summary)". The ministry's own site refuses automated checks, so its URL could not be verified.
+- **BASIC WL source label.** The design labels the link "Source: BMF letter, 15 Oct 2024", but the page it links is ELO's summary of that letter; the label now says so ("Source: ELO summary of the BMF letter, 15 Oct 2024"), as HANDOFF names it.
 - **Hero art** is a simpler composition of the same elements (XML sheet with the highlighted amount, the plain-PDF sheet with the stamp, the red-pen "XML inside?"); the drawn pen strokes and highlighter swipe are not animated.
 - **Red-pen notes** wipe in when their act is 30 % in view (shown at once with reduced motion); the drawn circles and arrows are left out.
 - **Headline:** option 1 of the design's three ("Some of our invoices are e-invoices. We couldn't tell you which."). The tweaks (headline, motion, ink texture) are design-tool controls and are not built.
