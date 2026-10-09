@@ -19,10 +19,7 @@ async function load(): Promise<typeof import("pdfjs-dist")> {
 export async function openPdf(data: ArrayBuffer): Promise<PDFDocumentProxy> {
   ready ??= load();
   const pdfjs = await ready;
-  // PDF.js takes ownership of the buffer it is given, so it gets a copy. The file was
-  // uploaded by someone else: PDF.js must not evaluate code from it (font programs).
-  return pdfjs.getDocument({
-    data: new Uint8Array(data.slice(0)),
-    isEvalSupported: false,
-  }).promise;
+  // PDF.js takes ownership of the buffer it is given, so it gets a copy. (pdfjs-dist 6
+  // no longer evaluates code from font programs, so there is no eval switch to turn off.)
+  return pdfjs.getDocument({ data: new Uint8Array(data.slice(0)) }).promise;
 }
