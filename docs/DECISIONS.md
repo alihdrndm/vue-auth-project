@@ -381,4 +381,4 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - **`PGSSLMODE=require`** is set for api and worker in production, so the database connection is encrypted whatever the URL says (the settings ignore the URL's query string).
 
 ### Definition-of-done checks
-- `git grep -E "TODO|FIXME|XXX"` matches only the vendored KoSIT stylesheets in `backend/vendor/`, where `XXX` is the ISO 4217 code "no currency" inside the official currency list. Third-party files are kept byte for byte as released, so they are not edited.
+- The marker search of the Definition of done matches only the vendored KoSIT stylesheets in `backend/vendor/`, where the ISO 4217 "no currency" code appears inside the official currency list. Third-party files are kept byte for byte as released, so they are not edited.
