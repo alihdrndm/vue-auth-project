@@ -61,6 +61,13 @@ function addFiles(list: FileList | File[]): void {
   open.value = true;
 }
 
+/** Opens the upload dialog (the inbox's empty state has its own Upload button). */
+function openDialog(): void {
+  open.value = true;
+}
+
+defineExpose({ open: openDialog });
+
 function choose(): void {
   picker.value?.click();
 }
