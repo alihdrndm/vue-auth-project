@@ -62,10 +62,10 @@ const DOCUMENTS: SampleDocument[] = [
   },
 ];
 
-// The 15 Oct 2024 BMF letter (MINIMUM and BASIC WL are not e-invoices). The ministry's own
-// site refuses automated checks, so the link is a published summary of the letter.
+// The 15 Oct 2024 BMF letter (MINIMUM and BASIC WL are not e-invoices), through the
+// summary HANDOFF names as its source.
 const BMF_SOURCE =
-  "https://newsletter.pwc.de/umsatzsteuer/nl0029-2024-10-29/bmf-e-rechnung";
+  "https://www.elo.com/de-de/blog/e-rechnungspflicht-bmf-schreiben-und-faq.html";
 
 interface Row {
   id: string;
@@ -283,7 +283,7 @@ function verdictText(kind: Kind): string {
                 >
                   BASIC WL carries too little data to count as an e-invoice.
                   <a :href="BMF_SOURCE" rel="noopener" target="_blank"
-                    >Source: BMF letter, 15 Oct 2024 (PwC summary)</a
+                    >Source: ELO summary of the BMF letter, 15 Oct 2024</a
                   >
                 </p>
               </template>

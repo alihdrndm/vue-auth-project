@@ -71,7 +71,7 @@ describe("Act 1", () => {
     expect(rows).toHaveLength(1);
     expect(wrapper.text()).toContain("Not an e-invoice (profile BASIC WL)");
     expect(wrapper.find("a").text()).toContain(
-      "Source: BMF letter, 15 Oct 2024",
+      "Source: ELO summary of the BMF letter",
     );
   });
 
