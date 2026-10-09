@@ -33,7 +33,8 @@ describe("Icon", () => {
   });
 
   it("maps every design icon name", () => {
-    expect(Object.keys(ICONS)).toHaveLength(41);
+    // The design's 41 icons plus "eye-off" for the show/hide password toggle.
+    expect(Object.keys(ICONS)).toHaveLength(42);
     for (const name of Object.keys(ICONS) as (keyof typeof ICONS)[]) {
       const wrapper = mount(Icon, { props: { name } });
       expect(wrapper.find("svg").exists()).toBe(true);

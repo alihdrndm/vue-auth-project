@@ -14,9 +14,9 @@
 <style scoped>
 .not-found {
   display: grid;
-  gap: 12px;
+  gap: var(--space-12);
   justify-items: center;
-  padding: 72px 16px;
+  padding: var(--space-72) var(--space-16);
   text-align: center;
 }
 
@@ -29,7 +29,7 @@
 h1 {
   margin: 0;
   font-family: var(--font-head);
-  font-size: 21px;
+  font-size: var(--fs-21);
   color: var(--ink);
 }
 

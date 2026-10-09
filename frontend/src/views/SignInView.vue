@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Eye, EyeOff, LoaderCircle, OctagonAlert } from "lucide-vue-next";
+import Icon from "../components/ui/Icon.vue";
 import { computed, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -81,9 +81,7 @@ async function submit(): Promise<void> {
 
         <p class="form-error" role="alert" aria-live="assertive">
           <template v-if="formError">
-            <OctagonAlert :size="14" :stroke-width="1.5" aria-hidden="true" />{{
-              formError
-            }}
+            <Icon name="octagon" :size="14" />{{ formError }}
           </template>
         </p>
 
@@ -107,9 +105,7 @@ async function submit(): Promise<void> {
             class="field-error"
             role="alert"
           >
-            <OctagonAlert :size="14" :stroke-width="1.5" aria-hidden="true" />{{
-              fieldErrors.email
-            }}
+            <Icon name="octagon" :size="14" />{{ fieldErrors.email }}
           </span>
         </div>
 
@@ -135,13 +131,8 @@ async function submit(): Promise<void> {
               :aria-pressed="showPassword"
               @click="showPassword = !showPassword"
             >
-              <EyeOff
-                v-if="showPassword"
-                :size="16"
-                :stroke-width="1.5"
-                aria-hidden="true"
-              />
-              <Eye v-else :size="16" :stroke-width="1.5" aria-hidden="true" />
+              <Icon v-if="showPassword" name="eye-off" :size="16" />
+              <Icon v-else name="eye" :size="16" />
             </button>
           </span>
           <span
@@ -150,20 +141,13 @@ async function submit(): Promise<void> {
             class="field-error"
             role="alert"
           >
-            <OctagonAlert :size="14" :stroke-width="1.5" aria-hidden="true" />{{
-              fieldErrors.password
-            }}
+            <Icon name="octagon" :size="14" />{{ fieldErrors.password }}
           </span>
         </div>
 
         <button type="submit" class="submit" :disabled="busy">
           <template v-if="busy">
-            <LoaderCircle
-              class="spin"
-              :size="16"
-              :stroke-width="1.5"
-              aria-hidden="true"
-            />Signing in…
+            <Icon name="loader" :size="16" spin />Signing in…
           </template>
           <template v-else>Sign in</template>
         </button>
@@ -184,17 +168,17 @@ async function submit(): Promise<void> {
   display: grid;
   place-items: center;
   min-height: 100vh;
-  padding: 40px 16px;
+  padding: var(--space-40) var(--space-16);
   background: var(--bar);
   color: var(--text);
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: var(--fs-14);
   line-height: 1.45;
 }
 
 .column {
   display: grid;
-  gap: 24px;
+  gap: var(--space-24);
   width: 400px;
   max-width: 100%;
 }
@@ -203,7 +187,7 @@ async function submit(): Promise<void> {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: var(--space-12);
 }
 
 .mark {
@@ -238,8 +222,8 @@ async function submit(): Promise<void> {
 
 .card {
   display: grid;
-  gap: 20px;
-  padding: 32px;
+  gap: var(--space-20);
+  padding: var(--space-32);
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   background: var(--win);
@@ -248,7 +232,7 @@ async function submit(): Promise<void> {
 h1 {
   margin: 0;
   font-family: var(--font-head);
-  font-size: 21px;
+  font-size: var(--fs-21);
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.025em;
@@ -257,25 +241,25 @@ h1 {
 
 .field {
   display: grid;
-  gap: 4px;
+  gap: var(--space-4);
 }
 
 label {
-  font-size: 13px;
+  font-size: var(--fs-13);
   font-weight: 500;
   color: var(--ink);
 }
 
 input {
   width: 100%;
-  height: 44px;
-  padding: 0 12px;
+  height: var(--size-lg);
+  padding: 0 var(--space-12);
   border: 1px solid var(--line-strong);
   border-radius: var(--r-sm);
   background: var(--win);
   color: var(--ink);
   font: inherit;
-  font-size: 16px;
+  font-size: var(--fs-16);
 }
 
 input:hover {
@@ -298,17 +282,17 @@ input[aria-invalid="true"] {
 }
 
 .password input {
-  padding-right: 56px;
+  padding-right: var(--space-56);
 }
 
 .reveal {
   position: absolute;
-  top: 4px;
-  right: 4px;
+  top: var(--space-4);
+  right: var(--space-4);
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: var(--size-row-header);
+  height: var(--size-row-header);
   border: 0;
   border-radius: var(--r-sm);
   background: transparent;
@@ -323,29 +307,29 @@ input[aria-invalid="true"] {
 .field-error,
 .form-error {
   display: flex;
-  gap: 4px;
+  gap: var(--space-4);
   align-items: center;
   margin: 0;
-  font-size: 12px;
+  font-size: var(--fs-12);
   color: var(--block);
 }
 
 .form-error:empty {
-  margin-top: -20px;
+  margin-top: calc(-1 * var(--space-20));
 }
 
 .submit {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  height: 44px;
+  gap: var(--space-8);
+  height: var(--size-lg);
   border: 1px solid var(--ink);
   border-radius: var(--r-sm);
   background: var(--ink);
   color: var(--win);
   font: inherit;
-  font-size: 16px;
+  font-size: var(--fs-16);
   font-weight: 500;
   cursor: pointer;
 }
@@ -360,13 +344,13 @@ input[aria-invalid="true"] {
 
 .alternative {
   display: grid;
-  gap: 12px;
+  gap: var(--space-12);
   text-align: center;
 }
 
 .alternative p {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-13);
   color: var(--muted);
 }
 
@@ -374,12 +358,12 @@ input[aria-invalid="true"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 44px;
+  height: var(--size-lg);
   border: 1px solid var(--line-strong);
   border-radius: var(--r-sm);
   background: var(--win);
   color: var(--ink);
-  font-size: 16px;
+  font-size: var(--fs-16);
   font-weight: 500;
   text-decoration: none;
 }
