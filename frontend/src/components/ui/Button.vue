@@ -115,6 +115,15 @@ function onClick(event: MouseEvent): void {
   font-size: var(--fs-16);
 }
 
+/* Tap targets are at least 44 px on phones, whatever the size (design brief). */
+@media (max-width: 767px) {
+  .button,
+  .button--sm {
+    height: auto;
+    min-height: var(--size-lg);
+  }
+}
+
 .button--primary {
   background: var(--ink);
   color: var(--win);

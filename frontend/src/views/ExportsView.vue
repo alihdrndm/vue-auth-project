@@ -409,6 +409,12 @@ const SKELETON_COLUMNS: SkeletonColumn[] = [
   font-weight: 500;
 }
 
+@media (max-width: 767px) {
+  .link {
+    min-height: var(--size-lg); /* 44 px tap target on phones */
+  }
+}
+
 .blocked {
   padding: 0 var(--space-20) var(--space-12);
   background: var(--bar);
