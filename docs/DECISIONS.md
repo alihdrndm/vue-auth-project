@@ -379,3 +379,6 @@ Of the 26 files in `ZUGFeRDv1/fail` and `ZUGFeRDv2/fail`, 7 are not detected as 
 - **Images install dependencies only** (`uv sync --frozen --no-dev --no-install-project`, plus `--extra worker` for the worker) and run the source from `/app/backend/src` on `PYTHONPATH`. The result is the same as HANDOFF's `uv sync --frozen --no-dev`, without building the project itself as a package.
 - **Railway configuration lives in the dashboard, not in `railway.api.json` / `railway.worker.json`.** Railway has deprecated config as code: new services can't opt in, and existing `railway.json` files stop working after 2026-12-01 (docs.railway.com, "Config as Code"). Its replacement (`.railway/railway.ts`) needs another npm package and a CLI apply step. `docs/DEPLOY.md` lists every setting to enter per service instead (Dockerfile path via `RAILWAY_DOCKERFILE_PATH`, pre-deploy command, health check, restart policy).
 - **`PGSSLMODE=require`** is set for api and worker in production, so the database connection is encrypted whatever the URL says (the settings ignore the URL's query string).
+
+### Definition-of-done checks
+- `git grep -E "TODO|FIXME|XXX"` matches only the vendored KoSIT stylesheets in `backend/vendor/`, where `XXX` is the ISO 4217 code "no currency" inside the official currency list. Third-party files are kept byte for byte as released, so they are not edited.
