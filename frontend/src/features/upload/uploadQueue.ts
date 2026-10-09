@@ -107,9 +107,26 @@ export function createUploadQueue(
     pump();
   }
 
+  /** A file refused before sending (wrong type, too large): a failed row, no retry. */
+  function addRejected(
+    name: string,
+    size: number,
+    error: { title: string; detail: string },
+  ): void {
+    rows.push({
+      id: nextId++,
+      name,
+      size,
+      state: "failed",
+      progress: 0,
+      documentId: null,
+      error,
+    });
+  }
+
   function retry(id: number): void {
     const row = rows.find((candidate) => candidate.id === id);
-    if (row?.state === "failed") {
+    if (row?.state === "failed" && files.has(id)) {
       row.state = "queued";
       pump();
     }
@@ -123,5 +140,5 @@ export function createUploadQueue(
     }
   }
 
-  return { rows: readonly(rows), add, retry, dismiss };
+  return { rows: readonly(rows), add, addRejected, retry, dismiss };
 }

@@ -128,3 +128,20 @@ describe("upload queue", () => {
     expect(queue.rows).toHaveLength(1);
   });
 });
+
+describe("refused files", () => {
+  it("adds a failed row that is never sent and cannot be retried", () => {
+    const { pending, send } = fakeSender();
+    const queue = createUploadQueue(send);
+    queue.addRejected("notes.txt", 10, {
+      title: "Not a PDF or XML file",
+      detail: "Only PDF and XML invoices can be uploaded.",
+    });
+    queue.retry(at(queue.rows, 0).id);
+    expect(pending).toHaveLength(0);
+    expect(at(queue.rows, 0)).toMatchObject({
+      state: "failed",
+      name: "notes.txt",
+    });
+  });
+});
