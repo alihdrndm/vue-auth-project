@@ -303,6 +303,18 @@ function evidenceParts(row: FieldRowState): [string, string, string] | null {
 </template>
 
 <style scoped>
+.fields {
+  min-width: 0;
+  padding: var(--space-20);
+  border-bottom: 1px solid var(--line);
+}
+
+@media (max-width: 767px) {
+  .fields {
+    padding: var(--space-16);
+  }
+}
+
 .fields__head {
   margin-bottom: var(--space-12);
 }
@@ -311,6 +323,9 @@ function evidenceParts(row: FieldRowState): [string, string, string] | null {
   margin: 0;
   font-family: var(--font-head);
   font-size: var(--fs-16);
+  font-weight: 700;
+  letter-spacing: var(--tracking-head);
+  color: var(--ink);
 }
 
 .fields__note,
@@ -361,6 +376,8 @@ function evidenceParts(row: FieldRowState): [string, string, string] | null {
 }
 
 .field__value {
+  min-width: 0;
+  overflow-wrap: anywhere;
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-8);

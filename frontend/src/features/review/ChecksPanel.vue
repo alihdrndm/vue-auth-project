@@ -187,10 +187,25 @@ function differences(check: Check): Difference[] {
 </template>
 
 <style scoped>
+.checks {
+  min-width: 0;
+  padding: var(--space-20);
+  border-bottom: 1px solid var(--line);
+}
+
+@media (max-width: 767px) {
+  .checks {
+    padding: var(--space-16);
+  }
+}
+
 .checks__title {
   margin: 0 0 var(--space-12);
   font-family: var(--font-head);
   font-size: var(--fs-16);
+  font-weight: 700;
+  letter-spacing: var(--tracking-head);
+  color: var(--ink);
 }
 
 .checks__empty {
@@ -243,6 +258,7 @@ function differences(check: Check): Difference[] {
 
 .card__message {
   margin: var(--space-8) 0 0;
+  overflow-wrap: anywhere; /* messages can carry long source URLs */
 }
 
 .card__actions {
