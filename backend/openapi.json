@@ -3106,6 +3106,13 @@
                         "type": "string",
                         "format": "uuid"
                     },
+                    "first_seen_document_id": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "first_seen_invoice_number": {
+                        "type": "string"
+                    },
                     "first_seen_at": {
                         "type": "string",
                         "format": "date-time"
@@ -3133,6 +3140,7 @@
                 },
                 "required": [
                     "first_seen_at",
+                    "first_seen_document_id",
                     "first_seen_invoice_id",
                     "iban",
                     "last_seen_at",

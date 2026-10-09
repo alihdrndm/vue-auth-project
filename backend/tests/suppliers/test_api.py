@@ -124,6 +124,18 @@ def test_detail_reports_iban_statuses(
     assert ibans[NEW]["trusted"] is False
 
 
+def test_detail_names_the_document_where_each_iban_was_first_seen(
+    signed_in: Callable[[str], ApiClient], organization: Organization
+) -> None:
+    api = signed_in("viewer")
+    supplier = _supplier_with_history(organization, None)
+    response = api.get(f"/api/v1/suppliers/{supplier.id}")
+    ibans = {entry["iban"]: entry for entry in response.json()["ibans"]}
+    second = supplier.invoices.get(invoice_number="RE-2")
+    assert ibans[CONFIRMED]["first_seen_document_id"] == str(second.document_id)
+    assert ibans[CONFIRMED]["first_seen_invoice_number"] == "RE-2"
+
+
 def test_detail_lists_invoices_newest_first_without_deleted_ones(
     signed_in: Callable[[str], ApiClient], organization: Organization
 ) -> None:

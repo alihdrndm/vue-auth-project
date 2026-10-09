@@ -29,6 +29,8 @@ class SupplierIbanSerializer(Serializer):
 
     iban = serializers.CharField()
     first_seen_invoice_id = serializers.UUIDField()
+    first_seen_document_id = serializers.UUIDField()
+    first_seen_invoice_number = serializers.CharField(required=False)
     first_seen_at = serializers.DateTimeField()
     last_seen_at = serializers.DateTimeField()
     trusted = serializers.BooleanField()

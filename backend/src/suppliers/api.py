@@ -52,11 +52,16 @@ class SupplierDetailView(APIView):
     def get(self, request: Request, supplier_id: UUID) -> Response:
         supplier = get_object_or_404(scoped(Supplier.objects.all(), request), id=supplier_id)
         first_invoice = first_invoice_id(supplier)
-        entries = SupplierIban.objects.filter(supplier=supplier).select_related("confirmed_by")
+        entries = SupplierIban.objects.filter(supplier=supplier).select_related(
+            "confirmed_by", "first_seen_invoice"
+        )
         ibans = [
             {
                 "iban": entry.iban,
                 "first_seen_invoice_id": entry.first_seen_invoice_id,
+                # The review screen opens documents, so the first sighting names its document.
+                "first_seen_document_id": entry.first_seen_invoice.document_id,
+                "first_seen_invoice_number": entry.first_seen_invoice.invoice_number,
                 "first_seen_at": entry.first_seen_at,
                 "last_seen_at": entry.last_seen_at,
                 "trusted": is_trusted(entry, first_invoice),
