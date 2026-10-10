@@ -1,16 +1,20 @@
 """Review endpoints: edit, resolve, mark-reviewed, decision, send-back, reopen, retry, delete."""
 
 from collections.abc import Callable
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 import pytest
 from pytest_django import DjangoCaptureOnCommitCallbacks
 
-from accounts.models import Organization
+from accounts.models import Organization, User
 from eingang import temporal_client
 from invoices.models import Approval, Check, Document, Event, Invoice
 from suppliers.models import SupplierIban
 from tests.conftest import ApiClient, MakeUser
+
+if TYPE_CHECKING:
+    from django.test.client import _MonkeyPatchedWSGIResponse as Response
 from tests.factories import add_check, add_iban, make_document, make_invoice, make_supplier
 
 pytestmark = pytest.mark.django_db
@@ -30,8 +34,10 @@ def signals(monkeypatch: pytest.MonkeyPatch) -> Signals:
     return sent
 
 
-def document_in(organization: Organization, status: str, **kwargs: object) -> Document:
-    document = make_document(organization, status=status, **kwargs)  # type: ignore[arg-type]
+def document_in(
+    organization: Organization, status: str, *, reviewed_by: User | None = None
+) -> Document:
+    document = make_document(organization, status=status, reviewed_by=reviewed_by)
     Document.objects.filter(id=document.id).update(workflow_id=f"invoice-{document.id}")
     document.refresh_from_db()
     return document
@@ -166,7 +172,7 @@ def test_FORBIDDEN_ROLE_approver_cannot_edit(
 # --- POST /checks/{id}/resolve ---------------------------------------------------------
 
 
-def resolve(api: ApiClient, check: Check, note: str = NOTE) -> "object":
+def resolve(api: ApiClient, check: Check, note: str = NOTE) -> "Response":
     return api.unsafe("post", f"/api/v1/checks/{check.id}/resolve", data={"note": note})
 
 
@@ -177,8 +183,8 @@ def test_resolve_records_who_when_and_the_note(
     document = document_in(organization, Status.NEEDS_REVIEW)
     check = add_check(document, "C04", "warn")
     response = resolve(api, check)
-    assert response.status_code == 200  # type: ignore[attr-defined]
-    body = response.json()  # type: ignore[attr-defined]
+    assert response.status_code == 200
+    body = response.json()
     assert body["resolution_note"] == NOTE
     assert body["resolved_by_name"] == "Accountant"
     assert body["resolve"] == {
@@ -200,7 +206,7 @@ def test_resolving_C05_confirms_the_supplier_iban(
     invoice = make_invoice(document, supplier=supplier, iban="DE2")
     add_iban(supplier, "DE2", invoice)
     response = resolve(api, add_check(document, "C05", "block"))
-    assert response.status_code == 200  # type: ignore[attr-defined]
+    assert response.status_code == 200
     entry = SupplierIban.objects.get(supplier=supplier, iban="DE2")
     assert entry.confirmation_note == NOTE
     assert entry.confirmed_by is not None
@@ -213,8 +219,8 @@ def test_VALIDATION_FAILED_resolve_note_too_short(
     api = signed_in("admin")
     check = add_check(document_in(organization, Status.NEEDS_REVIEW))
     response = resolve(api, check, "ok")
-    assert response.status_code == 422  # type: ignore[attr-defined]
-    assert response.json()["errors"][0]["path"] == "note"  # type: ignore[attr-defined]
+    assert response.status_code == 422
+    assert response.json()["errors"][0]["path"] == "note"
 
 
 @pytest.mark.parametrize("severity", ["info", "resolved"])
@@ -227,8 +233,8 @@ def test_CHECK_NOT_RESOLVABLE(
     if severity == "resolved":
         resolve(api, check)
     response = resolve(api, check)
-    assert response.status_code == 409  # type: ignore[attr-defined]
-    assert response.json()["code"] == "CHECK_NOT_RESOLVABLE"  # type: ignore[attr-defined]
+    assert response.status_code == 409
+    assert response.json()["code"] == "CHECK_NOT_RESOLVABLE"
 
 
 def test_INVALID_TRANSITION_resolve_outside_review(
@@ -237,8 +243,8 @@ def test_INVALID_TRANSITION_resolve_outside_review(
     api = signed_in("admin")
     check = add_check(document_in(organization, Status.AWAITING_APPROVAL))
     response = resolve(api, check)
-    assert response.status_code == 409  # type: ignore[attr-defined]
-    assert response.json()["code"] == "INVALID_TRANSITION"  # type: ignore[attr-defined]
+    assert response.status_code == 409
+    assert response.json()["code"] == "INVALID_TRANSITION"
 
 
 def test_FORBIDDEN_ROLE_only_an_admin_accepts_a_failed_validation(
@@ -247,8 +253,8 @@ def test_FORBIDDEN_ROLE_only_an_admin_accepts_a_failed_validation(
     api = signed_in("accountant")
     check = add_check(document_in(organization, Status.NEEDS_REVIEW), "C15", "block")
     response = resolve(api, check)
-    assert response.status_code == 403  # type: ignore[attr-defined]
-    assert response.json()["code"] == "FORBIDDEN_ROLE"  # type: ignore[attr-defined]
+    assert response.status_code == 403
+    assert response.json()["code"] == "FORBIDDEN_ROLE"
 
 
 def test_resolve_another_organisations_check_is_not_found(
@@ -256,7 +262,7 @@ def test_resolve_another_organisations_check_is_not_found(
 ) -> None:
     api = signed_in("admin")
     check = add_check(document_in(other_organization, Status.NEEDS_REVIEW))
-    assert resolve(api, check).status_code == 404  # type: ignore[attr-defined]
+    assert resolve(api, check).status_code == 404
 
 
 # --- Status actions --------------------------------------------------------------------
