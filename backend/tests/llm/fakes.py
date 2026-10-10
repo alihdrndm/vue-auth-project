@@ -16,14 +16,14 @@ from llm import client
 class FakeSdk:
     """Serves queued responses (or raises queued errors) and records each request."""
 
-    replies: list[Any] = field(default_factory=list)
-    requests: list[dict[str, Any]] = field(default_factory=list)
+    replies: list[Any] = field(default_factory=list)  # boundary: openai, fake responses
+    requests: list[dict[str, Any]] = field(default_factory=list)  # boundary: openai kwargs
 
     @property
     def responses(self) -> "FakeSdk":
         return self
 
-    def parse(self, **kwargs: Any) -> Any:
+    def parse(self, **kwargs: Any) -> Any:  # boundary: openai, responses.parse
         self.requests.append(kwargs)
         reply = self.replies.pop(0)
         if isinstance(reply, Exception):
@@ -50,8 +50,8 @@ def reply(
     )
 
 
-def enabled_settings(**overrides: Any) -> Settings:
-    values: dict[str, Any] = {
+def enabled_settings(**overrides: object) -> Settings:
+    values: dict[str, Any] = {  # boundary: pydantic-settings, mixed field types
         "LLM_ENABLED": True,
         "OPENAI_API_KEY": "test-key",
         "OPENAI_MODEL": "test-model",
@@ -64,7 +64,7 @@ def enabled_settings(**overrides: Any) -> Settings:
     return Settings(**values)
 
 
-def install(monkeypatch: pytest.MonkeyPatch, **overrides: Any) -> FakeSdk:
+def install(monkeypatch: pytest.MonkeyPatch, **overrides: object) -> FakeSdk:
     """Switch the LLM on with test prices and route every call to a fresh fake SDK."""
     configured = enabled_settings(**overrides)
     fake = FakeSdk()

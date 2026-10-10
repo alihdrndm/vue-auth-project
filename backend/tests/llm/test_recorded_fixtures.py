@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from pydantic import BaseModel
 
 from accounts.models import Organization
 from eingang import clock, storage
@@ -49,11 +50,13 @@ def buyer(db: None) -> Organization:
 
 
 def recorded(path: Path) -> dict[str, Any]:  # boundary: JSON fixture
-    loaded: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
+    loaded: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))  # boundary: json
     return loaded
 
 
-def replay(sdk: fakes.FakeSdk, path: Path, output: type[Any]) -> dict[str, Any]:
+def replay(
+    sdk: fakes.FakeSdk, path: Path, output: type[BaseModel]
+) -> dict[str, Any]:  # boundary: json
     fixture = recorded(path)
     usage = fixture["usage"]
     sdk.replies.append(

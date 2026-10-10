@@ -24,14 +24,14 @@ from live_llm import SAMPLES_DIR, Ask, Caller, confirm, enabled_settings, report
 
 from invoices.extraction import TEXT_LIMIT
 from llm import requests
-from llm.client import Request
+from llm.client import AnyRequest
 
 
 @dataclass(frozen=True)
 class Target:
     sample_id: str
     key: str
-    build: Callable[[str], Request[Any]]  # the feature's request builder, from the text
+    build: Callable[[str], AnyRequest]  # the feature's request builder, from the text
 
 
 TARGETS = (
@@ -45,7 +45,7 @@ def _path(samples_dir: Path, sample_id: str) -> Path:
 
 
 def _load(path: Path) -> dict[str, Any]:  # boundary: JSON file
-    loaded: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
+    loaded: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))  # boundary: json
     return loaded
 
 
@@ -59,7 +59,7 @@ def run(
     settings = enabled_settings()
     if settings is None:
         return 2
-    planned: list[tuple[Target, Request[Any]]] = []
+    planned: list[tuple[Target, AnyRequest]] = []
     for target in TARGETS:
         precomputed = _load(_path(samples_dir, target.sample_id))
         if target.key in precomputed and not force:

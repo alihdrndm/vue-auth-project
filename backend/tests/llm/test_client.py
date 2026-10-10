@@ -1,5 +1,6 @@
 """The one LLM door: refusals, budgets, cache, ledger rows and costs (no network)."""
 
+from collections.abc import Callable
 from datetime import timedelta
 from decimal import Decimal
 from types import SimpleNamespace
@@ -22,6 +23,8 @@ from tests.factories import make_sandbox
 from tests.llm import fakes
 from tests.llm.fakes import FakeSdk
 
+Configure = Callable[..., Settings]
+
 pytestmark = pytest.mark.django_db
 PRIVATE_TEXT = "Rechnung Nr. GEHEIM-4711 an Holzwerk Brandt"
 
@@ -30,7 +33,7 @@ class Answer(BaseModel):
     invoice_number: str | None
 
 
-def reply(parsed: BaseModel | None = None, **usage: Any) -> SimpleNamespace:
+def reply(parsed: BaseModel | None = None, **usage: Any) -> SimpleNamespace:  # boundary: openai
     return fakes.reply(parsed if parsed is not None else Answer(invoice_number="RE-1"), **usage)
 
 
@@ -45,8 +48,8 @@ def sdk(monkeypatch: pytest.MonkeyPatch) -> FakeSdk:
 
 
 @pytest.fixture
-def configure(monkeypatch: pytest.MonkeyPatch) -> Any:
-    def apply(**overrides: Any) -> Settings:
+def configure(monkeypatch: pytest.MonkeyPatch) -> Configure:
+    def apply(**overrides: object) -> Settings:
         configured = settings(**overrides)
         monkeypatch.setattr(client, "get_settings", lambda: configured)
         return configured
@@ -102,7 +105,9 @@ def test_estimate_overestimates_with_a_third_of_the_characters() -> None:
 # --- refusals ---------------------------------------------------------------------------
 
 
-def test_disabled_is_refused_and_recorded_without_calling(configure: Any, sdk: FakeSdk) -> None:
+def test_disabled_is_refused_and_recorded_without_calling(
+    configure: Configure, sdk: FakeSdk
+) -> None:
     configure(LLM_ENABLED=False)
     with pytest.raises(BudgetExceededError) as error:
         client.call(request())
@@ -113,7 +118,7 @@ def test_disabled_is_refused_and_recorded_without_calling(configure: Any, sdk: F
 
 
 def test_lifetime_budget_counts_spend_recorded_elsewhere(
-    configure: Any, sdk: FakeSdk, fixed_clock: clock.FixedClock
+    configure: Configure, sdk: FakeSdk, fixed_clock: clock.FixedClock
 ) -> None:
     configure(LLM_SPENT_ELSEWHERE_USD=Decimal("1.9995"))
     with pytest.raises(BudgetExceededError) as error:
@@ -123,7 +128,7 @@ def test_lifetime_budget_counts_spend_recorded_elsewhere(
 
 
 def test_lifetime_budget_counts_every_ledger_row(
-    configure: Any, sdk: FakeSdk, fixed_clock: clock.FixedClock
+    configure: Configure, sdk: FakeSdk, fixed_clock: clock.FixedClock
 ) -> None:
     ledger_cost("1.999", days_ago=100)
     with pytest.raises(BudgetExceededError) as error:
@@ -132,7 +137,7 @@ def test_lifetime_budget_counts_every_ledger_row(
 
 
 def test_monthly_budget_counts_only_this_month(
-    configure: Any, sdk: FakeSdk, fixed_clock: clock.FixedClock
+    configure: Configure, sdk: FakeSdk, fixed_clock: clock.FixedClock
 ) -> None:
     ledger_cost("1.499")
     with pytest.raises(BudgetExceededError) as error:
@@ -141,7 +146,7 @@ def test_monthly_budget_counts_only_this_month(
 
 
 def test_last_months_spend_does_not_count_this_month(
-    configure: Any, sdk: FakeSdk, fixed_clock: clock.FixedClock
+    configure: Configure, sdk: FakeSdk, fixed_clock: clock.FixedClock
 ) -> None:
     ledger_cost("1.499", days_ago=40)
     sdk.replies.append(reply())
@@ -149,7 +154,7 @@ def test_last_months_spend_does_not_count_this_month(
 
 
 def test_daily_public_budget_counts_deleted_sandboxes_too(
-    configure: Any, sdk: FakeSdk, fixed_clock: clock.FixedClock
+    configure: Configure, sdk: FakeSdk, fixed_clock: clock.FixedClock
 ) -> None:
     ledger_cost("0.099", public=True)  # its sandbox is gone: no organisation any more
     sandbox = make_sandbox(clock.now() + timedelta(hours=1))
@@ -159,7 +164,7 @@ def test_daily_public_budget_counts_deleted_sandboxes_too(
 
 
 def test_daily_public_budget_does_not_limit_a_real_organisation(
-    configure: Any, sdk: FakeSdk, fixed_clock: clock.FixedClock, organization: Organization
+    configure: Configure, sdk: FakeSdk, fixed_clock: clock.FixedClock, organization: Organization
 ) -> None:
     ledger_cost("0.099", public=True)
     sdk.replies.append(reply())
@@ -168,7 +173,7 @@ def test_daily_public_budget_does_not_limit_a_real_organisation(
 
 
 def test_a_sandbox_gets_three_calls(
-    configure: Any, sdk: FakeSdk, fixed_clock: clock.FixedClock
+    configure: Configure, sdk: FakeSdk, fixed_clock: clock.FixedClock
 ) -> None:
     sandbox = make_sandbox(clock.now() + timedelta(hours=1))
     sdk.replies.extend(reply() for _ in range(3))
@@ -186,7 +191,7 @@ def test_a_sandbox_gets_three_calls(
 
 
 def test_a_call_writes_one_ledger_row_with_its_cost(
-    configure: Any, sdk: FakeSdk, organization: Organization
+    configure: Configure, sdk: FakeSdk, organization: Organization
 ) -> None:
     sdk.replies.append(reply())
     client.call(request(organization))
@@ -206,7 +211,7 @@ def test_a_call_writes_one_ledger_row_with_its_cost(
     assert "reasoning" not in sent
 
 
-def test_reasoning_effort_is_sent_only_when_configured(configure: Any, sdk: FakeSdk) -> None:
+def test_reasoning_effort_is_sent_only_when_configured(configure: Configure, sdk: FakeSdk) -> None:
     configure(OPENAI_REASONING_EFFORT="minimal")
     sdk.replies.append(reply())
     client.call(request())
@@ -214,7 +219,7 @@ def test_reasoning_effort_is_sent_only_when_configured(configure: Any, sdk: Fake
 
 
 def test_an_identical_request_is_served_from_the_cache_for_free(
-    configure: Any, sdk: FakeSdk
+    configure: Configure, sdk: FakeSdk
 ) -> None:
     sdk.replies.append(reply())
     first = client.call(request())
@@ -232,7 +237,7 @@ def test_the_cache_key_changes_with_model_and_input() -> None:
     assert request().request_hash("a") == request().request_hash("a")
 
 
-def test_the_ledger_never_holds_prompt_or_response_text(configure: Any, sdk: FakeSdk) -> None:
+def test_the_ledger_never_holds_prompt_or_response_text(configure: Configure, sdk: FakeSdk) -> None:
     sdk.replies.append(reply(Answer(invoice_number="GEHEIM-4711")))
     client.call(request())
     row = LlmCall.objects.values().get()
@@ -241,7 +246,7 @@ def test_the_ledger_never_holds_prompt_or_response_text(configure: Any, sdk: Fak
         assert "Extract the number" not in str(value)
 
 
-def test_an_incomplete_response_is_paid_for_and_refused(configure: Any, sdk: FakeSdk) -> None:
+def test_an_incomplete_response_is_paid_for_and_refused(configure: Configure, sdk: FakeSdk) -> None:
     sdk.replies.append(reply(status="incomplete", output=2500))
     with pytest.raises(PermanentError):
         client.call(request())
@@ -251,7 +256,9 @@ def test_an_incomplete_response_is_paid_for_and_refused(configure: Any, sdk: Fak
     assert not LlmCache.objects.exists()
 
 
-def test_a_failed_call_is_recorded_and_raised_for_a_retry(configure: Any, sdk: FakeSdk) -> None:
+def test_a_failed_call_is_recorded_and_raised_for_a_retry(
+    configure: Configure, sdk: FakeSdk
+) -> None:
     timeout = openai.APITimeoutError(request=httpx.Request("POST", "https://api.invalid"))
     sdk.replies.append(timeout)
     with pytest.raises(openai.APITimeoutError):
@@ -259,7 +266,7 @@ def test_a_failed_call_is_recorded_and_raised_for_a_retry(configure: Any, sdk: F
     assert LlmCall.objects.get().status == "error"
 
 
-def test_a_refused_request_is_a_permanent_error(configure: Any, sdk: FakeSdk) -> None:
+def test_a_refused_request_is_a_permanent_error(configure: Configure, sdk: FakeSdk) -> None:
     http_request = httpx.Request("POST", "https://api.invalid")
     sdk.replies.append(
         openai.BadRequestError("bad", response=httpx.Response(400, request=http_request), body=None)

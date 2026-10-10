@@ -12,7 +12,6 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from decimal import Decimal
 from pathlib import Path
-from typing import Any
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
 SAMPLES_DIR = BACKEND_DIR.parent / "samples"
@@ -60,7 +59,7 @@ def enabled_settings() -> Settings | None:
     return settings
 
 
-def estimate(settings: Settings, requests: Sequence[client.Request[Any]]) -> Decimal:
+def estimate(settings: Settings, requests: Sequence[client.AnyRequest]) -> Decimal:
     """The deliberately high estimate of every request, as the budget check computes it."""
     prices = budget.Prices.from_settings(settings)
     return sum(
@@ -74,7 +73,7 @@ def estimate(settings: Settings, requests: Sequence[client.Request[Any]]) -> Dec
 
 def confirm(
     settings: Settings,
-    requests: Sequence[client.Request[Any]],
+    requests: Sequence[client.AnyRequest],
     *,
     assume_yes: bool,
     ask: Ask = input,

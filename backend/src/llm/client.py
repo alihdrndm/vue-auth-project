@@ -72,7 +72,10 @@ class Request[T: BaseModel]:
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
-def _ledger(request: Request[Any], settings: Settings, status: str, **values: Any) -> None:
+AnyRequest = Request[Any]  # boundary: pydantic, a request for any output schema
+
+
+def _ledger(request: AnyRequest, settings: Settings, status: str, **values: object) -> None:
     organization = request.organization
     LlmCall.objects.create(
         organization=organization,
@@ -176,7 +179,7 @@ def _call_api[T: BaseModel](
     return parsed
 
 
-def _failed(request: Request[Any], settings: Settings, started: float) -> None:
+def _failed(request: AnyRequest, settings: Settings, started: float) -> None:
     _ledger(request, settings, LlmCall.Status.ERROR, latency_ms=_since(started))
     _count_sandbox_call(request.organization)
 

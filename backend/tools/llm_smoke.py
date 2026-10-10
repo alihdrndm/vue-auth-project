@@ -32,7 +32,7 @@ from live_llm import (
 from eingang.config import Settings
 from invoices.extraction import TEXT_LIMIT
 from llm import requests
-from llm.client import Request
+from llm.client import AnyRequest
 
 FIXTURES_DIR = BACKEND_DIR / "tests" / "fixtures" / "llm"
 EXPLAINED_RULE = "BR-DE-15"
@@ -40,11 +40,11 @@ EXPLAINED_RULE = "BR-DE-15"
 
 def _precomputed(samples_dir: Path, sample_id: str) -> dict[str, Any]:  # boundary: JSON file
     path = samples_dir / "precomputed" / f"{sample_id}.json"
-    loaded: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
+    loaded: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))  # boundary: json
     return loaded
 
 
-def smoke_requests(samples_dir: Path) -> dict[str, Request[Any]]:
+def smoke_requests(samples_dir: Path) -> dict[str, AnyRequest]:
     """The three requests, by feature name, built exactly as the activities build them."""
     s08 = _precomputed(samples_dir, "S08")
     s10 = _precomputed(samples_dir, "S10")
@@ -62,7 +62,10 @@ def smoke_requests(samples_dir: Path) -> dict[str, Request[Any]]:
 
 
 def fixture(
-    feature: str, request: Request[Any], outcome: Outcome[Any], settings: Settings
+    feature: str,
+    request: AnyRequest,
+    outcome: Outcome[Any],  # boundary: pydantic, any output schema
+    settings: Settings,
 ) -> dict[str, Any]:  # boundary: JSON document
     """What is recorded: the model's answer and the usage, never the prompt."""
     row = outcome.row
