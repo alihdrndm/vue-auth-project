@@ -37,7 +37,7 @@ class SessionSerializer(Serializer):
 
 
 def session_payload(user: User) -> dict[str, Any]:  # boundary: rest_framework data
-    data: dict[str, Any] = SessionSerializer(
+    data: dict[str, Any] = SessionSerializer(  # boundary: rest_framework data
         {"user": user, "organization": user.organization, "role": user.role}
     ).data
     return data

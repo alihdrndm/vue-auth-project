@@ -69,7 +69,7 @@ def _detail(request: Request, document_id: UUID, user: User) -> Response:
     return Response(document_detail(get_document(request, document_id), user))
 
 
-def _payload[S: serializers.BaseSerializer[Any]](
+def _payload[S: serializers.BaseSerializer[Any]](  # boundary: rest_framework serializer
     serializer: S,
 ) -> dict[str, Any]:  # boundary: rest_framework validated data
     serializer.is_valid(raise_exception=True)

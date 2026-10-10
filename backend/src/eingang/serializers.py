@@ -12,7 +12,7 @@ class OmitUnsetMixin:
     """
 
     def to_representation(self, instance: Any) -> dict[str, Any]:  # boundary: rest_framework
-        data: dict[str, Any] = super().to_representation(instance)  # type: ignore[misc]  # mixin
+        data: dict[str, Any] = super().to_representation(instance)  # type: ignore[misc]  # boundary: mixin
         return {key: value for key, value in data.items() if value is not None}
 
 

@@ -42,7 +42,9 @@ class FakeProcessInvoiceWorkflow:
         )
 
 
-def fake_fetch_mail(document_ids: list[UUID]) -> Callable[..., Awaitable[Any]]:
+def fake_fetch_mail(
+    document_ids: list[UUID],
+) -> Callable[..., Awaitable[Any]]:  # boundary: temporalio activity
     @activity.defn(name=c.ACT_FETCH_MAIL)
     async def fetch_mail() -> c.MailboxResult:
         return c.MailboxResult(document_ids=document_ids)

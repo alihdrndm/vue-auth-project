@@ -145,7 +145,8 @@ def fake_activities(
     ]  # fmt: skip
 
 
-Scenario = Callable[[WorkflowHandle[Any, str], FakeDocument, WorkflowEnvironment], Awaitable[None]]
+Handle = WorkflowHandle[Any, str]  # boundary: temporalio, workflow class not needed here
+Scenario = Callable[[Handle, FakeDocument, WorkflowEnvironment], Awaitable[None]]
 
 
 def run(doc: FakeDocument, scenario: Scenario) -> str:
@@ -185,9 +186,7 @@ async def until(condition: Callable[[], bool], env: WorkflowEnvironment) -> None
     raise AssertionError("condition not reached")
 
 
-async def export_when_awaiting(
-    handle: WorkflowHandle[Any, str], doc: FakeDocument, env: WorkflowEnvironment
-) -> None:
+async def export_when_awaiting(handle: Handle, doc: FakeDocument, env: WorkflowEnvironment) -> None:
     await until(lambda: doc.status == "awaiting_approval", env)
     doc.status = "exported"
     await handle.signal(c.SIG_EXPORTED)
@@ -206,7 +205,7 @@ def test_valid_xml_goes_to_awaiting_approval() -> None:
 
 
 async def delete_when_reviewable(
-    handle: WorkflowHandle[Any, str], doc: FakeDocument, env: WorkflowEnvironment
+    handle: Handle, doc: FakeDocument, env: WorkflowEnvironment
 ) -> None:
     await until(lambda: doc.status == "needs_review", env)
     doc.deleted = True
@@ -261,9 +260,7 @@ def test_comparison_switched_off_is_skipped_without_a_note() -> None:
 def test_a_wake_up_does_not_move_the_next_reminder() -> None:
     doc = FakeDocument(kind="xml", reminder_after_days=3)
 
-    async def scenario(
-        handle: WorkflowHandle[Any, str], doc: FakeDocument, env: WorkflowEnvironment
-    ) -> None:
+    async def scenario(handle: Handle, doc: FakeDocument, env: WorkflowEnvironment) -> None:
         await until(lambda: doc.status == "awaiting_approval", env)
         await env.sleep(timedelta(days=2))
         await handle.signal(c.SIG_SYNC)
@@ -278,9 +275,7 @@ def test_a_wake_up_does_not_move_the_next_reminder() -> None:
 def test_retry_is_recovered_by_sync_when_the_retry_signal_is_lost() -> None:
     doc = FakeDocument(kind="xml", fail_detection_times=1)
 
-    async def scenario(
-        handle: WorkflowHandle[Any, str], doc: FakeDocument, env: WorkflowEnvironment
-    ) -> None:
+    async def scenario(handle: Handle, doc: FakeDocument, env: WorkflowEnvironment) -> None:
         await until(lambda: doc.status == "failed", env)
         doc.status = "processing"  # the API committed the retry; its signal never arrived
         await handle.signal(c.SIG_SYNC)  # the daily maintenance
@@ -293,9 +288,7 @@ def test_retry_is_recovered_by_sync_when_the_retry_signal_is_lost() -> None:
 def test_reminder_fires_three_times_and_stops() -> None:
     doc = FakeDocument(kind="xml", reminder_after_days=3)
 
-    async def scenario(
-        handle: WorkflowHandle[Any, str], doc: FakeDocument, env: WorkflowEnvironment
-    ) -> None:
+    async def scenario(handle: Handle, doc: FakeDocument, env: WorkflowEnvironment) -> None:
         await until(lambda: doc.status == "awaiting_approval", env)
         await env.sleep(timedelta(days=30))
         assert doc.reminders == [1, 2, 3]
@@ -309,9 +302,7 @@ def test_reminder_fires_three_times_and_stops() -> None:
 def test_reject_reopen_review_approve_export_completes_the_workflow() -> None:
     doc = FakeDocument(kind="xml")
 
-    async def scenario(
-        handle: WorkflowHandle[Any, str], doc: FakeDocument, env: WorkflowEnvironment
-    ) -> None:
+    async def scenario(handle: Handle, doc: FakeDocument, env: WorkflowEnvironment) -> None:
         await until(lambda: doc.status == "awaiting_approval", env)
         for status, name in [
             ("rejected", c.SIG_DECIDED),
@@ -328,7 +319,7 @@ def test_reject_reopen_review_approve_export_completes_the_workflow() -> None:
     assert run(doc, scenario) == "exported"
 
 
-async def phase_becomes(handle: WorkflowHandle[Any, str], status: str) -> None:
+async def phase_becomes(handle: Handle, status: str) -> None:
     for _ in range(200):
         if await handle.query(c.QUERY_PHASE) == status:
             return
@@ -339,9 +330,7 @@ async def phase_becomes(handle: WorkflowHandle[Any, str], status: str) -> None:
 def test_permanent_failure_waits_for_retry_then_processes_again() -> None:
     doc = FakeDocument(kind="xml", fail_detection_times=1)
 
-    async def scenario(
-        handle: WorkflowHandle[Any, str], doc: FakeDocument, env: WorkflowEnvironment
-    ) -> None:
+    async def scenario(handle: Handle, doc: FakeDocument, env: WorkflowEnvironment) -> None:
         await until(lambda: doc.status == "failed", env)
         assert "failed:The PDF cannot be read." in doc.calls
         # The API moves failed -> processing, then signals retry.
@@ -356,9 +345,7 @@ def test_permanent_failure_waits_for_retry_then_processes_again() -> None:
 def test_180_days_without_a_signal_ends_the_workflow() -> None:
     doc = FakeDocument(kind="pdf_no_text")
 
-    async def scenario(
-        handle: WorkflowHandle[Any, str], doc: FakeDocument, env: WorkflowEnvironment
-    ) -> None:
+    async def scenario(handle: Handle, doc: FakeDocument, env: WorkflowEnvironment) -> None:
         await until(lambda: doc.status == "needs_review", env)
         await env.sleep(timedelta(days=181))
 
@@ -368,9 +355,7 @@ def test_180_days_without_a_signal_ends_the_workflow() -> None:
 def test_phase_query_reports_the_status_last_acted_on() -> None:
     doc = FakeDocument(kind="xml")
 
-    async def scenario(
-        handle: WorkflowHandle[Any, str], doc: FakeDocument, env: WorkflowEnvironment
-    ) -> None:
+    async def scenario(handle: Handle, doc: FakeDocument, env: WorkflowEnvironment) -> None:
         await until(lambda: doc.status == "awaiting_approval", env)
         await asyncio.sleep(0.3)
         assert await handle.query(c.QUERY_PHASE) == "awaiting_approval"

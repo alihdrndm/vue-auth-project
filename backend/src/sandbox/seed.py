@@ -224,8 +224,8 @@ def _process(document: Document, precomputed: dict[str, Any]) -> None:  # bounda
 
 
 def _precomputed_differences(
-    precomputed: dict[str, Any],
-    invoice_xml: CanonicalInvoice,  # boundary: JSON file
+    precomputed: dict[str, Any],  # boundary: JSON file
+    invoice_xml: CanonicalInvoice,
 ) -> list[dict[str, str]] | None:
     """The C09 differences from the precomputed comparison, or None when there is none."""
     stored = precomputed.get("comparison")
