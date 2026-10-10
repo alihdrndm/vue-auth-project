@@ -62,7 +62,7 @@ pnpm seed
 pnpm dev
 ```
 
-Open http://localhost:3110 and choose **Open the sandbox**, or sign in as `admin@example.invalid` with the password `eingang-dev` (the seed users; the password is `SEED_PASSWORD`). `pnpm dev` runs the API (http://localhost:8010), the worker and the web app; the Temporal UI is at http://localhost:8233. `pnpm verify` runs every check, and `pnpm test:e2e` runs the browser tests against the full Docker stack. The AI features stay off until `LLM_ENABLED=true` and an OpenAI key are set (see [docs/DEPLOY.md](docs/DEPLOY.md)).
+Open http://localhost:3110 and choose **Open the sandbox**, or sign in as `admin@example.invalid` with the password `eingang-dev` (the seed users; the password is `SEED_PASSWORD`). `pnpm dev` runs the API (http://localhost:8010), the worker and the web app; the Temporal UI is at http://localhost:8233. `pnpm verify` runs every check (the first run downloads the pinned test corpus, about 150 MB), and `pnpm test:e2e` runs the browser tests against the full Docker stack. The AI features stay off until `LLM_ENABLED=true` and an OpenAI key are set (see [docs/DEPLOY.md](docs/DEPLOY.md)).
 
 ## Costs
 

@@ -22,7 +22,7 @@ Run them from the repository root. They work on Windows, macOS and Linux.
 | Script | Does |
 |--------|------|
 | `pnpm dev` | Starts `db` and `temporal` in Docker, then the API, the worker and the frontend with hot reload. |
-| `pnpm verify` | Backend lint, typecheck, tests with coverage and OpenAPI freshness; frontend lint, typecheck, tests, generated-types freshness and build. Stops at the first failure. |
+| `pnpm verify` | Backend lint, typecheck, the pinned ZUGFeRD corpus (downloaded on the first run, about 150 MB), tests with coverage and OpenAPI freshness; frontend lint, typecheck, tests, generated-types freshness and build. Stops at the first failure. |
 | `pnpm test:e2e` | Stops the development containers, runs the whole stack as the separate Compose project `eingang-e2e`, runs the Playwright smoke tests against http://localhost:3110, and removes the stack. Stop `pnpm dev` first: the ports are the same. |
 | `pnpm gen:api` | Exports the OpenAPI schema to `backend/openapi.json` and regenerates `frontend/src/api/schema.d.ts`. |
 | `pnpm db:reset` | Drops and recreates the local database, migrates and loads the seed data. The LLM ledger and cache tables are kept. |

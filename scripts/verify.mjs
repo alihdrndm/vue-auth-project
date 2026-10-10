@@ -15,6 +15,14 @@ function spawnCommand(command, args, options) {
 const steps = [
   { title: "backend: lint", command: "uv", args: ["run", "poe", "lint"], cwd: backendDir },
   { title: "backend: typecheck", command: "uv", args: ["run", "poe", "typecheck"], cwd: backendDir },
+  // The corpus tests fail when the pinned corpus is missing, so a fresh clone downloads it
+  // here once (about 150 MB); later runs find it and skip the download.
+  {
+    title: "backend: ZUGFeRD corpus",
+    command: "uv",
+    args: ["run", "poe", "fetch-corpus"],
+    cwd: backendDir,
+  },
   { title: "backend: test", command: "uv", args: ["run", "poe", "test"], cwd: backendDir },
   {
     title: "backend: OpenAPI freshness",
