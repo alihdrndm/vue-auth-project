@@ -3,10 +3,12 @@ Copyright (c) 2026 Ali Haider Nadeem
 
 Eingang itself is licensed under the MIT License (see LICENSE).
 
-This file lists every vendored or bundled artefact in this repository that
-is not covered by that statement alone, or that carries its own licence.
-Each entry gives what the artefact is, where it lives in the repository,
-its licence, its source and its version. Entries are grouped by kind.
+This file lists every third-party artefact that is vendored in this
+repository or bundled into its builds, and every artefact of the owner's
+own that carries a note of its own. Each entry gives what the artefact
+is, where it lives, its licence, its source and its version. Entries are
+grouped by kind. A last section names what the tools download at run
+time without committing or bundling it.
 
 
 Design
@@ -19,6 +21,92 @@ Eingang design export
   Licence:  MIT (the owner's own work, same licence as the rest of Eingang)
   Source:   Created by Ali Haider Nadeem for this project
   Version:  As committed in design/export/
+
+
+Frontend build (bundled into frontend/dist by `pnpm build`)
+===========================================================
+
+These packages are installed from npm (versions pinned in pnpm-lock.yaml)
+and are not committed. The production build copies their code or font
+files into frontend/dist, which is what the browser downloads, so they
+are redistributed with every deployment.
+
+Fonts (imported in frontend/src/styles/fonts.ts; only the weights listed
+there are bundled, as WOFF2 and WOFF files)
+
+  The full licence text of each font is in the LICENSE file of its
+  package (frontend/node_modules/@fontsource/<name>/LICENSE) and at
+  https://openfontlicense.org. Under the SIL Open Font License 1.1 the
+  fonts may be bundled and redistributed with software, but not sold by
+  themselves.
+
+  Familjen Grotesk (weight 700)
+    Package:  @fontsource/familjen-grotesk 5.3.0 (font version v11)
+    Licence:  SIL Open Font License 1.1
+    Notice:   Copyright 2021 The Familjen Grotesk Project Authors
+              (https://github.com/Familjen-Sthlm/Familjen-Grotesk)
+    Source:   https://fontsource.org/fonts/familjen-grotesk
+
+  Instrument Sans (weights 400, 500, 600)
+    Package:  @fontsource/instrument-sans 5.3.0 (font version v4)
+    Licence:  SIL Open Font License 1.1
+    Notice:   Copyright 2022 The Instrument Sans Project Authors
+              (https://github.com/Instrument/instrument-sans)
+    Source:   https://fontsource.org/fonts/instrument-sans
+
+  JetBrains Mono (weights 400, 500)
+    Package:  @fontsource/jetbrains-mono 5.3.0 (font version v24)
+    Licence:  SIL Open Font License 1.1
+    Notice:   Copyright 2020 The JetBrains Mono Project Authors
+              (https://github.com/JetBrains/JetBrainsMono)
+    Source:   https://fontsource.org/fonts/jetbrains-mono
+
+  Barlow Condensed (weight 700)
+    Package:  @fontsource/barlow-condensed 5.3.0 (font version v13)
+    Licence:  SIL Open Font License 1.1
+    Notice:   Copyright 2017 The Barlow Project Authors
+              (https://github.com/jpt/barlow)
+    Source:   https://fontsource.org/fonts/barlow-condensed
+
+  Caveat (weight 600)
+    Package:  @fontsource/caveat 5.3.0 (font version v23)
+    Licence:  SIL Open Font License 1.1
+    Notice:   Copyright 2014 The Caveat Project Authors
+              (https://github.com/googlefonts/caveat)
+    Source:   https://fontsource.org/fonts/caveat
+
+PDF.js
+  What:     PDF rendering library and its worker, used by the document
+            viewer (frontend/src/features/viewer/pdf.ts). Loaded on demand
+            as a separate chunk; the cmaps, standard fonts and other
+            optional resources of the package are not bundled.
+  Package:  pdfjs-dist 6.4.299
+  Licence:  Apache License 2.0
+            (frontend/node_modules/pdfjs-dist/LICENSE)
+  Source:   https://github.com/mozilla/pdf.js
+
+Lucide icons
+  What:     The icon components used in the UI
+            (frontend/src/components/ui/icons.ts); only the icons imported
+            there are bundled.
+  Package:  lucide-vue-next 1.0.0
+  Licence:  ISC License (frontend/node_modules/lucide-vue-next/LICENSE).
+            It reads: "Copyright (c) for portions of Lucide are held by
+            Cole Bemis 2013-2026 as part of Feather (MIT). All other
+            copyright (c) for Lucide are held by Lucide Contributors 2026."
+  Source:   https://github.com/lucide-icons/lucide
+
+Application libraries
+  What:     The runtime libraries the app is built on. Each package's
+            licence text is in its folder under frontend/node_modules/.
+  Licence:  MIT License, all of them
+  Packages and sources:
+    - vue 3.5.43 (https://github.com/vuejs/core)
+    - vue-router 5.4.0 (https://github.com/vuejs/router)
+    - pinia 4.0.3 (https://github.com/vuejs/pinia)
+    - @tanstack/vue-query and @tanstack/query-core 5.104.1
+      (https://github.com/TanStack/query)
+    - openapi-fetch 0.17.0 (https://github.com/openapi-ts/openapi-typescript)
 
 
 Reference structure
@@ -123,3 +211,66 @@ KoSIT XRechnung test suite instances
   Source:   https://github.com/itplr-kosit/xrechnung-testsuite
   Version:  release tag v2026-01-31, asset
             xrechnung-3.0.2-testsuite-2026-01-31.zip
+
+
+Sample invoices (samples/)
+==========================
+
+Sandbox sample set
+  What:     The twelve sample invoices, their manifest and precomputed
+            data. The invoices are synthetic (made-up companies and
+            amounts) and generated by backend/tools/build_samples.py. The
+            files samples/precomputed/*.visualization.html are output of
+            the KoSIT XRechnung visualisation stylesheets listed above,
+            applied to those synthetic invoices.
+  Where:    samples/
+  Licence:  MIT (the owner's own work, same licence as the rest of Eingang)
+  Source:   Created by Ali Haider Nadeem for this project
+  Version:  As committed in samples/
+
+
+Downloaded at run time, not in the repository
+=============================================
+
+These artefacts are used by Eingang's tools but are neither committed nor
+bundled into any build. They are listed so a reader knows where they come
+from and under which terms they are used.
+
+ZUGFeRD corpus (full corpus)
+  What:     Sample e-invoices used by parsing tests and the evaluation
+  Where:    Downloaded by `uv run poe fetch-corpus`
+            (backend/tools/fetch_corpus.py) into data/corpus/, which is
+            git-ignored. Only file names, SHA-256 hashes and metadata of
+            the selected documents are committed, in
+            evals/data/manifest.json.
+  Licence:  Apache License 2.0
+  Source:   https://github.com/ZUGFeRD/corpus
+  Version:  commit d891458e9822e34271a5438497bf924e89955979
+
+KoSIT validator
+  What:     The official Java validator, used only by the validation
+            parity evaluation (evals/parity.py), together with the full
+            XRechnung validator configuration release zip
+  Where:    Downloaded by `uv run poe eval-parity` into data/kosit/, which
+            is git-ignored, and checked against pinned SHA-256 hashes. It
+            runs in the eclipse-temurin:21-jre Docker image.
+  Licence:  Apache License 2.0
+  Source:   https://github.com/itplr-kosit/validator
+  Version:  v1.6.0 (validator-1.6.0.zip); configuration release v2026-01-31
+
+Swagger UI
+  What:     The API documentation page at /docs
+  Where:    Loaded by the visitor's browser from
+            https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.33.1; not
+            served or bundled by Eingang
+  Licence:  Apache License 2.0
+  Source:   https://github.com/swagger-api/swagger-ui
+  Version:  5.33.1
+
+Docker base images and Python packages
+  The images named in compose.yaml and the Dockerfiles (postgres,
+  temporalio/temporal, python, ghcr.io/astral-sh/uv, node,
+  eclipse-temurin) are pulled from their registries when an image is
+  built or a container starts; this repository does not redistribute
+  them. Python packages are installed from PyPI at the versions in
+  backend/uv.lock and are not vendored.
